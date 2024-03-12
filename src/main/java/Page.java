@@ -1,36 +1,44 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
-public abstract class Page extends IdentifiableObject
+public abstract class Page implements Identifiable
 {
-	
+
+	int id;
 	Entity entity;
 	ArrayList<User> canEdit;
 	ArrayList<User> cantView;
-	
-	public Page(int id, Entity entity)
+
+	public Page(Entity entity)
 	{
-		super(id);
+		id = IdentifiableObjectManager.INSTANCE.getNextID();
 		this.entity = entity;
 		canEdit = new ArrayList<User>();
 		cantView = new ArrayList<User>();
+
+		IdentifiableObjectManager.INSTANCE.objects.add(this); // registering with the manager
 	}
-	
-	public void addEditor(User user) {
+
+	public void addEditor(User user)
+	{
 		canEdit.add(user);
 	}
-	
-	public boolean delEditor(User user) {
+
+	public boolean removeEditor(User user)
+	{
 		return canEdit.remove(user);
 	}
-	
-	public void blockViewer(User user) {
+
+	public void blockViewer(User user)
+	{
 		cantView.add(user);
 	}
-	
-	public boolean unblockViewer(User user) {
+
+	public boolean unblockViewer(User user)
+	{
 		return cantView.remove(user);
 	}
-	
+
 	/**
 	 * @return the entity
 	 */
@@ -78,7 +86,25 @@ public abstract class Page extends IdentifiableObject
 	{
 		this.cantView = cantView;
 	}
-	
-	
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(canEdit, cantView, entity);
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Page other = (Page) obj;
+		return Objects.equals(canEdit, other.canEdit) && Objects.equals(cantView, other.cantView)
+				&& Objects.equals(entity, other.entity);
+	}
 
 }

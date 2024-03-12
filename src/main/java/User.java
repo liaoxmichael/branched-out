@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Objects;
 
 public abstract class User extends Entity
 {
@@ -9,18 +11,38 @@ public abstract class User extends Entity
 	String avatarURL;
 	String bannerURL;
 
-	public User(int id, Page page, String name)
+	public User(String name, String email)
 	{
-		super(id, page);
 		this.name = name;
+		this.email = email;
+		links.put("following", new ArrayList<Link>());
+		links.put("followers", new ArrayList<Link>());
+		links.put("projects", new ArrayList<Link>());
 	}
-	
-	public void followUser(User user) {
+
+	public void followUser(User user)
+	{
+		Link newLink = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER);
+		int linkIndex = links.get("following").indexOf(newLink);
+
+		if (linkIndex != -1) // if already following: early termination
+		{
+			return;
+		} // else
+
+		links.get("following") // guaranteed because of constructor; else risky and could return null
+				.add(newLink);
 		
+		// it's reciprocal; need to add to other user's list
+		user.getLinks().get("followers").add(new Link(page, Link.RelationshipType.FOLLOWER_USER));
 	}
-	
-	public void unfollowUser(User user) {
-		
+
+	public void unfollowUser(User user)
+	{
+		Link target = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER);
+		links.get("following").remove(target); // this will return false if it's not there; no big deal.
+		// it's reciprocal; need to remove from other user's list
+		user.getLinks().get("followers").remove(new Link(page, Link.RelationshipType.FOLLOWER_USER));
 	}
 
 	/**
@@ -119,6 +141,28 @@ public abstract class User extends Entity
 		this.bannerURL = bannerURL;
 	}
 
-	
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(avatarURL, bannerURL, bio, email, name, phone);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(avatarURL, other.avatarURL) && Objects.equals(bannerURL, other.bannerURL)
+				&& Objects.equals(bio, other.bio) && Objects.equals(email, other.email)
+				&& Objects.equals(name, other.name) && Objects.equals(phone, other.phone);
+	}
+
 }
