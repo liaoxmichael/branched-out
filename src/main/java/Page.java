@@ -98,7 +98,7 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(canEdit, cantView, entity);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -111,8 +111,7 @@ public class Page implements Identifiable // should be abstract; made concrete f
 		if (getClass() != obj.getClass())
 			return false;
 		Page other = (Page) obj;
-		return Objects.equals(canEdit, other.canEdit) && Objects.equals(cantView, other.cantView)
-				&& Objects.equals(entity, other.entity); // this causes infinite recursion: entity --> link --> page --> entity.
+		return id == other.id;
 	}
 
 	@Override
