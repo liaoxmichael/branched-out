@@ -5,8 +5,9 @@ public abstract class Post extends Entity
 	String title;
 	String description;
 
-	public Post(String title)
+	public Post(String title, IdentifiableObjectManager manager)
 	{
+		super(manager);
 		this.title = title;
 	}
 
@@ -59,6 +60,13 @@ public abstract class Post extends Entity
 			return false;
 		Post other = (Post) obj;
 		return Objects.equals(description, other.description) && Objects.equals(title, other.title);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Post [title=" + title + ", description=" + description + ", id=" + id + ", links=" + links
+				+ ", externalWebLinks=" + externalWebLinks + "]";
 	}
 
 }

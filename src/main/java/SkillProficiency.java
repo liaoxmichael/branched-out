@@ -4,6 +4,7 @@ public class SkillProficiency implements Identifiable
 {
 
 	int id;
+	protected IdentifiableObjectManager manager;
 
 	enum ProficiencyLevel {
 		BEGINNER, INTERMEDIATE, ADVANCED
@@ -12,12 +13,13 @@ public class SkillProficiency implements Identifiable
 	ProficiencyLevel level;
 	Skill skill;
 
-	public SkillProficiency(Skill skill, ProficiencyLevel level)
+	public SkillProficiency(Skill skill, ProficiencyLevel level, IdentifiableObjectManager manager)
 	{
-		id = IdentifiableObjectManager.INSTANCE.getNextID();
+		id = manager.getNextId();
 		this.skill = skill;
 		this.level = level;
-		IdentifiableObjectManager.INSTANCE.objects.add(this); // registering with the manager
+		manager.register(this); // registering with the manager
+		this.manager = manager;
 	}
 
 	@Override
@@ -75,6 +77,12 @@ public class SkillProficiency implements Identifiable
 			return false;
 		SkillProficiency other = (SkillProficiency) obj;
 		return Objects.equals(skill, other.skill);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "SkillProficiency [id=" + id + ", level=" + level + ", skill=" + skill + "]";
 	}
 
 }

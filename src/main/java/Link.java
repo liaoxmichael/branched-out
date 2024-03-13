@@ -2,35 +2,31 @@ import java.util.Objects;
 
 public class Link implements Identifiable
 {
-	
+
 	int id;
 	Page page;
+
 	enum RelationshipType {
-		HAS_SKILL,
-		REQUIRES_SKILL,
-		
+		HAS_SKILL, REQUIRES_SKILL,
+
 		HAS_PROJECT,
-		
-		FOLLOWING_USER,
-		FOLLOWER_USER,
-		MENTOR_PERSON,
-		CONTRIBUTOR_PERSON,
-		COORDINATOR_PERSON,
-		JOB_APPLICANT_PERSON,
-		
+
+		FOLLOWING_USER, FOLLOWER_USER, MENTOR_PERSON, CONTRIBUTOR_PERSON, COORDINATOR_PERSON, JOB_APPLICANT_PERSON,
+
 		FROM_COMPANY,
 	}
+
 	RelationshipType relation;
 
-	public Link(Page page, RelationshipType type)
+	public Link(Page page, RelationshipType type, IdentifiableObjectManager manager)
 	{
-		id = IdentifiableObjectManager.INSTANCE.getNextID();
+		id = manager.getNextId();
 		this.page = page;
 		relation = type;
-		
-		IdentifiableObjectManager.INSTANCE.objects.add(this); // registering with the manager
+
+		manager.register(this);
 	}
-	
+
 	@Override
 	public int getId()
 	{
@@ -55,7 +51,11 @@ public class Link implements Identifiable
 		Link other = (Link) obj;
 		return Objects.equals(page, other.page) && relation == other.relation;
 	}
-	
-	
+
+	@Override
+	public String toString()
+	{
+		return "Link [id=" + id + ", page=" + page + ", relation=" + relation + "]";
+	}
 
 }

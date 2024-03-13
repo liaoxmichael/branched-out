@@ -1,22 +1,30 @@
 import java.util.ArrayList;
 import java.util.Objects;
 
-public abstract class Page implements Identifiable
+public class Page implements Identifiable // should be abstract; made concrete for testing
 {
 
 	int id;
 	Entity entity;
 	ArrayList<User> canEdit;
 	ArrayList<User> cantView;
+	protected IdentifiableObjectManager manager;
 
-	public Page(Entity entity)
+	public Page(Entity entity, IdentifiableObjectManager manager)
 	{
-		id = IdentifiableObjectManager.INSTANCE.getNextID();
+		id = manager.getNextId();
 		this.entity = entity;
 		canEdit = new ArrayList<User>();
 		cantView = new ArrayList<User>();
 
-		IdentifiableObjectManager.INSTANCE.objects.add(this); // registering with the manager
+		manager.register(this);
+		this.manager = manager;
+	}
+
+	@Override
+	public int getId()
+	{
+		return id;
 	}
 
 	public void addEditor(User user)
@@ -104,7 +112,13 @@ public abstract class Page implements Identifiable
 			return false;
 		Page other = (Page) obj;
 		return Objects.equals(canEdit, other.canEdit) && Objects.equals(cantView, other.cantView)
-				&& Objects.equals(entity, other.entity);
+				&& Objects.equals(entity, other.entity); // this causes infinite recursion: entity --> link --> page --> entity.
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Page [id=" + id + ", entity=" + entity + ", canEdit=" + canEdit + ", cantView=" + cantView + "]";
 	}
 
 }

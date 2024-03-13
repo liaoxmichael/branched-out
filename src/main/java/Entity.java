@@ -8,14 +8,16 @@ public abstract class Entity implements Identifiable
 	Page page;
 	Hashtable<String, ArrayList<Link>> links;
 	ArrayList<String> externalWebLinks;
+	protected IdentifiableObjectManager manager;
 
-	public Entity() // WIP will this register subclass objects as Entities?
+	public Entity(IdentifiableObjectManager manager) // WIP will this register subclass objects as Entities?
 	{
-		id = IdentifiableObjectManager.INSTANCE.getNextID();
+		id = manager.getNextId();
 		links = new Hashtable<String, ArrayList<Link>>();
 		externalWebLinks = new ArrayList<String>();
 
-		IdentifiableObjectManager.INSTANCE.objects.add(this); // registering with the manager
+		manager.register(this);
+		this.manager = manager;
 	}
 
 	public void addExternalWebLink(String link)
@@ -98,8 +100,13 @@ public abstract class Entity implements Identifiable
 		if (getClass() != obj.getClass())
 			return false;
 		Entity other = (Entity) obj;
-		return Objects.equals(externalWebLinks, other.externalWebLinks) && Objects.equals(links, other.links)
-				&& Objects.equals(page, other.page);
+		return Objects.equals(externalWebLinks, other.externalWebLinks) && Objects.equals(links, other.links);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Entity [id=" + id + ", links=" + links + ", externalWebLinks=" + externalWebLinks + "]";
 	}
 
 }

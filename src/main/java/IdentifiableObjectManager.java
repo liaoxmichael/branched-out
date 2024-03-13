@@ -1,18 +1,14 @@
 import java.util.ArrayList;
 
-public enum IdentifiableObjectManager {
-	INSTANCE;
+public interface IdentifiableObjectManager
+{
+	public int getNextId();
+	
+	public int getCurrentId();
 
-	ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
-	int currentID = 0;
-
-	public int getNextID()
-	{
-		return currentID++;
-	}
-
-	public Identifiable getByID(int index)
-	{
-		return objects.get(index);
-	}
+	public Identifiable getById(int index);
+	
+	public void register(Identifiable object);
+	
+	public ArrayList<Identifiable> getObjects();
 }

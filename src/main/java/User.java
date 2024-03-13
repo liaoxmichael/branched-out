@@ -11,8 +11,9 @@ public abstract class User extends Entity
 	String avatarURL;
 	String bannerURL;
 
-	public User(String name, String email)
+	public User(String name, String email, IdentifiableObjectManager manager)
 	{
+		super(manager);
 		this.name = name;
 		this.email = email;
 		links.put("following", new ArrayList<Link>());
@@ -22,7 +23,7 @@ public abstract class User extends Entity
 
 	public void followUser(User user)
 	{
-		Link newLink = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER);
+		Link newLink = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER, manager);
 		int linkIndex = links.get("following").indexOf(newLink);
 
 		if (linkIndex != -1) // if already following: early termination
@@ -32,17 +33,17 @@ public abstract class User extends Entity
 
 		links.get("following") // guaranteed because of constructor; else risky and could return null
 				.add(newLink);
-		
+
 		// it's reciprocal; need to add to other user's list
-		user.getLinks().get("followers").add(new Link(page, Link.RelationshipType.FOLLOWER_USER));
+		user.getLinks().get("followers").add(new Link(page, Link.RelationshipType.FOLLOWER_USER, manager));
 	}
 
 	public void unfollowUser(User user)
 	{
-		Link target = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER);
+		Link target = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER, manager);
 		links.get("following").remove(target); // this will return false if it's not there; no big deal.
 		// it's reciprocal; need to remove from other user's list
-		user.getLinks().get("followers").remove(new Link(page, Link.RelationshipType.FOLLOWER_USER));
+		user.getLinks().get("followers").remove(new Link(page, Link.RelationshipType.FOLLOWER_USER, manager));
 	}
 
 	/**
@@ -163,6 +164,14 @@ public abstract class User extends Entity
 		return Objects.equals(avatarURL, other.avatarURL) && Objects.equals(bannerURL, other.bannerURL)
 				&& Objects.equals(bio, other.bio) && Objects.equals(email, other.email)
 				&& Objects.equals(name, other.name) && Objects.equals(phone, other.phone);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "User [name=" + name + ", bio=" + bio + ", email=" + email + ", phone=" + phone + ", avatarURL="
+				+ avatarURL + ", bannerURL=" + bannerURL + ", id=" + id + ", links=" + links + ", externalWebLinks="
+				+ externalWebLinks + "]";
 	}
 
 }
