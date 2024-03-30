@@ -97,30 +97,42 @@ class DataTests
 
 		// should start empty
 		assertEquals(editors, alicePage.getCanEdit());
+		assertFalse(alicePage.canEdit(alice));
+		assertFalse(alicePage.canEdit(bob));
 
 		// make sure one editor OK
 		alicePage.addEditor(alice);
 		editors.add(alice);
 		assertEquals(editors, alicePage.getCanEdit());
+		assertTrue(alicePage.canEdit(alice));
+		assertFalse(alicePage.canEdit(bob));
 
 		// check multiple editors
 		alicePage.addEditor(bob);
 		editors.add(bob);
 		assertEquals(editors, alicePage.getCanEdit());
+		assertTrue(alicePage.canEdit(alice));
+		assertTrue(alicePage.canEdit(bob));
 
 		// check works if remove worked
 		assertTrue(alicePage.removeEditor(bob));
 		editors.remove(bob);
 		assertEquals(editors, alicePage.getCanEdit());
+		assertTrue(alicePage.canEdit(alice));
+		assertFalse(alicePage.canEdit(bob));
 
 		// make sure second remove doesn't affect it
 		assertFalse(alicePage.removeEditor(bob));
 		assertEquals(editors, alicePage.getCanEdit());
+		assertTrue(alicePage.canEdit(alice));
+		assertFalse(alicePage.canEdit(bob));
 
 		// check if actually emptied
 		assertTrue(alicePage.removeEditor(alice));
 		editors.clear();
 		assertEquals(editors, alicePage.getCanEdit());
+		assertFalse(alicePage.canEdit(alice));
+		assertFalse(alicePage.canEdit(bob));
 	}
 
 	@Test
@@ -129,25 +141,37 @@ class DataTests
 		ArrayList<User> blocked = new ArrayList<User>();
 
 		assertEquals(blocked, alicePage.getCantView());
+		assertFalse(alicePage.cantView(apple));
+		assertFalse(alicePage.cantView(bob));
 
 		alicePage.blockViewer(bob);
 		blocked.add(bob);
 		assertEquals(blocked, alicePage.getCantView());
+		assertFalse(alicePage.cantView(apple));
+		assertTrue(alicePage.cantView(bob));
 
 		alicePage.blockViewer(apple);
 		blocked.add(apple);
 		assertEquals(blocked, alicePage.getCantView());
+		assertTrue(alicePage.cantView(apple));
+		assertTrue(alicePage.cantView(bob));
 
 		assertTrue(alicePage.unblockViewer(apple));
 		blocked.remove(apple);
 		assertEquals(blocked, alicePage.getCantView());
+		assertFalse(alicePage.cantView(apple));
+		assertTrue(alicePage.cantView(bob));
 
 		assertFalse(alicePage.unblockViewer(apple));
 		assertEquals(blocked, alicePage.getCantView());
+		assertFalse(alicePage.cantView(apple));
+		assertTrue(alicePage.cantView(bob));
 
 		assertTrue(alicePage.unblockViewer(bob));
 		blocked.clear();
 		assertEquals(blocked, alicePage.getCantView());
+		assertFalse(alicePage.cantView(apple));
+		assertFalse(alicePage.cantView(bob));
 	}
 
 	@Test

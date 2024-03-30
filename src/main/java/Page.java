@@ -5,9 +5,9 @@ public class Page implements Identifiable // should be abstract; made concrete f
 {
 
 	int id;
-	Entity entity;
-	ArrayList<User> canEdit;
-	ArrayList<User> cantView;
+	private Entity entity;
+	private ArrayList<User> canEdit;
+	private ArrayList<User> cantView;
 	protected IdentifiableObjectManager manager;
 
 	public Page(Entity entity, IdentifiableObjectManager manager)
@@ -46,6 +46,20 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	{
 		return cantView.remove(user);
 	}
+	
+	/**
+	 * @return whether or not the specified user has edit permissions
+	 */
+	public boolean canEdit(User user) {
+		return canEdit.contains(user);
+	}
+	
+	/**
+	 * @return whether or not the specified user is blocked from viewing
+	 */
+	public boolean cantView(User user) {
+		return cantView.contains(user);
+	}
 
 	/**
 	 * @return the entity
@@ -72,27 +86,11 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	}
 
 	/**
-	 * @param canEdit the canEdit to set
-	 */
-	public void setCanEdit(ArrayList<User> canEdit)
-	{
-		this.canEdit = canEdit;
-	}
-
-	/**
 	 * @return the cantView
 	 */
 	public ArrayList<User> getCantView()
 	{
 		return cantView;
-	}
-
-	/**
-	 * @param cantView the cantView to set
-	 */
-	public void setCantView(ArrayList<User> cantView)
-	{
-		this.cantView = cantView;
 	}
 
 	@Override
