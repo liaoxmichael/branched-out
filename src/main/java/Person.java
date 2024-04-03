@@ -82,27 +82,11 @@ public class Person extends User
 	}
 
 	/**
-	 * @param skills the skills to set
-	 */
-	public void setSkills(ArrayList<SkillProficiency> skills)
-	{
-		this.skills = skills;
-	}
-
-	/**
 	 * @return the jobs
 	 */
 	public ArrayList<WorkExperience> getJobs()
 	{
 		return jobs;
-	}
-
-	/**
-	 * @param jobs the jobs to set
-	 */
-	public void setJobs(ArrayList<WorkExperience> jobs)
-	{
-		this.jobs = jobs;
 	}
 
 	@Override

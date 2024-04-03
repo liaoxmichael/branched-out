@@ -190,6 +190,11 @@ class DataTests
 		appleFollowers.add(followerAlice);
 		assertEquals(aliceFollowing, alice.getLinks().get("following"));
 		assertEquals(appleFollowers, apple.getLinks().get("followers"));
+		
+		// making sure it terminates early properly
+		alice.followUser(apple);
+		assertEquals(aliceFollowing, alice.getLinks().get("following"));
+		assertEquals(appleFollowers, apple.getLinks().get("followers"));
 
 		// check multiple followers
 		bob.followUser(apple);
@@ -300,6 +305,10 @@ class DataTests
 		assertEquals(mobileUX, aliceMobile);
 		aliceJobs.add(mobileUX);
 		assertEquals(aliceJobs, alice.getJobs());
+		
+		alice.addJob("Mobile UX Design Lead", "Crafted new Apple layout for home page.",
+				apple);
+		assertEquals(aliceJobs, alice.getJobs());
 
 		WorkExperience aliceBard = alice.addJob("Bard ML Engineer", "Launched the beta chatbot Bard.", google);
 		WorkExperience bardEngineer = new WorkExperience("Bard ML Engineer", "Launched the beta chatbot Bard.", google, testManager);
@@ -332,6 +341,10 @@ class DataTests
 		Link helloProject = new Link(helloPage, Link.RelationshipType.HAS_PROJECT, testManager);
 		contributors.add(contributorAlice);
 		aliceProjects.add(helloProject);
+		assertEquals(contributors, helloWorld.getLinks().get("contributors"));
+		assertEquals(aliceProjects, alice.getLinks().get("projects"));
+		
+		helloWorld.addContributor(alice);
 		assertEquals(contributors, helloWorld.getLinks().get("contributors"));
 		assertEquals(aliceProjects, alice.getLinks().get("projects"));
 
@@ -383,6 +396,10 @@ class DataTests
 		aliceProjects.add(helloProject);
 		assertEquals(coordinators, helloWorld.getLinks().get("coordinators"));
 		assertEquals(aliceProjects, alice.getLinks().get("projects"));
+		
+		helloWorld.addCoordinator(alice);
+		assertEquals(coordinators, helloWorld.getLinks().get("coordinators"));
+		assertEquals(aliceProjects, alice.getLinks().get("projects"));
 
 		helloWorld.addCoordinator(bob);
 		Link coordinatorBob = new Link(bobPage, Link.RelationshipType.COORDINATOR_PERSON, testManager);
@@ -425,6 +442,10 @@ class DataTests
 		appleProjects.add(helloProject);
 		assertEquals(companies, helloWorld.getLinks().get("companies"));
 		assertEquals(appleProjects, apple.getLinks().get("projects"));
+		
+		helloWorld.addCompany(apple);
+		assertEquals(companies, helloWorld.getLinks().get("companies"));
+		assertEquals(appleProjects, apple.getLinks().get("projects"));
 
 		helloWorld.addCompany(google);
 		Link companyGoogle = new Link(googlePage, Link.RelationshipType.FROM_COMPANY, testManager);
@@ -450,6 +471,36 @@ class DataTests
 		myFirstProgram.removeCompany(apple);
 		appleProjects.clear();
 		assertEquals(appleProjects, apple.getLinks().get("projects"));
+	}
+	
+	@Test
+	void testSkillMentors() {
+		ArrayList<Link> javaMentors = new ArrayList<Link>();
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
+		
+		java.addMentor(alice);
+		Link aliceMentor = new Link(alicePage, Link.RelationshipType.MENTOR_PERSON, testManager);
+		javaMentors.add(aliceMentor);
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
+		
+		java.addMentor(alice);
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
+		
+		java.addMentor(bob);
+		Link bobMentor = new Link(bobPage, Link.RelationshipType.MENTOR_PERSON, testManager);
+		javaMentors.add(bobMentor);
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
+		
+		java.removeMentor(bob);
+		javaMentors.remove(bobMentor);
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
+		
+		java.removeMentor(bob);
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
+		
+		java.removeMentor(alice);
+		javaMentors.clear();
+		assertEquals(javaMentors, java.getLinks().get("mentors"));
 	}
 
 }
