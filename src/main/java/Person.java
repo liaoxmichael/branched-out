@@ -30,8 +30,9 @@ public class Person extends User
 
 	public boolean removeSkill(Skill skill)
 	{
-		return skills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager)); // level doesn't
-																										// matter
+		return skills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager)); // level
+																												// doesn't
+		// matter
 	}
 
 	public WorkExperience addJob(String jobTitle, String jobDesc, Company company)
@@ -81,12 +82,28 @@ public class Person extends User
 		return skills;
 	}
 
+	/*
+	 * @param skills the skills to set
+	 */
+	public void setSkills(ArrayList<SkillProficiency> skills)
+	{
+		this.skills = skills;
+	}
+
 	/**
 	 * @return the jobs
 	 */
 	public ArrayList<WorkExperience> getJobs()
 	{
 		return jobs;
+	}
+
+	/*
+	 * @param jobs the jobs to set
+	 */
+	public void setJobs(ArrayList<WorkExperience> jobs)
+	{
+		this.jobs = jobs;
 	}
 
 	@Override

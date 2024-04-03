@@ -46,18 +46,20 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	{
 		return cantView.remove(user);
 	}
-	
+
 	/**
 	 * @return whether or not the specified user has edit permissions
 	 */
-	public boolean canEdit(User user) {
+	public boolean canEdit(User user)
+	{
 		return canEdit.contains(user);
 	}
-	
+
 	/**
 	 * @return whether or not the specified user is blocked from viewing
 	 */
-	public boolean cantView(User user) {
+	public boolean cantView(User user)
+	{
 		return cantView.contains(user);
 	}
 
@@ -86,11 +88,27 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	}
 
 	/**
+	 * @param canEdit the canEdit to set
+	 */
+	public void setCanEdit(ArrayList<User> canEdit)
+	{
+		this.canEdit = canEdit;
+	}
+
+	/**
 	 * @return the cantView
 	 */
 	public ArrayList<User> getCantView()
 	{
 		return cantView;
+	}
+
+	/**
+	 * @param cantView the cantView to set
+	 */
+	public void setCantView(ArrayList<User> cantView)
+	{
+		this.cantView = cantView;
 	}
 
 	@Override
