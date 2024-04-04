@@ -1,14 +1,44 @@
+
 import java.util.ArrayList;
 
-public interface IdentifiableObjectManager
+public class IdentifiableObjectManager implements IdentifiableObjectManagerInterface
 {
-	public int getNextId();
+	ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
+	int currentID = 0;
+	
+	@Override
+	public int getNextId()
+	{
+		return currentID++;
+	}
 
-	public int getCurrentId();
+	public Identifiable getById(int index)
+	{
+		return objects.get(index);
+	}
+	
+	@Override
+	/**
+	 * @return the objects
+	 */
+	public ArrayList<Identifiable> getObjects()
+	{
+		return objects;
+	}
 
-	public Identifiable getById(int index);
+	@Override
+	/**
+	 * @return the currentID
+	 */
+	public int getCurrentId()
+	{
+		return currentID;
+	}
 
-	public void register(Identifiable object);
+	@Override
+	public void register(Identifiable object)
+	{
+		objects.add(object);
+	}
 
-	public ArrayList<Identifiable> getObjects();
 }

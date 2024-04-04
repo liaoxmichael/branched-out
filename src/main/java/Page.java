@@ -1,5 +1,8 @@
+
 import java.util.ArrayList;
 import java.util.Objects;
+
+import org.springframework.web.client.RestClient;
 
 public class Page implements Identifiable // should be abstract; made concrete for testing
 {
@@ -8,9 +11,9 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	private Entity entity;
 	private ArrayList<User> canEdit;
 	private ArrayList<User> cantView;
-	protected IdentifiableObjectManager manager;
+	protected IdentifiableObjectManagerInterface manager;
 
-	public Page(Entity entity, IdentifiableObjectManager manager)
+	public Page(Entity entity, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		this.entity = entity;
@@ -25,6 +28,41 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	public int getId()
 	{
 		return id;
+	}
+
+	public record PageResponse(String request, boolean successful, String message, Page data) {
+	}
+
+	public static final String RESOURCE = "pages";
+	public static final String RESOURCE_DESC = "All the pages in Branched Out.";
+
+	public static Page retrieve(int id)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		{
+			PageResponse response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
+					.body(PageResponse.class);
+
+			return response.data;
+		}
+		// else
+		return null;
+	}
+
+	public boolean store()
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(RESOURCE))
+		{ // need to create the thing!
+			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
+		}
+		PageResponse result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
+				.retrieve().body(PageResponse.class);
+		return result.successful;
 	}
 
 	public void addEditor(User user)

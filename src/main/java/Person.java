@@ -1,5 +1,8 @@
+
 import java.util.ArrayList;
 import java.util.Objects;
+
+import org.springframework.web.client.RestClient;
 
 public class Person extends User
 {
@@ -8,7 +11,7 @@ public class Person extends User
 	ArrayList<SkillProficiency> skills;
 	ArrayList<WorkExperience> jobs;
 
-	public Person(String name, String email, IdentifiableObjectManager manager)
+	public Person(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(name, email, manager);
 		skills = new ArrayList<SkillProficiency>();
@@ -56,6 +59,41 @@ public class Person extends User
 	public int getId()
 	{
 		return id;
+	}
+
+	public record PersonResponse(String request, boolean successful, String message, Person data) {
+	}
+
+	public static final String RESOURCE = "people";
+	public static final String RESOURCE_DESC = "All the people on Branched Out.";
+
+	public static Person retrieve(int id)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		{
+			PersonResponse response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
+					.body(PersonResponse.class);
+
+			return response.data;
+		}
+		// else
+		return null;
+	}
+
+	public boolean store()
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(RESOURCE))
+		{ // need to create the thing!
+			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
+		}
+		PersonResponse result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
+				.retrieve().body(PersonResponse.class);
+		return result.successful;
 	}
 
 	/**

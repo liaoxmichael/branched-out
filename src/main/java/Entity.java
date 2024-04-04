@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Objects;
@@ -8,9 +9,9 @@ public abstract class Entity implements Identifiable
 	Page page;
 	Hashtable<String, ArrayList<Link>> links;
 	ArrayList<String> externalWebLinks;
-	protected IdentifiableObjectManager manager;
+	protected IdentifiableObjectManagerInterface manager;
 
-	public Entity(IdentifiableObjectManager manager) // WIP will this register subclass objects as Entities?
+	public Entity(IdentifiableObjectManagerInterface manager) // WIP will this register subclass objects as Entities?
 	{
 		id = manager.getNextId();
 		links = new Hashtable<String, ArrayList<Link>>();

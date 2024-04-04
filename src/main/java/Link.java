@@ -1,4 +1,7 @@
+
 import java.util.Objects;
+
+import org.springframework.web.client.RestClient;
 
 public class Link implements Identifiable
 {
@@ -18,7 +21,7 @@ public class Link implements Identifiable
 
 	RelationshipType relation;
 
-	public Link(Page page, RelationshipType type, IdentifiableObjectManager manager)
+	public Link(Page page, RelationshipType type, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		this.page = page;
@@ -31,6 +34,41 @@ public class Link implements Identifiable
 	public int getId()
 	{
 		return id;
+	}
+
+	public record LinkResponse(String request, boolean successful, String message, Link data) {
+	}
+
+	public static final String RESOURCE = "links";
+	public static final String RESOURCE_DESC = "All the links in Branched Out.";
+
+	public static Link retrieve(int id)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		{
+			LinkResponse response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
+					.body(LinkResponse.class);
+
+			return response.data;
+		}
+		// else
+		return null;
+	}
+
+	public boolean store()
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(RESOURCE))
+		{ // need to create the thing!
+			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
+		}
+		LinkResponse result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
+				.retrieve().body(LinkResponse.class);
+		return result.successful;
 	}
 
 	@Override

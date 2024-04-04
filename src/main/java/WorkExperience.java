@@ -1,8 +1,10 @@
-
 //import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Objects;
+
+import org.springframework.web.client.RestClient;
 
 public class WorkExperience implements Identifiable
 {
@@ -12,14 +14,19 @@ public class WorkExperience implements Identifiable
 
 	String title;
 	String description;
-	
-	protected IdentifiableObjectManager manager;
+
+	protected IdentifiableObjectManagerInterface manager;
 
 //	LocalDate startDate;
 //	LocalDate endDate;
 
-	public WorkExperience(String title, String description, Company company, IdentifiableObjectManager manager) // if gets more complex, consider using
-																				// factory pattern?
+	public WorkExperience(String title, String description, Company company, IdentifiableObjectManagerInterface manager) // if
+																															// gets
+																															// more
+																															// complex,
+																															// consider
+																															// using
+	// factory pattern?
 	{
 		id = manager.getNextId();
 		this.title = title;
@@ -36,6 +43,41 @@ public class WorkExperience implements Identifiable
 	public int getId()
 	{
 		return id;
+	}
+
+	public record WorkExperienceResponse(String request, boolean successful, String message, WorkExperience data) {
+	}
+
+	public static final String RESOURCE = "jobs";
+	public static final String RESOURCE_DESC = "All the previously-held work experiences users have had in Branched Out";
+
+	public static WorkExperience retrieve(int id)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		{
+			WorkExperienceResponse response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
+					.body(WorkExperienceResponse.class);
+
+			return response.data;
+		}
+		// else
+		return null;
+	}
+
+	public boolean store()
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(RESOURCE))
+		{ // need to create the thing!
+			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
+		}
+		WorkExperienceResponse result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
+				.retrieve().body(WorkExperienceResponse.class);
+		return result.successful;
 	}
 
 	/**

@@ -1,3 +1,4 @@
+
 import java.util.Objects;
 
 public abstract class Post extends Entity
@@ -5,7 +6,7 @@ public abstract class Post extends Entity
 	String title;
 	String description;
 
-	public Post(String title, IdentifiableObjectManager manager)
+	public Post(String title, IdentifiableObjectManagerInterface manager)
 	{
 		super(manager);
 		this.title = title;

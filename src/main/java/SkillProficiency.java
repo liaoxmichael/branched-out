@@ -1,10 +1,13 @@
+
 import java.util.Objects;
+
+import org.springframework.web.client.RestClient;
 
 public class SkillProficiency implements Identifiable
 {
 
 	int id;
-	protected IdentifiableObjectManager manager;
+	protected IdentifiableObjectManagerInterface manager;
 
 	enum ProficiencyLevel {
 		BEGINNER, INTERMEDIATE, ADVANCED
@@ -13,7 +16,7 @@ public class SkillProficiency implements Identifiable
 	ProficiencyLevel level;
 	Skill skill;
 
-	public SkillProficiency(Skill skill, ProficiencyLevel level, IdentifiableObjectManager manager)
+	public SkillProficiency(Skill skill, ProficiencyLevel level, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		this.skill = skill;
@@ -26,6 +29,41 @@ public class SkillProficiency implements Identifiable
 	public int getId()
 	{
 		return id;
+	}
+
+	public record SkillProficiencyResponse(String request, boolean successful, String message, SkillProficiency data) {
+	}
+
+	public static final String RESOURCE = "proficiencies";
+	public static final String RESOURCE_DESC = "All the skill proficiencies users have on Branched Out";
+
+	public static SkillProficiency retrieve(int id)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		{
+			SkillProficiencyResponse response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
+					.body(SkillProficiencyResponse.class);
+
+			return response.data;
+		}
+		// else
+		return null;
+	}
+
+	public boolean store()
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(RESOURCE))
+		{ // need to create the thing!
+			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
+		}
+		SkillProficiencyResponse result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
+				.retrieve().body(SkillProficiencyResponse.class);
+		return result.successful;
 	}
 
 	/**

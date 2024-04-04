@@ -33,12 +33,12 @@ class DataTests
 	Project myFirstProgram;
 	Page firstPage;
 	
-	IdentifiableObjectManager testManager;
+	IdentifiableObjectManagerInterface testManager;
 
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		testManager = new ConcreteIdentifiableObjectManager();
+		testManager = new IdentifiableObjectManager();
 		ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
 		assertEquals(objects, testManager.getObjects());
 

@@ -1,9 +1,12 @@
+
 import java.util.ArrayList;
+
+import org.springframework.web.client.RestClient;
 
 public class Project extends Post
 {
 
-	public Project(String title, IdentifiableObjectManager manager)
+	public Project(String title, IdentifiableObjectManagerInterface manager)
 	{
 		super(title, manager);
 		links.put("contributors", new ArrayList<Link>());
@@ -72,6 +75,41 @@ public class Project extends Post
 		Link target = new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager);
 		links.get("companies").remove(target);
 		company.getLinks().get("projects").remove(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+	}
+
+	public record ProjectResponse(String request, boolean successful, String message, Project data) {
+	}
+
+	public static final String RESOURCE = "projects";
+	public static final String RESOURCE_DESC = "All the projects on Branched Out.";
+
+	public static Project retrieve(int id)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		{
+			ProjectResponse response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
+					.body(ProjectResponse.class);
+
+			return response.data;
+		}
+		// else
+		return null;
+	}
+
+	public boolean store()
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(RESOURCE))
+		{ // need to create the thing!
+			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
+		}
+		ProjectResponse result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
+				.retrieve().body(ProjectResponse.class);
+		return result.successful;
 	}
 
 	@Override

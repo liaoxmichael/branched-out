@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ public abstract class User extends Entity
 	String avatarURL;
 	String bannerURL;
 
-	public User(String name, String email, IdentifiableObjectManager manager)
+	public User(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(manager);
 		this.name = name;
