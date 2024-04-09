@@ -6,6 +6,10 @@ public abstract class Post extends Entity
 	String title;
 	String description;
 
+	public Post()
+	{
+	}
+
 	public Post(String title, IdentifiableObjectManagerInterface manager)
 	{
 		super(manager);

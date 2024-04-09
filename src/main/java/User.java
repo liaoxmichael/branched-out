@@ -12,6 +12,11 @@ public abstract class User extends Entity
 	String avatarURL;
 	String bannerURL;
 
+	public User()
+	{
+		super();
+	}
+	
 	public User(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(manager);

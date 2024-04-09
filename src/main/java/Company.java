@@ -3,9 +3,12 @@ import java.util.ArrayList;
 
 import org.springframework.web.client.RestClient;
 
-public class Company extends User
+public class Company extends User implements Storable
 {
-
+	public Company() {
+		super();
+	}
+	
 	public Company(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(name, email, manager);
@@ -34,6 +37,7 @@ public class Company extends User
 		return null;
 	}
 
+	@Override
 	public boolean store()
 	{
 		RestClient client = RestClient.create();
@@ -41,10 +45,10 @@ public class Company extends User
 		{ // need to create the thing!
 			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
 		}
-		CompanyResponse result = client.post()
+		ResponseObject result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(CompanyResponse.class);
-		return result.successful;
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
 	}
 
 	@Override

@@ -3,14 +3,25 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Objects;
 
+import org.springframework.web.client.RestClient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class Entity implements Identifiable
 {
 	int id;
+	@JsonIgnore
 	Page page;
-	Hashtable<String, ArrayList<Link>> links;
+	int pageId;
+	Hashtable<String, ArrayList<Link>> links; // maybe make map interface
 	ArrayList<String> externalWebLinks;
+	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
+	public Entity()
+	{
+	}
+	
 	public Entity(IdentifiableObjectManagerInterface manager) // WIP will this register subclass objects as Entities?
 	{
 		id = manager.getNextId();
@@ -51,6 +62,7 @@ public abstract class Entity implements Identifiable
 	public void setPage(Page page)
 	{
 		this.page = page;
+		pageId = page.id;
 	}
 
 	/**

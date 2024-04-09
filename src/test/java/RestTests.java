@@ -2,7 +2,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
@@ -87,7 +86,7 @@ class RestTests
 
 	void checkLinks(ArrayList<Link> list) throws JsonMappingException, JsonProcessingException
 	{
-		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)).retrieve()
+		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
 		Response response = mapper.readValue(r, Response.class);
@@ -203,6 +202,7 @@ class RestTests
 	void setUp() throws Exception
 	{
 		// make sure to run your server beforehand!
+		// worth running UtilsTest before as well
 		client = RestClient.create();
 		mapper = new ObjectMapper();
 
@@ -251,17 +251,6 @@ class RestTests
 		myFirstProgram.setPage(firstPage);
 	}
 
-	@BeforeAll
-	static void testUtils()
-	{
-		// join function, since used in tests
-		assertEquals("a", RestUtilities.join("a"));
-		assertEquals("a/b", RestUtilities.join("a", "b"));
-		assertEquals("a/b/c", RestUtilities.join("a", "b", "c"));
-
-		// other utils, if written, will be tested by virtue of testing retrieve/store
-	}
-
 	@Test
 	void testCompany() throws JsonMappingException, JsonProcessingException
 	{
@@ -308,12 +297,12 @@ class RestTests
 		Link bobMentor = new Link(bobPage, Link.RelationshipType.MENTOR_PERSON, testManager); // 17
 
 		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)));
+		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)));
 
 		assertTrue(aliceMentor.store());
 		links.add(aliceMentor);
 
-		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)));
+		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)));
 		checkLinks(links);
 
 		assertFalse(aliceMentor.store());
@@ -323,15 +312,15 @@ class RestTests
 		checkLinks(links);
 
 		// testing retrieval
-		assertEquals(aliceMentor, Person.retrieve(16));
-		assertEquals(bobMentor, Person.retrieve(17));
+		assertEquals(aliceMentor, Link.retrieve(16));
+		assertEquals(bobMentor, Link.retrieve(17));
 
-		assertNull(Person.retrieve(10));
+		assertNull(Link.retrieve(10));
 
 		assertTrue(applePage.store());
-		assertNull(Person.retrieve(1)); // link != page
+		assertNull(Link.retrieve(1)); // link != page
 
-		assertNull(Person.retrieve(-1));
+		assertNull(Link.retrieve(-1));
 	}
 
 	@Test
@@ -519,7 +508,7 @@ class RestTests
 		WorkExperience mobileUX = new WorkExperience("Mobile UX Design Lead", "Crafted new Apple layout for home page.",
 				apple, testManager); // 16
 		WorkExperience bardEngineer = new WorkExperience("Bard ML Engineer", "Launched the beta chatbot Bard.", google,
-				testManager); // 17
+				testManager); // 18 because 17 taken by Link created
 
 		// testing storage
 		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, WorkExperience.RESOURCE)));
@@ -538,7 +527,7 @@ class RestTests
 
 		// testing retrieval
 		assertEquals(mobileUX, WorkExperience.retrieve(16));
-		assertEquals(bardEngineer, WorkExperience.retrieve(17));
+		assertEquals(bardEngineer, WorkExperience.retrieve(18));
 
 		assertNull(WorkExperience.retrieve(9));
 

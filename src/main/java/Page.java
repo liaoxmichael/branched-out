@@ -4,21 +4,35 @@ import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
-public class Page implements Identifiable // should be abstract; made concrete for testing
-{
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+public class Page implements Identifiable, Storable // should be abstract; made concrete for testing
+{
 	int id;
-	private Entity entity;
-	private ArrayList<User> canEdit;
-	private ArrayList<User> cantView;
+	@JsonIgnore
+	protected Entity entity;
+	int entityId;
+	@JsonIgnore
+	protected ArrayList<User> canEdit;
+	protected ArrayList<Integer> canEditIds;
+	@JsonIgnore
+	protected ArrayList<User> cantView;
+	protected ArrayList<Integer> cantViewIds;
+	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
+
+	public Page()
+	{
+	}
 
 	public Page(Entity entity, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		this.entity = entity;
 		canEdit = new ArrayList<User>();
+		canEditIds = new ArrayList<Integer>();
 		cantView = new ArrayList<User>();
+		cantViewIds = new ArrayList<Integer>();
 
 		manager.register(this);
 		this.manager = manager;
@@ -52,6 +66,7 @@ public class Page implements Identifiable // should be abstract; made concrete f
 		return null;
 	}
 
+	@Override
 	public boolean store()
 	{
 		RestClient client = RestClient.create();
@@ -59,30 +74,95 @@ public class Page implements Identifiable // should be abstract; made concrete f
 		{ // need to create the thing!
 			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
 		}
-		PageResponse result = client.post()
+		ResponseObject result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(PageResponse.class);
-		return result.successful;
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
 	}
 
 	public void addEditor(User user)
 	{
 		canEdit.add(user);
+		canEditIds.add(user.getId());
 	}
 
 	public boolean removeEditor(User user)
 	{
-		return canEdit.remove(user);
+
+		return canEdit.remove(user) && canEditIds.remove(Integer.valueOf(user.getId()));
 	}
 
 	public void blockViewer(User user)
 	{
 		cantView.add(user);
+		cantViewIds.add(user.getId());
 	}
 
 	public boolean unblockViewer(User user)
 	{
-		return cantView.remove(user);
+		return cantView.remove(user) && cantViewIds.remove(Integer.valueOf(user.getId()));
+	}
+
+	/**
+	 * @return the entityId
+	 */
+	public int getEntityId()
+	{
+		return entityId;
+	}
+
+	/**
+	 * @param entityId the entityId to set
+	 */
+	public void setEntityId(int entityId)
+	{
+		this.entityId = entityId;
+	}
+
+	/**
+	 * @return the canEditIds
+	 */
+	public ArrayList<Integer> getCanEditIds()
+	{
+		return canEditIds;
+	}
+
+	/**
+	 * @param canEditIds the canEditIds to set
+	 */
+	public void setCanEditIds(ArrayList<Integer> canEditIds)
+	{
+		ArrayList<User> newList = new ArrayList<User>();
+		for (Integer i : canEditIds)
+		{
+			newList.add((User) manager.getById(i));
+		}
+		this.canEdit = newList;
+
+		this.canEditIds = canEditIds;
+	}
+
+	/**
+	 * @return the cantViewIds
+	 */
+	public ArrayList<Integer> getCantViewIds()
+	{
+		return cantViewIds;
+	}
+
+	/**
+	 * @param cantViewIds the cantViewIds to set
+	 */
+	public void setCantViewIds(ArrayList<Integer> cantViewIds)
+	{
+		ArrayList<User> newList = new ArrayList<User>();
+		for (Integer i : canEditIds)
+		{
+			newList.add((User) manager.getById(i));
+		}
+		this.cantView = newList;
+
+		this.cantViewIds = cantViewIds;
 	}
 
 	/**
@@ -130,7 +210,15 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	 */
 	public void setCanEdit(ArrayList<User> canEdit)
 	{
+		ArrayList<Integer> newIds = new ArrayList<Integer>();
+		for (User u : canEdit)
+		{
+			newIds.add(u.getId());
+		}
+		this.canEditIds = newIds;
+
 		this.canEdit = canEdit;
+
 	}
 
 	/**
@@ -146,6 +234,13 @@ public class Page implements Identifiable // should be abstract; made concrete f
 	 */
 	public void setCantView(ArrayList<User> cantView)
 	{
+		ArrayList<Integer> newIds = new ArrayList<Integer>();
+		for (User u : canEdit)
+		{
+			newIds.add(u.getId());
+		}
+		this.cantViewIds = newIds;
+
 		this.cantView = cantView;
 	}
 

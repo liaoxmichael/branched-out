@@ -3,11 +3,15 @@ import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Link implements Identifiable
 {
 
 	int id;
+	@JsonIgnore
 	Page page;
+	int pageId;
 
 	enum RelationshipType {
 		HAS_SKILL, REQUIRES_SKILL,
@@ -21,10 +25,24 @@ public class Link implements Identifiable
 
 	RelationshipType relation;
 
+	public Link()
+	{
+	}
+
 	public Link(Page page, RelationshipType type, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		this.page = page;
+		pageId = this.page.getId();
+		relation = type;
+
+		manager.register(this);
+	}
+
+	public Link(int pageId, RelationshipType type, IdentifiableObjectManagerInterface manager)
+	{
+		id = manager.getNextId();
+		this.pageId = pageId;
 		relation = type;
 
 		manager.register(this);
@@ -34,6 +52,22 @@ public class Link implements Identifiable
 	public int getId()
 	{
 		return id;
+	}
+
+	/**
+	 * @return the pageId
+	 */
+	public int getPageId()
+	{
+		return pageId;
+	}
+
+	/**
+	 * @param pageId the pageId to set
+	 */
+	public void setPageId(int pageId)
+	{
+		this.pageId = pageId;
 	}
 
 	public record LinkResponse(String request, boolean successful, String message, Link data) {
@@ -65,10 +99,42 @@ public class Link implements Identifiable
 		{ // need to create the thing!
 			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
 		}
-		LinkResponse result = client.post()
+		ResponseObject result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(LinkResponse.class);
-		return result.successful;
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
+	}
+
+	/**
+	 * @return the page
+	 */
+	public Page getPage()
+	{
+		return page;
+	}
+
+	/**
+	 * @param page the page to set
+	 */
+	public void setPage(Page page)
+	{
+		this.page = page;
+	}
+
+	/**
+	 * @return the relation
+	 */
+	public RelationshipType getRelation()
+	{
+		return relation;
+	}
+
+	/**
+	 * @param relation the relation to set
+	 */
+	public void setRelation(RelationshipType relation)
+	{
+		this.relation = relation;
 	}
 
 	@Override
@@ -87,7 +153,7 @@ public class Link implements Identifiable
 		if (getClass() != obj.getClass())
 			return false;
 		Link other = (Link) obj;
-		return Objects.equals(page, other.page) && relation == other.relation;
+		return pageId == other.pageId && relation == other.relation;
 	}
 
 	@Override

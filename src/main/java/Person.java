@@ -4,8 +4,11 @@ import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
-public class Person extends User
+public class Person extends User implements Storable
 {
+	public Person()
+	{
+	}
 
 	String pronouns;
 	ArrayList<SkillProficiency> skills;
@@ -83,6 +86,7 @@ public class Person extends User
 		return null;
 	}
 
+	@Override
 	public boolean store()
 	{
 		RestClient client = RestClient.create();
@@ -90,10 +94,10 @@ public class Person extends User
 		{ // need to create the thing!
 			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
 		}
-		PersonResponse result = client.post()
+		ResponseObject result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(PersonResponse.class);
-		return result.successful;
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
 	}
 
 	/**

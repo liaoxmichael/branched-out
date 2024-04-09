@@ -33,28 +33,32 @@ public final class RestUtilities
 	public static boolean doesResourceExist(int id, String resource)
 	{
 		RestClient client = RestClient.create();
-		ResponseString responseString = client.get()
+		ResponseObject responseObject = client.get()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resource, String.valueOf(id))).retrieve()
-				.body(ResponseString.class);
+				.body(ResponseObject.class);
 
-		return !responseString.data().isEmpty(); // if empty: false; if exists: true
+		return responseObject.successful(); // if empty: false; if exists: true
 	}
-	
+
 	// overloaded version with no id to check resource directories
 	public static boolean doesResourceExist(String resource)
 	{
 		RestClient client = RestClient.create();
-		ResponseString responseString = client.get()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resource)).retrieve()
-				.body(ResponseString.class);
+		ResponseObject responseObject = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, resource))
+				.retrieve().body(ResponseObject.class);
 
-		return responseString.successful();
+		return responseObject.successful();
 	}
-	
-	public static void createResource(String resource, String resource_desc) {
+
+	public static boolean createResource(String resource, String resource_desc)
+	{
 		RestClient client = RestClient.create();
-		ResponseData r = new ResponseData(resource, resource_desc, RestUtilities.join(RestUtilities.TEAM_URI, resource));
-		client.post().uri(RestUtilities.join(RestUtilities.TEAM_URI, resource)).body(r);
+		ResponseData r = new ResponseData(resource, resource_desc,
+				RestUtilities.join(RestUtilities.TEAM_URI, resource));
+		ResponseObject responseObject = client.post().uri(RestUtilities.join(RestUtilities.TEAM_URI, resource)).body(r)
+				.retrieve().body(ResponseObject.class);
+		
+		return responseObject.successful();
 	}
 
 }

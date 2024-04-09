@@ -6,7 +6,9 @@ import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
-public class WorkExperience implements Identifiable
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class WorkExperience implements Identifiable, Storable
 {
 
 	int id;
@@ -15,18 +17,17 @@ public class WorkExperience implements Identifiable
 	String title;
 	String description;
 
+	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 //	LocalDate startDate;
 //	LocalDate endDate;
 
-	public WorkExperience(String title, String description, Company company, IdentifiableObjectManagerInterface manager) // if
-																															// gets
-																															// more
-																															// complex,
-																															// consider
-																															// using
-	// factory pattern?
+	public WorkExperience()
+	{
+	}
+
+	public WorkExperience(String title, String description, Company company, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		this.title = title;
@@ -67,6 +68,7 @@ public class WorkExperience implements Identifiable
 		return null;
 	}
 
+	@Override
 	public boolean store()
 	{
 		RestClient client = RestClient.create();
@@ -74,10 +76,10 @@ public class WorkExperience implements Identifiable
 		{ // need to create the thing!
 			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
 		}
-		WorkExperienceResponse result = client.post()
+		ResponseObject result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(WorkExperienceResponse.class);
-		return result.successful;
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
 	}
 
 	/**

@@ -3,10 +3,13 @@ import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
-public class SkillProficiency implements Identifiable
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class SkillProficiency implements Identifiable, Storable
 {
 
 	int id;
+	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 	enum ProficiencyLevel {
@@ -15,6 +18,10 @@ public class SkillProficiency implements Identifiable
 
 	ProficiencyLevel level;
 	Skill skill;
+
+	public SkillProficiency()
+	{
+	}
 
 	public SkillProficiency(Skill skill, ProficiencyLevel level, IdentifiableObjectManagerInterface manager)
 	{
@@ -52,7 +59,8 @@ public class SkillProficiency implements Identifiable
 		// else
 		return null;
 	}
-
+	
+	@Override
 	public boolean store()
 	{
 		RestClient client = RestClient.create();
@@ -60,10 +68,10 @@ public class SkillProficiency implements Identifiable
 		{ // need to create the thing!
 			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
 		}
-		SkillProficiencyResponse result = client.post()
+		ResponseObject result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(SkillProficiencyResponse.class);
-		return result.successful;
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
 	}
 
 	/**
