@@ -1,9 +1,9 @@
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-
-import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,19 +13,19 @@ public abstract class Entity implements Identifiable
 	@JsonIgnore
 	Page page;
 	int pageId;
-	Hashtable<String, ArrayList<Link>> links; // maybe make map interface
-	ArrayList<String> externalWebLinks;
+	Map<String, List<Link>> links;
+	List<String> externalWebLinks;
 	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 	public Entity()
 	{
 	}
-	
+
 	public Entity(IdentifiableObjectManagerInterface manager) // WIP will this register subclass objects as Entities?
 	{
 		id = manager.getNextId();
-		links = new Hashtable<String, ArrayList<Link>>();
+		links = new HashMap<String, List<Link>>();
 		externalWebLinks = new ArrayList<String>();
 
 		manager.register(this);
@@ -68,7 +68,7 @@ public abstract class Entity implements Identifiable
 	/**
 	 * @return the links
 	 */
-	public Hashtable<String, ArrayList<Link>> getLinks()
+	public Map<String, List<Link>> getLinks()
 	{
 		return links;
 	}
@@ -76,7 +76,7 @@ public abstract class Entity implements Identifiable
 	/**
 	 * @param links the links to set
 	 */
-	public void setLinks(Hashtable<String, ArrayList<Link>> links)
+	public void setLinks(Map<String, List<Link>> links)
 	{
 		this.links = links;
 	}
@@ -84,7 +84,7 @@ public abstract class Entity implements Identifiable
 	/**
 	 * @return the externalWebLinks
 	 */
-	public ArrayList<String> getExternalWebLinks()
+	public List<String> getExternalWebLinks()
 	{
 		return externalWebLinks;
 	}
@@ -92,7 +92,7 @@ public abstract class Entity implements Identifiable
 	/**
 	 * @param externalWebLinks the externalWebLinks to set
 	 */
-	public void setExternalWebLinks(ArrayList<String> externalWebLinks)
+	public void setExternalWebLinks(List<String> externalWebLinks)
 	{
 		this.externalWebLinks = externalWebLinks;
 	}

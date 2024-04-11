@@ -1,18 +1,19 @@
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
 public class Person extends User implements Storable
 {
+	String pronouns;
+	List<SkillProficiency> skills;
+	List<WorkExperience> jobs;
+	
 	public Person()
 	{
 	}
-
-	String pronouns;
-	ArrayList<SkillProficiency> skills;
-	ArrayList<WorkExperience> jobs;
 
 	public Person(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
@@ -119,7 +120,7 @@ public class Person extends User implements Storable
 	/**
 	 * @return the skills
 	 */
-	public ArrayList<SkillProficiency> getSkills()
+	public List<SkillProficiency> getSkills()
 	{
 		return skills;
 	}
@@ -127,7 +128,7 @@ public class Person extends User implements Storable
 	/*
 	 * @param skills the skills to set
 	 */
-	public void setSkills(ArrayList<SkillProficiency> skills)
+	public void setSkills(List<SkillProficiency> skills)
 	{
 		this.skills = skills;
 	}
@@ -135,7 +136,7 @@ public class Person extends User implements Storable
 	/**
 	 * @return the jobs
 	 */
-	public ArrayList<WorkExperience> getJobs()
+	public List<WorkExperience> getJobs()
 	{
 		return jobs;
 	}
@@ -143,7 +144,7 @@ public class Person extends User implements Storable
 	/*
 	 * @param jobs the jobs to set
 	 */
-	public void setJobs(ArrayList<WorkExperience> jobs)
+	public void setJobs(List<WorkExperience> jobs)
 	{
 		this.jobs = jobs;
 	}

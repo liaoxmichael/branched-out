@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
@@ -13,11 +14,11 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	protected Entity entity;
 	int entityId;
 	@JsonIgnore
-	protected ArrayList<User> canEdit;
-	protected ArrayList<Integer> canEditIds;
+	protected List<User> canEdit;
+	protected List<Integer> canEditIds;
 	@JsonIgnore
-	protected ArrayList<User> cantView;
-	protected ArrayList<Integer> cantViewIds;
+	protected List<User> cantView;
+	protected List<Integer> cantViewIds;
 	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
@@ -104,6 +105,22 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	}
 
 	/**
+	 * @return whether or not the specified user has edit permissions
+	 */
+	public boolean canEdit(User user)
+	{
+		return canEdit.contains(user);
+	}
+
+	/**
+	 * @return whether or not the specified user is blocked from viewing
+	 */
+	public boolean cantView(User user)
+	{
+		return cantView.contains(user);
+	}
+
+	/**
 	 * @return the entityId
 	 */
 	public int getEntityId()
@@ -122,7 +139,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	/**
 	 * @return the canEditIds
 	 */
-	public ArrayList<Integer> getCanEditIds()
+	public List<Integer> getCanEditIds()
 	{
 		return canEditIds;
 	}
@@ -130,9 +147,9 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	/**
 	 * @param canEditIds the canEditIds to set
 	 */
-	public void setCanEditIds(ArrayList<Integer> canEditIds)
+	public void setCanEditIds(List<Integer> canEditIds)
 	{
-		ArrayList<User> newList = new ArrayList<User>();
+		List<User> newList = new ArrayList<User>();
 		for (Integer i : canEditIds)
 		{
 			newList.add((User) manager.getById(i));
@@ -145,7 +162,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	/**
 	 * @return the cantViewIds
 	 */
-	public ArrayList<Integer> getCantViewIds()
+	public List<Integer> getCantViewIds()
 	{
 		return cantViewIds;
 	}
@@ -153,9 +170,9 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	/**
 	 * @param cantViewIds the cantViewIds to set
 	 */
-	public void setCantViewIds(ArrayList<Integer> cantViewIds)
+	public void setCantViewIds(List<Integer> cantViewIds)
 	{
-		ArrayList<User> newList = new ArrayList<User>();
+		List<User> newList = new ArrayList<User>();
 		for (Integer i : canEditIds)
 		{
 			newList.add((User) manager.getById(i));
@@ -164,21 +181,52 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 
 		this.cantViewIds = cantViewIds;
 	}
-
+	
 	/**
-	 * @return whether or not the specified user has edit permissions
+	 * @return the canEdit
 	 */
-	public boolean canEdit(User user)
+	public List<User> getCanEdit()
 	{
-		return canEdit.contains(user);
+		return canEdit;
 	}
 
 	/**
-	 * @return whether or not the specified user is blocked from viewing
+	 * @param canEdit the canEdit to set
 	 */
-	public boolean cantView(User user)
+	public void setCanEdit(List<User> canEdit)
 	{
-		return cantView.contains(user);
+		List<Integer> newIds = new ArrayList<Integer>();
+		for (User u : canEdit)
+		{
+			newIds.add(u.getId());
+		}
+		this.canEditIds = newIds;
+
+		this.canEdit = canEdit;
+
+	}
+	
+	/**
+	 * @return the cantView
+	 */
+	public List<User> getCantView()
+	{
+		return cantView;
+	}
+
+	/**
+	 * @param cantView the cantView to set
+	 */
+	public void setCantView(List<User> cantView)
+	{
+		List<Integer> newIds = new ArrayList<Integer>();
+		for (User u : canEdit)
+		{
+			newIds.add(u.getId());
+		}
+		this.cantViewIds = newIds;
+
+		this.cantView = cantView;
 	}
 
 	/**
@@ -195,53 +243,6 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	public void setEntity(Entity entity)
 	{
 		this.entity = entity;
-	}
-
-	/**
-	 * @return the canEdit
-	 */
-	public ArrayList<User> getCanEdit()
-	{
-		return canEdit;
-	}
-
-	/**
-	 * @param canEdit the canEdit to set
-	 */
-	public void setCanEdit(ArrayList<User> canEdit)
-	{
-		ArrayList<Integer> newIds = new ArrayList<Integer>();
-		for (User u : canEdit)
-		{
-			newIds.add(u.getId());
-		}
-		this.canEditIds = newIds;
-
-		this.canEdit = canEdit;
-
-	}
-
-	/**
-	 * @return the cantView
-	 */
-	public ArrayList<User> getCantView()
-	{
-		return cantView;
-	}
-
-	/**
-	 * @param cantView the cantView to set
-	 */
-	public void setCantView(ArrayList<User> cantView)
-	{
-		ArrayList<Integer> newIds = new ArrayList<Integer>();
-		for (User u : canEdit)
-		{
-			newIds.add(u.getId());
-		}
-		this.cantViewIds = newIds;
-
-		this.cantView = cantView;
 	}
 
 	@Override

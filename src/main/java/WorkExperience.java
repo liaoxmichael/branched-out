@@ -2,6 +2,8 @@
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
@@ -12,7 +14,7 @@ public class WorkExperience implements Identifiable, Storable
 {
 
 	int id;
-	Hashtable<String, ArrayList<Link>> links;
+	Map<String, List<Link>> links;
 
 	String title;
 	String description;
@@ -32,7 +34,7 @@ public class WorkExperience implements Identifiable, Storable
 		id = manager.getNextId();
 		this.title = title;
 		this.description = description;
-		links = new Hashtable<String, ArrayList<Link>>();
+		links = new Hashtable<String, List<Link>>();
 		links.put("companies", new ArrayList<Link>());
 		links.get("companies").add(new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager));
 
@@ -85,7 +87,7 @@ public class WorkExperience implements Identifiable, Storable
 	/**
 	 * @return the links
 	 */
-	public Hashtable<String, ArrayList<Link>> getLinks()
+	public Map<String, List<Link>> getLinks()
 	{
 		return links;
 	}
@@ -93,7 +95,7 @@ public class WorkExperience implements Identifiable, Storable
 	/**
 	 * @param links the links to set
 	 */
-	public void setLinks(Hashtable<String, ArrayList<Link>> links)
+	public void setLinks(Map<String, List<Link>> links)
 	{
 		this.links = links;
 	}
