@@ -16,7 +16,7 @@ public abstract class User extends Entity
 	{
 		super();
 	}
-	
+
 	public User(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(manager);
@@ -25,6 +25,9 @@ public abstract class User extends Entity
 		links.put("following", new ArrayList<Link>());
 		links.put("followers", new ArrayList<Link>());
 		links.put("projects", new ArrayList<Link>());
+		
+		// set up page with editing privilege
+		page.addEditor(this);
 	}
 
 	public void followUser(User user)

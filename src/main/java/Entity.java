@@ -22,11 +22,14 @@ public abstract class Entity implements Identifiable
 	{
 	}
 
-	public Entity(IdentifiableObjectManagerInterface manager) // WIP will this register subclass objects as Entities?
+	public Entity(IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
 		links = new HashMap<String, List<Link>>();
 		externalWebLinks = new ArrayList<String>();
+		
+		// automatically initialize a page
+		page = new Page(this, manager);
 
 		manager.register(this);
 		this.manager = manager;

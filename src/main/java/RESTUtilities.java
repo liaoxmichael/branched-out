@@ -57,7 +57,7 @@ public final class RestUtilities
 				RestUtilities.join(RestUtilities.TEAM_URI, resource));
 		ResponseObject responseObject = client.post().uri(RestUtilities.join(RestUtilities.TEAM_URI, resource)).body(r)
 				.retrieve().body(ResponseObject.class);
-		
+
 		return responseObject.successful();
 	}
 

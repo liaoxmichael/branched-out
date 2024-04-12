@@ -32,7 +32,7 @@ class DataTests
 
 	Project myFirstProgram;
 	Page firstPage;
-	
+
 	IdentifiableObjectManagerInterface testManager;
 
 	@BeforeEach
@@ -88,6 +88,13 @@ class DataTests
 		assertEquals(java, testManager.getById(8));
 		assertEquals(python, testManager.getById(10));
 		assertEquals(firstPage, testManager.getById(15));
+	}
+
+	// NEW: testing the job recommendation system
+	@Test
+	void testJobPosting()
+	{
+
 	}
 
 	@Test
@@ -190,7 +197,7 @@ class DataTests
 		appleFollowers.add(followerAlice);
 		assertEquals(aliceFollowing, alice.getLinks().get("following"));
 		assertEquals(appleFollowers, apple.getLinks().get("followers"));
-		
+
 		// making sure it terminates early properly
 		alice.followUser(apple);
 		assertEquals(aliceFollowing, alice.getLinks().get("following"));
@@ -260,13 +267,15 @@ class DataTests
 		assertEquals(aliceSkills, alice.getSkills());
 
 		SkillProficiency aliceJava = alice.addSkill(java, SkillProficiency.ProficiencyLevel.ADVANCED);
-		SkillProficiency advancedJava = new SkillProficiency(java, SkillProficiency.ProficiencyLevel.ADVANCED, testManager);
+		SkillProficiency advancedJava = new SkillProficiency(java, SkillProficiency.ProficiencyLevel.ADVANCED,
+				testManager);
 		assertEquals(advancedJava, aliceJava);
 		aliceSkills.add(advancedJava);
 		assertEquals(aliceSkills, alice.getSkills());
 
 		SkillProficiency alicePython = alice.addSkill(python, SkillProficiency.ProficiencyLevel.BEGINNER);
-		SkillProficiency beginnerPython = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.BEGINNER, testManager);
+		SkillProficiency beginnerPython = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.BEGINNER,
+				testManager);
 		assertEquals(beginnerPython, alicePython);
 		aliceSkills.add(beginnerPython);
 		assertEquals(aliceSkills, alice.getSkills());
@@ -305,13 +314,13 @@ class DataTests
 		assertEquals(mobileUX, aliceMobile);
 		aliceJobs.add(mobileUX);
 		assertEquals(aliceJobs, alice.getJobs());
-		
-		alice.addJob("Mobile UX Design Lead", "Crafted new Apple layout for home page.",
-				apple);
+
+		alice.addJob("Mobile UX Design Lead", "Crafted new Apple layout for home page.", apple);
 		assertEquals(aliceJobs, alice.getJobs());
 
 		WorkExperience aliceBard = alice.addJob("Bard ML Engineer", "Launched the beta chatbot Bard.", google);
-		WorkExperience bardEngineer = new WorkExperience("Bard ML Engineer", "Launched the beta chatbot Bard.", google, testManager);
+		WorkExperience bardEngineer = new WorkExperience("Bard ML Engineer", "Launched the beta chatbot Bard.", google,
+				testManager);
 		assertEquals(bardEngineer, aliceBard);
 		aliceJobs.add(bardEngineer);
 		assertEquals(aliceJobs, alice.getJobs());
@@ -343,7 +352,7 @@ class DataTests
 		aliceProjects.add(helloProject);
 		assertEquals(contributors, helloWorld.getLinks().get("contributors"));
 		assertEquals(aliceProjects, alice.getLinks().get("projects"));
-		
+
 		helloWorld.addContributor(alice);
 		assertEquals(contributors, helloWorld.getLinks().get("contributors"));
 		assertEquals(aliceProjects, alice.getLinks().get("projects"));
@@ -396,7 +405,7 @@ class DataTests
 		aliceProjects.add(helloProject);
 		assertEquals(coordinators, helloWorld.getLinks().get("coordinators"));
 		assertEquals(aliceProjects, alice.getLinks().get("projects"));
-		
+
 		helloWorld.addCoordinator(alice);
 		assertEquals(coordinators, helloWorld.getLinks().get("coordinators"));
 		assertEquals(aliceProjects, alice.getLinks().get("projects"));
@@ -442,7 +451,7 @@ class DataTests
 		appleProjects.add(helloProject);
 		assertEquals(companies, helloWorld.getLinks().get("companies"));
 		assertEquals(appleProjects, apple.getLinks().get("projects"));
-		
+
 		helloWorld.addCompany(apple);
 		assertEquals(companies, helloWorld.getLinks().get("companies"));
 		assertEquals(appleProjects, apple.getLinks().get("projects"));
@@ -472,32 +481,33 @@ class DataTests
 		appleProjects.clear();
 		assertEquals(appleProjects, apple.getLinks().get("projects"));
 	}
-	
+
 	@Test
-	void testSkillMentors() {
+	void testSkillMentors()
+	{
 		ArrayList<Link> javaMentors = new ArrayList<Link>();
 		assertEquals(javaMentors, java.getLinks().get("mentors"));
-		
+
 		java.addMentor(alice);
 		Link aliceMentor = new Link(alicePage, Link.RelationshipType.MENTOR_PERSON, testManager);
 		javaMentors.add(aliceMentor);
 		assertEquals(javaMentors, java.getLinks().get("mentors"));
-		
+
 		java.addMentor(alice);
 		assertEquals(javaMentors, java.getLinks().get("mentors"));
-		
+
 		java.addMentor(bob);
 		Link bobMentor = new Link(bobPage, Link.RelationshipType.MENTOR_PERSON, testManager);
 		javaMentors.add(bobMentor);
 		assertEquals(javaMentors, java.getLinks().get("mentors"));
-		
+
 		java.removeMentor(bob);
 		javaMentors.remove(bobMentor);
 		assertEquals(javaMentors, java.getLinks().get("mentors"));
-		
+
 		java.removeMentor(bob);
 		assertEquals(javaMentors, java.getLinks().get("mentors"));
-		
+
 		java.removeMentor(alice);
 		javaMentors.clear();
 		assertEquals(javaMentors, java.getLinks().get("mentors"));

@@ -10,7 +10,7 @@ public class Person extends User implements Storable
 	String pronouns;
 	List<SkillProficiency> skills;
 	List<WorkExperience> jobs;
-	
+
 	public Person()
 	{
 	}
@@ -37,9 +37,8 @@ public class Person extends User implements Storable
 
 	public boolean removeSkill(Skill skill)
 	{
-		return skills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager)); // level
-																												// doesn't
-		// matter
+		// level doesn't matter
+		return skills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
 	}
 
 	public WorkExperience addJob(String jobTitle, String jobDesc, Company company)

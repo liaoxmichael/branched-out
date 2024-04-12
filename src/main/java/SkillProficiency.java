@@ -59,7 +59,7 @@ public class SkillProficiency implements Identifiable, Storable
 		// else
 		return null;
 	}
-	
+
 	@Override
 	public boolean store()
 	{

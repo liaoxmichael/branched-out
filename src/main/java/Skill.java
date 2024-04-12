@@ -55,7 +55,7 @@ public class Skill extends Post implements Storable
 		// else
 		return null;
 	}
-	
+
 	@Override
 	public boolean store()
 	{
