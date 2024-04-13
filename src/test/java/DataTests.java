@@ -42,52 +42,45 @@ class DataTests
 		ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
 		assertEquals(objects, testManager.getObjects());
 
-		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 0
+		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
+		applePage = apple.getPage(); // 0
+		objects.add(applePage);
 		objects.add(apple);
 		assertEquals(objects, testManager.getObjects());
 
-		applePage = new Page(apple, testManager); // 1
-		objects.add(applePage);
+		assertEquals(apple, testManager.getById(1));
+		assertEquals(applePage, testManager.getById(0));
+
+		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
+		googlePage = google.getPage(); // 2
+		objects.add(googlePage);
+		objects.add(google);
+
 		assertEquals(objects, testManager.getObjects()); // atp have checked multiple inputs!
 
-		apple.setPage(applePage);
+		alice = new Person("Alice", "ateam@gmail.com", testManager); // 5
+		alicePage = alice.getPage(); // 4
 
-		assertEquals(apple, testManager.getById(0));
-		assertEquals(applePage, testManager.getById(1));
+		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 7
+		bobPage = bob.getPage(); // 6
 
-		google = new Company("Google", "sundar.pichai@google.com", testManager); // 2
-		googlePage = new Page(google, testManager); // 3
-		google.setPage(googlePage);
+		java = new Skill("Java", testManager); // 9
+		javaPage = java.getPage(); // 8
 
-		alice = new Person("Alice", "ateam@gmail.com", testManager); // 4
-		alicePage = new Page(alice, testManager); // 5
-		alice.setPage(alicePage);
+		python = new Skill("Python", testManager); // 11
+		pythonPage = python.getPage(); // 10
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 6
-		bobPage = new Page(bob, testManager); // 7
-		bob.setPage(bobPage);
+		helloWorld = new Project("Hello World", testManager); // 13
+		helloPage = helloWorld.getPage(); // 12
 
-		java = new Skill("Java", testManager); // 8
-		javaPage = new Page(java, testManager); // 9
-		java.setPage(javaPage);
-
-		python = new Skill("Python", testManager); // 10
-		pythonPage = new Page(python, testManager); // 11
-		python.setPage(pythonPage);
-
-		helloWorld = new Project("Hello World", testManager); // 12
-		helloPage = new Page(helloWorld, testManager); // 13
-		helloWorld.setPage(helloPage);
-
-		myFirstProgram = new Project("My First Program", testManager); // 14
-		firstPage = new Page(myFirstProgram, testManager); // 15
-		myFirstProgram.setPage(firstPage);
+		myFirstProgram = new Project("My First Program", testManager); // 15
+		firstPage = myFirstProgram.getPage(); // 14
 
 		// some spot checks on the array integrity
-		assertEquals(alicePage, testManager.getById(5));
-		assertEquals(java, testManager.getById(8));
-		assertEquals(python, testManager.getById(10));
-		assertEquals(firstPage, testManager.getById(15));
+		assertEquals(alicePage, testManager.getById(4));
+		assertEquals(java, testManager.getById(9));
+		assertEquals(python, testManager.getById(11));
+		assertEquals(firstPage, testManager.getById(14));
 	}
 
 	// NEW: testing the job recommendation system
@@ -101,15 +94,15 @@ class DataTests
 	void testPageEditPerms()
 	{
 		ArrayList<User> editors = new ArrayList<User>();
+		// should start w/ alice as editor
+		editors.add(alice);
 
-		// should start empty
 		assertEquals(editors, alicePage.getCanEdit());
-		assertFalse(alicePage.canEdit(alice));
+		assertTrue(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));
 
-		// make sure one editor OK
+		// make sure one editor OK -- can't double add same user
 		alicePage.addEditor(alice);
-		editors.add(alice);
 		assertEquals(editors, alicePage.getCanEdit());
 		assertTrue(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));

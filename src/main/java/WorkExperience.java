@@ -1,6 +1,6 @@
 //import java.time.LocalDate;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +35,8 @@ public class WorkExperience implements Identifiable, Storable
 		this.title = title;
 		this.description = description;
 		links = new Hashtable<String, List<Link>>();
-		links.put("companies", new ArrayList<Link>());
-		links.get("companies").add(new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager));
+		links.put("company",
+				Arrays.asList(new Link[] { new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
 
 		manager.register(this); // registering with the manager
 		this.manager = manager;

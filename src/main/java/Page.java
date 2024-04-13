@@ -14,11 +14,11 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	protected Entity entity;
 	int entityId;
 	@JsonIgnore
-	protected List<User> canEdit;
-	protected List<Integer> canEditIds;
+	protected List<User> editors;
+	protected List<Integer> editorIds;
 	@JsonIgnore
-	protected List<User> cantView;
-	protected List<Integer> cantViewIds;
+	protected List<User> blockedViewers;
+	protected List<Integer> blockedViewerIds;
 	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
@@ -30,10 +30,10 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	{
 		id = manager.getNextId();
 		this.entity = entity;
-		canEdit = new ArrayList<User>();
-		canEditIds = new ArrayList<Integer>();
-		cantView = new ArrayList<User>();
-		cantViewIds = new ArrayList<Integer>();
+		editors = new ArrayList<User>();
+		editorIds = new ArrayList<Integer>();
+		blockedViewers = new ArrayList<User>();
+		blockedViewerIds = new ArrayList<Integer>();
 
 		manager.register(this);
 		this.manager = manager;
@@ -83,25 +83,38 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 
 	public void addEditor(User user)
 	{
-		canEdit.add(user);
-		canEditIds.add(user.getId());
+		int index = editors.indexOf(user);
+
+		if (index != -1) // if already an editor: early termination
+		{
+			return;
+		} // else
+		editors.add(user);
+		editorIds.add(user.getId());
 	}
 
 	public boolean removeEditor(User user)
 	{
 
-		return canEdit.remove(user) && canEditIds.remove(Integer.valueOf(user.getId()));
+		return editors.remove(user) && editorIds.remove(Integer.valueOf(user.getId()));
 	}
 
 	public void blockViewer(User user)
 	{
-		cantView.add(user);
-		cantViewIds.add(user.getId());
+		int index = blockedViewers.indexOf(user);
+
+		if (index != -1) // if already blocked: early termination
+		{
+			return;
+		} // else
+		
+		blockedViewers.add(user);
+		blockedViewerIds.add(user.getId());
 	}
 
 	public boolean unblockViewer(User user)
 	{
-		return cantView.remove(user) && cantViewIds.remove(Integer.valueOf(user.getId()));
+		return blockedViewers.remove(user) && blockedViewerIds.remove(Integer.valueOf(user.getId()));
 	}
 
 	/**
@@ -109,7 +122,17 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	 */
 	public boolean canEdit(User user)
 	{
-		return canEdit.contains(user);
+		boolean found = false;
+		for (User u : editors)
+		{
+			if (user.equals(u))
+			{
+				found = true;
+				break;
+			}
+		}
+		return found;
+		// return canEdit.contains(user);
 	}
 
 	/**
@@ -117,7 +140,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	 */
 	public boolean cantView(User user)
 	{
-		return cantView.contains(user);
+		return blockedViewers.contains(user);
 	}
 
 	/**
@@ -141,7 +164,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	 */
 	public List<Integer> getCanEditIds()
 	{
-		return canEditIds;
+		return editorIds;
 	}
 
 	/**
@@ -149,14 +172,14 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	 */
 	public void setCanEditIds(List<Integer> canEditIds)
 	{
-		List<User> newList = new ArrayList<User>();
+		List<User> newSet = new ArrayList<User>();
 		for (Integer i : canEditIds)
 		{
-			newList.add((User) manager.getById(i));
+			newSet.add((User) manager.getById(i));
 		}
-		this.canEdit = newList;
+		this.editors = newSet;
 
-		this.canEditIds = canEditIds;
+		this.editorIds = canEditIds;
 	}
 
 	/**
@@ -164,7 +187,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	 */
 	public List<Integer> getCantViewIds()
 	{
-		return cantViewIds;
+		return blockedViewerIds;
 	}
 
 	/**
@@ -172,22 +195,22 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	 */
 	public void setCantViewIds(List<Integer> cantViewIds)
 	{
-		List<User> newList = new ArrayList<User>();
-		for (Integer i : canEditIds)
+		List<User> newSet = new ArrayList<User>();
+		for (Integer i : editorIds)
 		{
-			newList.add((User) manager.getById(i));
+			newSet.add((User) manager.getById(i));
 		}
-		this.cantView = newList;
+		this.blockedViewers = newSet;
 
-		this.cantViewIds = cantViewIds;
+		this.blockedViewerIds = cantViewIds;
 	}
-	
+
 	/**
 	 * @return the canEdit
 	 */
 	public List<User> getCanEdit()
 	{
-		return canEdit;
+		return editors;
 	}
 
 	/**
@@ -200,18 +223,18 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 		{
 			newIds.add(u.getId());
 		}
-		this.canEditIds = newIds;
+		this.editorIds = newIds;
 
-		this.canEdit = canEdit;
+		this.editors = canEdit;
 
 	}
-	
+
 	/**
 	 * @return the cantView
 	 */
 	public List<User> getCantView()
 	{
-		return cantView;
+		return blockedViewers;
 	}
 
 	/**
@@ -220,13 +243,13 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	public void setCantView(List<User> cantView)
 	{
 		List<Integer> newIds = new ArrayList<Integer>();
-		for (User u : canEdit)
+		for (User u : editors)
 		{
 			newIds.add(u.getId());
 		}
-		this.cantViewIds = newIds;
+		this.blockedViewerIds = newIds;
 
-		this.cantView = cantView;
+		this.blockedViewers = cantView;
 	}
 
 	/**
@@ -267,7 +290,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	@Override
 	public String toString()
 	{
-		return "Page [id=" + id + ", entity=" + entity + ", canEdit=" + canEdit + ", cantView=" + cantView + "]";
+		return "Page [id=" + id + ", entity=" + entity + ", canEdit=" + editors + ", cantView=" + blockedViewers + "]";
 	}
 
 }
