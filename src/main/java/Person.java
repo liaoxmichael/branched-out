@@ -5,21 +5,100 @@ import java.util.Objects;
 
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Person extends User implements Storable
 {
 	String pronouns;
 	List<SkillProficiency> skills;
 	List<WorkExperience> jobs;
 
+	List<JobType> jobTypePreferences;
+	List<JobSite> jobSitePreferences;
+	
+	@JsonIgnore
+	JobRecommenderInterface recommender;
+
 	public Person()
 	{
 	}
 
-	public Person(String name, String email, IdentifiableObjectManagerInterface manager)
+	public Person(String name, String email, JobRecommenderInterface recommender,
+			IdentifiableObjectManagerInterface manager)
 	{
 		super(name, email, manager);
 		skills = new ArrayList<SkillProficiency>();
 		jobs = new ArrayList<WorkExperience>();
+
+		jobTypePreferences = new ArrayList<JobType>(); // if time: make priority queues, for now boolean
+		jobSitePreferences = new ArrayList<JobSite>();
+
+		links.put("recommendedJobs", new ArrayList<Link>());
+
+		this.recommender = recommender;
+		// automatically subscribe -- can use functions later on to unsubscribe
+		markHireable();
+	}
+
+	public void markHireable()
+	{
+		recommender.registerHireable(this);
+	}
+
+	public void unmarkHireable()
+	{
+		recommender.unregisterHireable(this);
+	}
+
+	public void addJobPosting(JobPosting jobPosting)
+	{
+		Link newLink = new Link(jobPosting.getPage(), Link.RelationshipType.RECOMMENDED_JOB, manager);
+		int linkIndex = links.get("recommendedJobs").indexOf(newLink);
+
+		if (linkIndex != -1)
+		{
+			return;
+		} // else
+
+		links.get("recommendedJobs").add(newLink);
+	}
+
+	public boolean removeJobPosting(JobPosting jobPosting)
+	{
+		Link target = new Link(jobPosting.getPage(), Link.RelationshipType.RECOMMENDED_JOB, manager);
+		return links.get("recommendedJobs").remove(target);
+	}
+
+	public void addJobTypePreference(JobType jobType)
+	{
+		int index = jobTypePreferences.indexOf(jobType);
+
+		if (index != -1) // if already following: early termination
+		{
+			return;
+		} // else
+		jobTypePreferences.add(jobType);
+	}
+
+	public boolean removeJobTypePreference(JobType jobType)
+	{
+		return jobTypePreferences.remove(jobType);
+	}
+
+	public void addJobSitePreference(JobSite jobSite)
+	{
+		int index = jobSitePreferences.indexOf(jobSite);
+
+		if (index != -1) // if already following: early termination
+		{
+			return;
+		} // else
+		jobSitePreferences.add(jobSite);
+	}
+
+	public boolean removeJobSitePreference(JobSite jobSite)
+	{
+		return jobSitePreferences.remove(jobSite);
 	}
 
 	public SkillProficiency addSkill(Skill skill, SkillProficiency.ProficiencyLevel level)
@@ -98,6 +177,38 @@ public class Person extends User implements Storable
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
 				.retrieve().body(ResponseObject.class);
 		return result.successful();
+	}
+
+	/**
+	 * @return the jobTypePreferences
+	 */
+	public List<JobType> getJobTypePreferences()
+	{
+		return jobTypePreferences;
+	}
+
+	/**
+	 * @param jobTypePreferences the jobTypePreferences to set
+	 */
+	public void setJobTypePreferences(List<JobType> jobTypePreferences)
+	{
+		this.jobTypePreferences = jobTypePreferences;
+	}
+
+	/**
+	 * @return the jobSitePreferences
+	 */
+	public List<JobSite> getJobSitePreferences()
+	{
+		return jobSitePreferences;
+	}
+
+	/**
+	 * @param jobSitePreferences the jobSitePreferences to set
+	 */
+	public void setJobSitePreferences(List<JobSite> jobSitePreferences)
+	{
+		this.jobSitePreferences = jobSitePreferences;
 	}
 
 	/**

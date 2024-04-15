@@ -34,60 +34,73 @@ class DataTests
 	Page firstPage;
 
 	IdentifiableObjectManagerInterface testManager;
+	JobRecommenderInterface testRecommender;
 
 	@BeforeEach
 	void setUp() throws Exception
 	{
+		testRecommender = new JobRecommender();
+
 		testManager = new IdentifiableObjectManager();
 		ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
 		assertEquals(objects, testManager.getObjects());
 
-		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
-		applePage = apple.getPage(); // 0
-		objects.add(applePage);
+		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 0
+		applePage = apple.getPage(); // 1
 		objects.add(apple);
+		objects.add(applePage);
 		assertEquals(objects, testManager.getObjects());
 
-		assertEquals(apple, testManager.getById(1));
-		assertEquals(applePage, testManager.getById(0));
+		assertEquals(apple, testManager.getById(0));
+		assertEquals(applePage, testManager.getById(1));
 
-		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
-		googlePage = google.getPage(); // 2
-		objects.add(googlePage);
+		google = new Company("Google", "sundar.pichai@google.com", testManager); // 2
+		googlePage = google.getPage(); // 3
 		objects.add(google);
+		objects.add(googlePage);
 
 		assertEquals(objects, testManager.getObjects()); // atp have checked multiple inputs!
 
-		alice = new Person("Alice", "ateam@gmail.com", testManager); // 5
-		alicePage = alice.getPage(); // 4
+		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 4
+		alicePage = alice.getPage(); // 5
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 7
-		bobPage = bob.getPage(); // 6
+		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 6
+		bobPage = bob.getPage(); // 7
 
-		java = new Skill("Java", testManager); // 9
-		javaPage = java.getPage(); // 8
+		java = new Skill("Java", testManager); // 8
+		javaPage = java.getPage(); // 9
 
-		python = new Skill("Python", testManager); // 11
-		pythonPage = python.getPage(); // 10
+		python = new Skill("Python", testManager); // 10
+		pythonPage = python.getPage(); // 11
 
-		helloWorld = new Project("Hello World", testManager); // 13
-		helloPage = helloWorld.getPage(); // 12
+		helloWorld = new Project("Hello World", testManager); // 12
+		helloPage = helloWorld.getPage(); // 13
 
-		myFirstProgram = new Project("My First Program", testManager); // 15
-		firstPage = myFirstProgram.getPage(); // 14
+		myFirstProgram = new Project("My First Program", testManager); // 14
+		firstPage = myFirstProgram.getPage(); // 15
 
 		// some spot checks on the array integrity
-		assertEquals(alicePage, testManager.getById(4));
-		assertEquals(java, testManager.getById(9));
-		assertEquals(python, testManager.getById(11));
-		assertEquals(firstPage, testManager.getById(14));
+		assertEquals(alicePage, testManager.getById(5));
+		assertEquals(java, testManager.getById(8));
+		assertEquals(python, testManager.getById(10));
+		assertEquals(firstPage, testManager.getById(15));
 	}
 
 	// NEW: testing the job recommendation system
 	@Test
-	void testJobPosting()
+	void testJobRecommendations()
 	{
-
+		JobPosting googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager); // 16
+		SkillProficiency javaIntermediate = googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
+		JobPosting appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager); // 19
+		SkillProficiency javaBeginner = appleTech.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
+		
+		// atp all people should be auto-registered and all job postings are recommend-all, so:
+		googleEngi.recommendJob();
+		
+		assertEquals()
+		
+		alice.addSkill(java, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
 	}
 
 	@Test
@@ -97,40 +110,40 @@ class DataTests
 		// should start w/ alice as editor
 		editors.add(alice);
 
-		assertEquals(editors, alicePage.getCanEdit());
+		assertEquals(editors, alicePage.getEditors());
 		assertTrue(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));
 
 		// make sure one editor OK -- can't double add same user
 		alicePage.addEditor(alice);
-		assertEquals(editors, alicePage.getCanEdit());
+		assertEquals(editors, alicePage.getEditors());
 		assertTrue(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));
 
 		// check multiple editors
 		alicePage.addEditor(bob);
 		editors.add(bob);
-		assertEquals(editors, alicePage.getCanEdit());
+		assertEquals(editors, alicePage.getEditors());
 		assertTrue(alicePage.canEdit(alice));
 		assertTrue(alicePage.canEdit(bob));
 
 		// check works if remove worked
 		assertTrue(alicePage.removeEditor(bob));
 		editors.remove(bob);
-		assertEquals(editors, alicePage.getCanEdit());
+		assertEquals(editors, alicePage.getEditors());
 		assertTrue(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));
 
 		// make sure second remove doesn't affect it
 		assertFalse(alicePage.removeEditor(bob));
-		assertEquals(editors, alicePage.getCanEdit());
+		assertEquals(editors, alicePage.getEditors());
 		assertTrue(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));
 
 		// check if actually emptied
 		assertTrue(alicePage.removeEditor(alice));
 		editors.clear();
-		assertEquals(editors, alicePage.getCanEdit());
+		assertEquals(editors, alicePage.getEditors());
 		assertFalse(alicePage.canEdit(alice));
 		assertFalse(alicePage.canEdit(bob));
 	}
@@ -140,36 +153,36 @@ class DataTests
 	{
 		ArrayList<User> blocked = new ArrayList<User>();
 
-		assertEquals(blocked, alicePage.getCantView());
+		assertEquals(blocked, alicePage.getBlockedViewers());
 		assertFalse(alicePage.cantView(apple));
 		assertFalse(alicePage.cantView(bob));
 
 		alicePage.blockViewer(bob);
 		blocked.add(bob);
-		assertEquals(blocked, alicePage.getCantView());
+		assertEquals(blocked, alicePage.getBlockedViewers());
 		assertFalse(alicePage.cantView(apple));
 		assertTrue(alicePage.cantView(bob));
 
 		alicePage.blockViewer(apple);
 		blocked.add(apple);
-		assertEquals(blocked, alicePage.getCantView());
+		assertEquals(blocked, alicePage.getBlockedViewers());
 		assertTrue(alicePage.cantView(apple));
 		assertTrue(alicePage.cantView(bob));
 
 		assertTrue(alicePage.unblockViewer(apple));
 		blocked.remove(apple);
-		assertEquals(blocked, alicePage.getCantView());
+		assertEquals(blocked, alicePage.getBlockedViewers());
 		assertFalse(alicePage.cantView(apple));
 		assertTrue(alicePage.cantView(bob));
 
 		assertFalse(alicePage.unblockViewer(apple));
-		assertEquals(blocked, alicePage.getCantView());
+		assertEquals(blocked, alicePage.getBlockedViewers());
 		assertFalse(alicePage.cantView(apple));
 		assertTrue(alicePage.cantView(bob));
 
 		assertTrue(alicePage.unblockViewer(bob));
 		blocked.clear();
-		assertEquals(blocked, alicePage.getCantView());
+		assertEquals(blocked, alicePage.getBlockedViewers());
 		assertFalse(alicePage.cantView(apple));
 		assertFalse(alicePage.cantView(bob));
 	}

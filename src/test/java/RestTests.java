@@ -18,7 +18,6 @@ class RestTests
 	ObjectMapper mapper;
 
 	ResponseData team;
-	ArrayList<ResponseData> classes;
 
 	Company apple;
 	Page applePage;
@@ -43,8 +42,12 @@ class RestTests
 
 	Project myFirstProgram;
 	Page firstPage;
+	
+	JobPosting googleEngi;
+	JobPosting appleTech;
 
 	IdentifiableObjectManagerInterface testManager;
+	JobRecommenderInterface testRecommender;
 
 	void create(Record r, String uri) throws JsonMappingException, JsonProcessingException
 	{
@@ -188,6 +191,21 @@ class RestTests
 			assertEquals(list.get(i), we);
 		}
 	}
+	
+	void checkJobPostings(ArrayList<JobPosting> list) throws JsonMappingException, JsonProcessingException
+	{
+		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)).retrieve()
+				.body(String.class);
+		System.out.println(r);
+		Response response = mapper.readValue(r, Response.class);
+		for (int i = 0; i < response.data().size(); i++)
+		{
+			JobPosting jp = client.get().uri(response.data().get(i).location()).retrieve()
+					.body(JobPosting.JobPostingResponse.class).data();
+//			System.out.println(p);
+			assertEquals(list.get(i), jp);
+		}
+	}
 
 	boolean existsOnServer(String uri) throws JsonMappingException, JsonProcessingException
 	{
@@ -217,38 +235,68 @@ class RestTests
 
 		// instantiating all the objects to test with
 		testManager = new IdentifiableObjectManager();
+		testRecommender = new JobRecommender();
 
 		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 0
-		applePage = new Page(apple, testManager); // 1
-		apple.setPage(applePage);
+		applePage = apple.getPage(); // 1
 
 		google = new Company("Google", "sundar.pichai@google.com", testManager); // 2
-		googlePage = new Page(google, testManager); // 3
-		google.setPage(googlePage);
+		googlePage = google.getPage(); // 3
 
-		alice = new Person("Alice", "ateam@gmail.com", testManager); // 4
-		alicePage = new Page(alice, testManager); // 5
-		alice.setPage(alicePage);
+		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 4
+		alicePage = alice.getPage(); // 5
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 6
-		bobPage = new Page(bob, testManager); // 7
-		bob.setPage(bobPage);
+		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 6
+		bobPage = bob.getPage(); // 7
 
 		java = new Skill("Java", testManager); // 8
-		javaPage = new Page(java, testManager); // 9
-		java.setPage(javaPage);
+		javaPage = java.getPage(); // 9
 
 		python = new Skill("Python", testManager); // 10
-		pythonPage = new Page(python, testManager); // 11
-		python.setPage(pythonPage);
+		pythonPage = python.getPage(); // 11
 
 		helloWorld = new Project("Hello World", testManager); // 12
-		helloPage = new Page(helloWorld, testManager); // 13
-		helloWorld.setPage(helloPage);
+		helloPage = helloWorld.getPage(); // 13
 
 		myFirstProgram = new Project("My First Program", testManager); // 14
-		firstPage = new Page(myFirstProgram, testManager); // 15
-		myFirstProgram.setPage(firstPage);
+		firstPage = myFirstProgram.getPage(); // 15
+	}
+
+	@Test
+	void testJobPostings() throws JsonMappingException, JsonProcessingException
+	{
+		googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager); // 16
+		
+		appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager); // 19
+		
+		ArrayList<JobPosting> jobPostings = new ArrayList<JobPosting>();
+		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)));
+
+		assertTrue(googleEngi.store()); // should create the directory AND add it
+		jobPostings.add(googleEngi);
+
+		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE))); // check if directory
+																									// exists
+		checkJobPostings(jobPostings);
+
+		assertFalse(googleEngi.store()); // shouldn't be able to store something already stored
+
+		assertTrue(appleTech.store()); // now checking multiple things
+		jobPostings.add(appleTech);
+		checkJobPostings(jobPostings);
+
+		// testing retrieval
+		assertEquals(googleEngi, JobPosting.retrieve(16));
+		assertEquals(appleTech, JobPosting.retrieve(19));
+
+		assertNull(JobPosting.retrieve(10)); // something that hasn't been stored yet; should return null as failure
+
+		// let's store something that isn't a company and try to retrieve it using
+		// Page.retrieve
+		assertTrue(applePage.store());
+		assertNull(JobPosting.retrieve(1)); // company != page
+
+		assertNull(JobPosting.retrieve(-1)); // should not exist
 	}
 
 	@Test

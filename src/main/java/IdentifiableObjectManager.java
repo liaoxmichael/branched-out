@@ -4,12 +4,14 @@ import java.util.ArrayList;
 public class IdentifiableObjectManager implements IdentifiableObjectManagerInterface
 {
 	ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
-	int currentID = 0;
+	int currentId = 0;
 	
 	@Override
 	public int getNextId()
 	{
-		return currentID++;
+		int assignedId = currentId; 
+		currentId++;
+		return assignedId;
 	}
 
 	public Identifiable getById(int index)
@@ -32,7 +34,7 @@ public class IdentifiableObjectManager implements IdentifiableObjectManagerInter
 	 */
 	public int getCurrentId()
 	{
-		return currentID;
+		return currentId;
 	}
 
 	@Override

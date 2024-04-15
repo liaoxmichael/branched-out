@@ -19,7 +19,6 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	@JsonIgnore
 	protected List<User> blockedViewers;
 	protected List<Integer> blockedViewerIds;
-	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 	public Page()
@@ -29,13 +28,14 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	public Page(Entity entity, IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
+		manager.register(this);
+
 		this.entity = entity;
 		editors = new ArrayList<User>();
 		editorIds = new ArrayList<Integer>();
 		blockedViewers = new ArrayList<User>();
 		blockedViewerIds = new ArrayList<Integer>();
 
-		manager.register(this);
 		this.manager = manager;
 	}
 
@@ -107,7 +107,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 		{
 			return;
 		} // else
-		
+
 		blockedViewers.add(user);
 		blockedViewerIds.add(user.getId());
 	}
@@ -160,96 +160,108 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	}
 
 	/**
-	 * @return the canEditIds
+	 * @return the editorIds
 	 */
-	public List<Integer> getCanEditIds()
+	public List<Integer> getEditorIds()
 	{
 		return editorIds;
 	}
 
 	/**
-	 * @param canEditIds the canEditIds to set
+	 * @param editorIds the editorIds to set
 	 */
-	public void setCanEditIds(List<Integer> canEditIds)
+	public void setEditorIds(List<Integer> editorIds)
 	{
 		List<User> newSet = new ArrayList<User>();
-		for (Integer i : canEditIds)
+		for (Integer i : editorIds)
 		{
-			newSet.add((User) manager.getById(i));
+			if (Person.retrieve(i) != null)
+			{
+				newSet.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				newSet.add(Company.retrieve(i));
+			}
 		}
 		this.editors = newSet;
 
-		this.editorIds = canEditIds;
+		this.editorIds = editorIds;
 	}
 
 	/**
-	 * @return the cantViewIds
+	 * @return the blockedViewerIds
 	 */
-	public List<Integer> getCantViewIds()
+	public List<Integer> getBlockedViewerIds()
 	{
 		return blockedViewerIds;
 	}
 
 	/**
-	 * @param cantViewIds the cantViewIds to set
+	 * @param blockedViewerIds the blockedViewerIds to set
 	 */
-	public void setCantViewIds(List<Integer> cantViewIds)
+	public void setBlockedViewerIds(List<Integer> blockedViewerIds)
 	{
 		List<User> newSet = new ArrayList<User>();
-		for (Integer i : editorIds)
+		for (Integer i : blockedViewerIds)
 		{
-			newSet.add((User) manager.getById(i));
+			if (Person.retrieve(i) != null)
+			{
+				newSet.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				newSet.add(Company.retrieve(i));
+			}
 		}
 		this.blockedViewers = newSet;
 
-		this.blockedViewerIds = cantViewIds;
+		this.blockedViewerIds = blockedViewerIds;
 	}
 
 	/**
-	 * @return the canEdit
+	 * @return the editors
 	 */
-	public List<User> getCanEdit()
+	public List<User> getEditors()
 	{
 		return editors;
 	}
 
 	/**
-	 * @param canEdit the canEdit to set
+	 * @param editors the editors to set
 	 */
-	public void setCanEdit(List<User> canEdit)
-	{
-		List<Integer> newIds = new ArrayList<Integer>();
-		for (User u : canEdit)
-		{
-			newIds.add(u.getId());
-		}
-		this.editorIds = newIds;
-
-		this.editors = canEdit;
-
-	}
-
-	/**
-	 * @return the cantView
-	 */
-	public List<User> getCantView()
-	{
-		return blockedViewers;
-	}
-
-	/**
-	 * @param cantView the cantView to set
-	 */
-	public void setCantView(List<User> cantView)
+	public void setEditors(List<User> editors)
 	{
 		List<Integer> newIds = new ArrayList<Integer>();
 		for (User u : editors)
 		{
 			newIds.add(u.getId());
 		}
+		this.editorIds = newIds;
+
+		this.editors = editors;
+
+	}
+
+	/**
+	 * @return the blockedViewers
+	 */
+	public List<User> getBlockedViewers()
+	{
+		return blockedViewers;
+	}
+
+	/**
+	 * @param blockedViewers the blockedViewers to set
+	 */
+	public void setBlockedViewers(List<User> blockedViewers)
+	{
+		List<Integer> newIds = new ArrayList<Integer>();
+		for (User u : blockedViewers)
+		{
+			newIds.add(u.getId());
+		}
 		this.blockedViewerIds = newIds;
 
-		this.blockedViewers = cantView;
+		this.blockedViewers = blockedViewers;
 	}
 
 	/**
@@ -290,7 +302,9 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 	@Override
 	public String toString()
 	{
-		return "Page [id=" + id + ", entity=" + entity + ", canEdit=" + editors + ", cantView=" + blockedViewers + "]";
+		return "Page [id=" + id + ", entity=" + entity + ", entityId=" + entityId + ", editors=" + editors
+				+ ", editorIds=" + editorIds + ", blockedViewers=" + blockedViewers + ", blockedViewerIds="
+				+ blockedViewerIds + ", manager=" + manager + "]";
 	}
 
 }

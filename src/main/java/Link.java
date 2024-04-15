@@ -21,6 +21,8 @@ public class Link implements Identifiable
 		FOLLOWING_USER, FOLLOWER_USER, MENTOR_PERSON, CONTRIBUTOR_PERSON, COORDINATOR_PERSON, JOB_APPLICANT_PERSON,
 
 		FROM_COMPANY,
+		
+		RECOMMENDED_JOB,
 	}
 
 	RelationshipType relation;

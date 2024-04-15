@@ -15,7 +15,6 @@ public abstract class Entity implements Identifiable
 	int pageId;
 	Map<String, List<Link>> links;
 	List<String> externalWebLinks;
-	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 	public Entity()
@@ -25,13 +24,13 @@ public abstract class Entity implements Identifiable
 	public Entity(IdentifiableObjectManagerInterface manager)
 	{
 		id = manager.getNextId();
+		manager.register(this);
 		links = new HashMap<String, List<Link>>();
 		externalWebLinks = new ArrayList<String>();
 		
 		// automatically initialize a page
 		page = new Page(this, manager);
 
-		manager.register(this);
 		this.manager = manager;
 	}
 
