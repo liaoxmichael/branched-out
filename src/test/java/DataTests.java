@@ -86,23 +86,6 @@ class DataTests
 		assertEquals(firstPage, testManager.getById(15));
 	}
 
-	// NEW: testing the job recommendation system
-	@Test
-	void testJobRecommendations()
-	{
-		JobPosting googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager); // 16
-		SkillProficiency javaIntermediate = googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
-		JobPosting appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager); // 19
-		SkillProficiency javaBeginner = appleTech.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
-		
-		// atp all people should be auto-registered and all job postings are recommend-all, so:
-		googleEngi.recommendJob();
-		
-		assertEquals()
-		
-		alice.addSkill(java, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
-	}
-
 	@Test
 	void testPageEditPerms()
 	{
