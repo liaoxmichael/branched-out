@@ -22,6 +22,8 @@ public class Link implements Identifiable
 
 		FROM_COMPANY,
 		
+		HAS_OPENING,
+		
 		RECOMMENDED_JOB,
 	}
 
@@ -161,7 +163,7 @@ public class Link implements Identifiable
 	@Override
 	public String toString()
 	{
-		return "Link [id=" + id + ", page=" + page + ", relation=" + relation + "]";
+		return "Link [id=" + id + ", pageId=" + pageId + ", relation=" + relation + "]";
 	}
 
 }

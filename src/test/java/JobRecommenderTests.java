@@ -21,7 +21,7 @@ class JobRecommenderTests
 
 	JobPosting googleEngi;
 	Link googleEngiLink;
-	
+
 	JobPosting appleTech;
 	Link appleTechLink;
 
@@ -57,6 +57,11 @@ class JobRecommenderTests
 
 		googleEngiLink = new Link(googleEngi.getPage(), Link.RelationshipType.RECOMMENDED_JOB, testManager);
 		appleTechLink = new Link(appleTech.getPage(), Link.RelationshipType.RECOMMENDED_JOB, testManager);
+
+		// check that company has jobpostings
+		ArrayList<Link> applePostings = new ArrayList<Link>();
+		applePostings.add(new Link(appleTech.getPage(), Link.RelationshipType.HAS_OPENING, testManager));
+		assertEquals(applePostings, apple.getLinks().get("jobPostings"));
 	}
 
 	@Test
@@ -276,11 +281,12 @@ class JobRecommenderTests
 	{
 		googleEngi.setStrategy(new RecommendBySkill());
 		appleTech.setStrategy(new RecommendBySkill());
-		
+
 		ArrayList<SkillProficiency> googleEngiSkills = new ArrayList<SkillProficiency>();
 		ArrayList<SkillProficiency> appleTechSkills = new ArrayList<SkillProficiency>();
-		
-		SkillProficiency javaIntermediate = googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
+
+		SkillProficiency javaIntermediate = googleEngi.addRequiredSkill(java,
+				SkillProficiency.ProficiencyLevel.INTERMEDIATE);
 		// check that skill creation works
 		assertEquals(javaIntermediate,
 				new SkillProficiency(java, SkillProficiency.ProficiencyLevel.INTERMEDIATE, testManager));
@@ -295,10 +301,11 @@ class JobRecommenderTests
 		appleTechSkills.clear();
 		appleTechSkills.add(new SkillProficiency(java, SkillProficiency.ProficiencyLevel.ADVANCED, testManager));
 		assertEquals(appleTechSkills, appleTech.getRequiredSkills());
-		SkillProficiency pythonBeginner = appleTech.addRequiredSkill(python, SkillProficiency.ProficiencyLevel.BEGINNER);
+		SkillProficiency pythonBeginner = appleTech.addRequiredSkill(python,
+				SkillProficiency.ProficiencyLevel.BEGINNER);
 		appleTechSkills.add(new SkillProficiency(python, SkillProficiency.ProficiencyLevel.BEGINNER, testManager));
 		assertEquals(appleTechSkills, appleTech.getRequiredSkills());
-		
+
 		// test removal
 		appleTech.removeRequiredSkill(python);
 		appleTechSkills.remove(pythonBeginner);
@@ -307,34 +314,34 @@ class JobRecommenderTests
 		appleTech.removeRequiredSkill(java);
 		appleTechSkills.clear();
 		assertEquals(appleTechSkills, appleTech.getRequiredSkills());
-		
+
 		// restore it
 		appleTech.addRequiredSkill(python, SkillProficiency.ProficiencyLevel.BEGINNER);
 		appleTech.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
-		
+
 		alice.addSkill(java, SkillProficiency.ProficiencyLevel.ADVANCED);
 		alice.addSkill(python, SkillProficiency.ProficiencyLevel.BEGINNER);
-		
+
 		bob.addSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
-		
+
 		appleTech.recommendJob();
 		aliceRecommendedJobs.add(appleTechLink); // only alice matches
-		
+
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
-		
+
 		googleEngi.addRequiredSkill(python, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
 		googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.ADVANCED);
-		
+
 		googleEngi.recommendJob();
 		// neither should qualify
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
-		
+
 		bob.addSkill(python, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
 		googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
 		googleEngi.addRequiredSkill(python, SkillProficiency.ProficiencyLevel.BEGINNER);
-		
+
 		googleEngi.recommendJob();
 		aliceRecommendedJobs.add(googleEngiLink);
 		bobRecommendedJobs.add(googleEngiLink);

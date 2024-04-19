@@ -44,7 +44,8 @@ public class JobPosting extends Post implements Storable
 		// initializing with a single-item array to match type but fix size
 		links.put("company",
 				Arrays.asList(new Link[] { new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
-
+		company.addJobPosting(this);
+		
 		page.addEditor(company); // automatically add company as an editor
 
 		links.put("applicants", new ArrayList<Link>());

@@ -71,14 +71,14 @@ public class Project extends Post implements Storable
 		}
 
 		links.get("companies").add(newLink);
-		company.getLinks().get("projects").add(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+		company.addProject(this);
 	}
 
 	public void removeCompany(Company company)
 	{
 		Link target = new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager);
 		links.get("companies").remove(target);
-		company.getLinks().get("projects").remove(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+		company.removeProject(this);
 	}
 
 	public record ProjectResponse(String request, boolean successful, String message, Project data) {

@@ -5,15 +5,54 @@ import org.springframework.web.client.RestClient;
 
 public class Company extends User implements Storable
 {
-	public Company() {
+	public Company()
+	{
 		super();
 	}
-	
+
 	public Company(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(name, email, manager);
 		links.put("projects", new ArrayList<Link>());
 		links.put("jobPostings", new ArrayList<Link>());
+	}
+
+	public void addProject(Project project)
+	{
+		Link newLink = new Link(project.getPage(), Link.RelationshipType.HAS_PROJECT, manager);
+		int linkIndex = links.get("projects").indexOf(newLink);
+
+		if (linkIndex != -1)
+		{
+			return;
+		} // else
+
+		links.get("jobPostings").add(newLink);
+	}
+
+	public boolean removeProject(Project project)
+	{
+		Link target = new Link(project.getPage(), Link.RelationshipType.HAS_PROJECT, manager);
+		return links.get("recommendedJobs").remove(target);
+	}
+
+	public void addJobPosting(JobPosting post)
+	{
+		Link newLink = new Link(post.getPage(), Link.RelationshipType.HAS_OPENING, manager);
+		int linkIndex = links.get("jobPostings").indexOf(newLink);
+
+		if (linkIndex != -1)
+		{
+			return;
+		} // else
+
+		links.get("jobPostings").add(newLink);
+	}
+
+	public boolean removeJobPosting(JobPosting post)
+	{
+		Link target = new Link(post.getPage(), Link.RelationshipType.HAS_OPENING, manager);
+		return links.get("recommendedJobs").remove(target);
 	}
 
 	public record CompanyResponse(String request, boolean successful, String message, Company data) {
