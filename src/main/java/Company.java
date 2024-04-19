@@ -13,6 +13,7 @@ public class Company extends User implements Storable
 	{
 		super(name, email, manager);
 		links.put("projects", new ArrayList<Link>());
+		links.put("jobPostings", new ArrayList<Link>());
 	}
 
 	public record CompanyResponse(String request, boolean successful, String message, Company data) {
