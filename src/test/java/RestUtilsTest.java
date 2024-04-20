@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import models.rest.ResponseData;
+import models.rest.RestUtilities;
+
 class RestUtilsTest
 {
 	

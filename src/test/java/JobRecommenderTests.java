@@ -6,6 +6,22 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import models.Company;
+import models.IdentifiableObjectManager;
+import models.IdentifiableObjectManagerInterface;
+import models.JobPosting;
+import models.Link;
+import models.Person;
+import models.Skill;
+import models.SkillProficiency;
+import models.recommender.JobRecommender;
+import models.recommender.JobRecommenderInterface;
+import models.recommender.JobSite;
+import models.recommender.JobType;
+import models.recommender.RecommendBySitePreference;
+import models.recommender.RecommendBySkill;
+import models.recommender.RecommendByTypePreference;
+
 class JobRecommenderTests
 {
 	Person alice;

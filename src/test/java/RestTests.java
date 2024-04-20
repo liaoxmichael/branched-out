@@ -11,6 +11,23 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import models.Company;
+import models.IdentifiableObjectManager;
+import models.IdentifiableObjectManagerInterface;
+import models.JobPosting;
+import models.Link;
+import models.Page;
+import models.Person;
+import models.Project;
+import models.Skill;
+import models.SkillProficiency;
+import models.WorkExperience;
+import models.recommender.JobRecommender;
+import models.recommender.JobRecommenderInterface;
+import models.rest.Response;
+import models.rest.ResponseData;
+import models.rest.RestUtilities;
+
 class RestTests
 {
 

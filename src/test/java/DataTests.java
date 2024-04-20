@@ -5,6 +5,21 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import models.Company;
+import models.Identifiable;
+import models.IdentifiableObjectManager;
+import models.IdentifiableObjectManagerInterface;
+import models.Link;
+import models.Page;
+import models.Person;
+import models.Project;
+import models.Skill;
+import models.SkillProficiency;
+import models.User;
+import models.WorkExperience;
+import models.recommender.JobRecommender;
+import models.recommender.JobRecommenderInterface;
+
 class DataTests
 {
 	// can skip testing getters/setters/object equality (most) because
