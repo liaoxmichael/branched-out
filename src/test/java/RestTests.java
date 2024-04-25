@@ -22,9 +22,7 @@ import models.Project;
 import models.Skill;
 import models.SkillProficiency;
 import models.WorkExperience;
-import models.recommender.JobRecommender;
-import models.recommender.JobRecommenderInterface;
-import models.rest.Response;
+import models.rest.ResponseListData;
 import models.rest.ResponseData;
 import models.rest.RestUtilities;
 
@@ -64,7 +62,6 @@ class RestTests
 	JobPosting appleTech;
 
 	IdentifiableObjectManagerInterface testManager;
-	JobRecommenderInterface testRecommender;
 
 	void create(Record r, String uri) throws JsonMappingException, JsonProcessingException
 	{
@@ -79,7 +76,7 @@ class RestTests
 	{
 		String r = client.get().uri(uri).retrieve().body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			ResponseData d = response.data().get(i);
@@ -94,7 +91,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Company.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Company c = client.get().uri(response.data().get(i).location()).retrieve()
@@ -109,7 +106,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Link l = client.get().uri(response.data().get(i).location()).retrieve().body(Link.ResponseRecord.class)
@@ -124,7 +121,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Page.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Page p = client.get().uri(response.data().get(i).location()).retrieve().body(Page.ResponseRecord.class)
@@ -139,7 +136,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Person p = client.get().uri(response.data().get(i).location()).retrieve().body(Person.ResponseRecord.class)
@@ -154,7 +151,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Project.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Project p = client.get().uri(response.data().get(i).location()).retrieve()
@@ -169,7 +166,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Skill.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Skill s = client.get().uri(response.data().get(i).location()).retrieve().body(Skill.ResponseRecord.class)
@@ -187,7 +184,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, SkillProficiency.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			SkillProficiency sp = client.get().uri(response.data().get(i).location()).retrieve()
@@ -202,7 +199,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, WorkExperience.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			WorkExperience we = client.get().uri(response.data().get(i).location()).retrieve()
@@ -217,7 +214,7 @@ class RestTests
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)).retrieve()
 				.body(String.class);
 		System.out.println(r);
-		Response response = mapper.readValue(r, Response.class);
+		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			JobPosting jp = client.get().uri(response.data().get(i).location()).retrieve()
@@ -255,7 +252,6 @@ class RestTests
 
 		// instantiating all the objects to test with
 		testManager = new IdentifiableObjectManager(); // 0
-		testRecommender = new JobRecommender();
 
 		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
 		applePage = apple.getPage(); // 2
@@ -263,10 +259,10 @@ class RestTests
 		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
 		googlePage = google.getPage(); // 4
 
-		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 5
+		alice = new Person("Alice", "ateam@gmail.com", testManager); // 5
 		alicePage = alice.getPage(); // 6
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 7
+		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 7
 		bobPage = bob.getPage(); // 8
 
 		java = new Skill("Java", testManager); // 9
@@ -285,9 +281,9 @@ class RestTests
 	@Test
 	void testJobPostings() throws JsonMappingException, JsonProcessingException
 	{
-		googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager); // 17
+		googleEngi = new JobPosting("Senior Software Developer", google, testManager); // 17
 
-		appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager); // 21
+		appleTech = new JobPosting("Apple Genius Technician", apple, testManager); // 21
 
 		ArrayList<JobPosting> jobPostings = new ArrayList<JobPosting>();
 		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)));
@@ -323,6 +319,7 @@ class RestTests
 	void testCompany() throws JsonMappingException, JsonProcessingException
 	{
 		ArrayList<Company> companies = new ArrayList<Company>();
+		assertEquals(companies, Company.retrieveAll()); // check companies empty
 
 		// testing storage
 		// currently no resource directory should exist; let's make sure
@@ -334,12 +331,15 @@ class RestTests
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Company.RESOURCE))); // check if directory
 																									// exists
 		checkCompanies(companies);
+		assertEquals(companies, Company.retrieveAll()); // check companies accurate
 
 		assertFalse(apple.store()); // shouldn't be able to store something already stored
 
 		assertTrue(google.store()); // now checking multiple things
 		companies.add(google);
 		checkCompanies(companies);
+		
+		assertEquals(companies, Company.retrieveAll()); // check companies equal across all
 
 		// testing retrieval
 		assertEquals(apple, Company.retrieve(1)); // recall - apple id = 1
