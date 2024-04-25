@@ -1,6 +1,6 @@
 package models;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IdentifiableObjectManagerInterface
 {
@@ -12,5 +12,5 @@ public interface IdentifiableObjectManagerInterface
 
 	public void register(Identifiable object);
 
-	public ArrayList<Identifiable> getObjects();
+	public List<Identifiable> getObjects();
 }

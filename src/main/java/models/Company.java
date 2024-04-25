@@ -2,13 +2,13 @@ package models;
 
 import java.util.ArrayList;
 
-import org.springframework.web.client.RestClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.rest.ResponseObject;
 import models.rest.RestUtilities;
-import models.rest.Storable;
 
-public class Company extends User implements Storable
+
+public class Company extends User
 {
 	public Company()
 	{
@@ -32,13 +32,13 @@ public class Company extends User implements Storable
 			return;
 		} // else
 
-		links.get("jobPostings").add(newLink);
+		links.get("projects").add(newLink);
 	}
 
 	public boolean removeProject(Project project)
 	{
 		Link target = new Link(project.getPage(), Link.RelationshipType.HAS_PROJECT, manager);
-		return links.get("recommendedJobs").remove(target);
+		return links.get("projects").remove(target);
 	}
 
 	public void addJobPosting(JobPosting post)
@@ -60,7 +60,7 @@ public class Company extends User implements Storable
 		return links.get("recommendedJobs").remove(target);
 	}
 
-	public record CompanyResponse(String request, boolean successful, String message, Company data) {
+	public static record ResponseRecord(String request, boolean successful, String message, Company data) {
 	}
 
 	public static final String RESOURCE = "companies";
@@ -68,32 +68,26 @@ public class Company extends User implements Storable
 
 	public static Company retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			CompanyResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(CompanyResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Company.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
 	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, Company.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	@Override

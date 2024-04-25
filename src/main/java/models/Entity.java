@@ -8,7 +8,9 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public abstract class Entity implements Identifiable
+import models.rest.RestReadyInterface;
+
+public abstract class Entity implements Identifiable, RestReadyInterface
 {
 	int id;
 	@JsonIgnore
@@ -28,7 +30,7 @@ public abstract class Entity implements Identifiable
 		manager.register(this);
 		links = new HashMap<String, List<Link>>();
 		externalWebLinks = new ArrayList<String>();
-		
+
 		// automatically initialize a page
 		page = new Page(this, manager);
 

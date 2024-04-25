@@ -2,14 +2,14 @@ package models;
 
 import java.util.Objects;
 
-import org.springframework.web.client.RestClient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.rest.ResponseObject;
+import models.rest.RestReadyInterface;
 import models.rest.RestUtilities;
 
-public class Link implements Identifiable
+public class Link implements Identifiable, RestReadyInterface
 {
 
 	int id;
@@ -78,7 +78,7 @@ public class Link implements Identifiable
 		this.pageId = pageId;
 	}
 
-	public record LinkResponse(String request, boolean successful, String message, Link data) {
+	public static record ResponseRecord(String request, boolean successful, String message, Link data) {
 	}
 
 	public static final String RESOURCE = "links";
@@ -86,31 +86,26 @@ public class Link implements Identifiable
 
 	public static Link retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			LinkResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(LinkResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Link.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
+	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, Link.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	/**

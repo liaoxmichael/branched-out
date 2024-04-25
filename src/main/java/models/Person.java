@@ -4,18 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.web.client.RestClient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.recommender.JobRecommenderInterface;
 import models.recommender.JobSite;
 import models.recommender.JobType;
-import models.rest.ResponseObject;
 import models.rest.RestUtilities;
-import models.rest.Storable;
+import models.rest.RestReadyInterface;
 
-public class Person extends User implements Storable
+public class Person extends User implements RestReadyInterface
 {
 	String pronouns;
 	List<SkillProficiency> skills;
@@ -23,7 +22,7 @@ public class Person extends User implements Storable
 
 	List<JobType> jobTypePreferences;
 	List<JobSite> jobSitePreferences;
-	
+
 	@JsonIgnore
 	JobRecommenderInterface recommender;
 
@@ -151,7 +150,7 @@ public class Person extends User implements Storable
 		return id;
 	}
 
-	public record PersonResponse(String request, boolean successful, String message, Person data) {
+	public static record ResponseRecord(String request, boolean successful, String message, Person data) {
 	}
 
 	public static final String RESOURCE = "people";
@@ -159,32 +158,26 @@ public class Person extends User implements Storable
 
 	public static Person retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			PersonResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(PersonResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Person.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
 	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, Person.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	/**

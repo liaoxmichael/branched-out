@@ -1,5 +1,23 @@
 package models.rest;
+
+import java.util.Map;
+import static java.util.Map.entry;
+
 import org.springframework.web.client.RestClient;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import models.Company;
+import models.Identifiable;
+import models.IdentifiableObjectManager;
+import models.JobPosting;
+import models.Link;
+import models.Page;
+import models.Person;
+import models.Project;
+import models.Skill;
+import models.SkillProficiency;
+import models.WorkExperience;
 
 public final class RestUtilities
 {
@@ -10,6 +28,17 @@ public final class RestUtilities
 	public static final String TEAM_NAME = "Liao";
 	public static final String TEAM_DESC = "Michael Liao's personal team resources";
 	public static final String TEAM_URI = join(BASE_URI, TEAM_NAME);
+
+	// this is worthless
+//	public static Map<Class<?>, Class<?>> classToRecordMap = Map.ofEntries(
+//			entry(Company.class, Company.ResponseRecord.class),
+//			entry(JobPosting.class, JobPosting.ResponseRecord.class),
+//			entry(IdentifiableObjectManager.class, IdentifiableObjectManager.ResponseRecord.class),
+//			entry(Link.class, Link.ResponseRecord.class), entry(Page.class, Page.ResponseRecord.class),
+//			entry(Person.class, Person.ResponseRecord.class), entry(Project.class, Project.ResponseRecord.class),
+//			entry(Skill.class, Skill.ResponseRecord.class),
+//			entry(SkillProficiency.class, SkillProficiency.ResponseRecord.class),
+//			entry(WorkExperience.class, WorkExperience.ResponseRecord.class));
 
 	private RestUtilities()
 	{
@@ -30,6 +59,11 @@ public final class RestUtilities
 		}
 		return result;
 	}
+	
+//	public static Class<?> classToRecord(Class<?> target)
+//	{
+//		return classToRecordMap.get(target);
+//	}
 
 	public static boolean doesResourceExist(int id, String resource)
 	{
@@ -62,4 +96,32 @@ public final class RestUtilities
 		return responseObject.successful();
 	}
 
+	public static JsonNode retrieve(int id, String resourceName)
+	{
+		RestClient client = RestClient.create();
+
+		if (RestUtilities.doesResourceExist(id, resourceName))
+		{
+			ResponseNode response = client.get()
+					.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(id))).retrieve()
+					.body(ResponseNode.class);
+
+			return response.data();
+		}
+		// else
+		return null;
+	}
+	
+	public static boolean store(Identifiable obj, Class<?> targetClass, String resourceName, String resourceDesc)
+	{
+		RestClient client = RestClient.create();
+		if (!RestUtilities.doesResourceExist(resourceName))
+		{ // need to create the thing!
+			RestUtilities.createResource(resourceName, resourceDesc);
+		}
+		ResponseObject result = client.post()
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId()))).body(targetClass.cast(obj))
+				.retrieve().body(ResponseObject.class);
+		return result.successful();
+	}
 }

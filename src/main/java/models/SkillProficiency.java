@@ -2,15 +2,14 @@ package models;
 
 import java.util.Objects;
 
-import org.springframework.web.client.RestClient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.rest.ResponseObject;
 import models.rest.RestUtilities;
-import models.rest.Storable;
+import models.rest.RestReadyInterface;
 
-public class SkillProficiency implements Identifiable, Storable
+public class SkillProficiency implements Identifiable, RestReadyInterface
 {
 
 	int id;
@@ -43,7 +42,7 @@ public class SkillProficiency implements Identifiable, Storable
 		return id;
 	}
 
-	public record SkillProficiencyResponse(String request, boolean successful, String message, SkillProficiency data) {
+	public static record ResponseRecord(String request, boolean successful, String message, SkillProficiency data) {
 	}
 
 	public static final String RESOURCE = "proficiencies";
@@ -51,32 +50,26 @@ public class SkillProficiency implements Identifiable, Storable
 
 	public static SkillProficiency retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			SkillProficiencyResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(SkillProficiencyResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), SkillProficiency.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
 	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, SkillProficiency.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	/**

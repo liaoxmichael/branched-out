@@ -8,14 +8,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import models.TestJobPostingModel;
 import models.TransitionalViewModel;
+import models.ViewTransitionHandler;
 
 public class JobPostingCell extends ListCell<TestJobPostingModel>
 {
 	
 	AnchorPane view;
-	TestJobPostingModel job;
+	JobPosting job;
 	JobPostingCellController controller;
-	TransitionalViewModel model;
+	ViewTransitionHandler model;
 	
 	public JobPostingCell(ListView<TestJobPostingModel> view, TransitionalViewModel model) throws IOException {
 		FXMLLoader loader = new FXMLLoader();

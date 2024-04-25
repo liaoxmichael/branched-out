@@ -2,13 +2,13 @@ package models;
 
 import java.util.ArrayList;
 
-import org.springframework.web.client.RestClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.rest.ResponseObject;
 import models.rest.RestUtilities;
-import models.rest.Storable;
+import models.rest.RestReadyInterface;
 
-public class Project extends Post implements Storable
+public class Project extends Post implements RestReadyInterface
 {
 	public Project()
 	{
@@ -86,7 +86,7 @@ public class Project extends Post implements Storable
 		company.removeProject(this);
 	}
 
-	public record ProjectResponse(String request, boolean successful, String message, Project data) {
+	public static record ResponseRecord(String request, boolean successful, String message, Project data) {
 	}
 
 	public static final String RESOURCE = "projects";
@@ -94,32 +94,26 @@ public class Project extends Post implements Storable
 
 	public static Project retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			ProjectResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(ProjectResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Project.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
 	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, Project.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	@Override

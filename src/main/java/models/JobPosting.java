@@ -1,4 +1,5 @@
 package models;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,20 +7,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.web.client.RestClient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.recommender.JobRecommenderInterface;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.recommender.RecommendAll;
 import models.recommender.RecommendationStrategy;
-import models.rest.ResponseObject;
 import models.rest.RestUtilities;
-import models.rest.Storable;
+import models.rest.RestReadyInterface;
 
-public class JobPosting extends Post implements Storable
+public class JobPosting extends Post implements RestReadyInterface
 {
 	LocalDateTime expiration;
 	LocalDate startDate;
@@ -55,7 +55,7 @@ public class JobPosting extends Post implements Storable
 		links.put("company",
 				Arrays.asList(new Link[] { new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
 		company.addJobPosting(this);
-		
+
 		page.addEditor(company); // automatically add company as an editor
 
 		links.put("applicants", new ArrayList<Link>());
@@ -64,8 +64,9 @@ public class JobPosting extends Post implements Storable
 		strategy = new RecommendAll(); // by default -- can be changed later
 		this.recommender = recommender;
 	}
-	
-	public void recommendJob() {
+
+	public void recommendJob()
+	{
 		recommender.recommend(this);
 	}
 
@@ -88,7 +89,7 @@ public class JobPosting extends Post implements Storable
 		return requiredSkills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
 	}
 
-	public record JobPostingResponse(String request, boolean successful, String message, JobPosting data) {
+	public static record ResponseRecord(String request, boolean successful, String message, JobPosting data) {
 	}
 
 	public static final String RESOURCE = "jobPostings";
@@ -96,32 +97,26 @@ public class JobPosting extends Post implements Storable
 
 	public static JobPosting retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			JobPostingResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(JobPostingResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), JobPosting.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
 	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, JobPosting.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	/**

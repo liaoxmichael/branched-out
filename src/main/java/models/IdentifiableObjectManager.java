@@ -1,12 +1,28 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class IdentifiableObjectManager implements IdentifiableObjectManagerInterface
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import models.rest.RestReadyInterface;
+import models.rest.RestUtilities;
+
+public class IdentifiableObjectManager implements Identifiable, IdentifiableObjectManagerInterface, RestReadyInterface
 {
-	ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
-	int currentId = 0;
+	@JsonIgnore
+	List<Identifiable> objects;
+	int currentId = 1;
+	int id = 0; // this is the object manager's id, FIXED
 	
+	public IdentifiableObjectManager()
+	{
+		objects = new ArrayList<Identifiable>(); // may be able to nix this entirely with involvement of server
+		register(this);
+	}
+
 	@Override
 	public int getNextId()
 	{
@@ -24,7 +40,7 @@ public class IdentifiableObjectManager implements IdentifiableObjectManagerInter
 	/**
 	 * @return the objects
 	 */
-	public ArrayList<Identifiable> getObjects()
+	public List<Identifiable> getObjects()
 	{
 		return objects;
 	}
@@ -37,11 +53,79 @@ public class IdentifiableObjectManager implements IdentifiableObjectManagerInter
 	{
 		return currentId;
 	}
-
+	
 	@Override
 	public void register(Identifiable object)
 	{
 		objects.add(object);
 	}
+	
+	public static record ResponseRecord(String request, boolean successful, String message, IdentifiableObjectManager data) {
+	}
+
+	public static final String RESOURCE = "identifiableObjectManager";
+	public static final String RESOURCE_DESC = "The ID manager for Branched Out";
+
+	public static IdentifiableObjectManager retrieve(int id)
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		try
+		{
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), IdentifiableObjectManager.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean store()
+	{
+		return RestUtilities.store(this, Company.class, RESOURCE, RESOURCE_DESC);
+	}
+
+	@Override
+	public int getId()
+	{
+		return id;
+	}
+
+	/**
+	 * @param objects the objects to set
+	 */
+	public void setObjects(List<Identifiable> objects)
+	{
+		this.objects = objects;
+	}
+
+	/**
+	 * @param currentId the currentId to set
+	 */
+	public void setCurrentId(int currentId)
+	{
+		this.currentId = currentId;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "IdentifiableObjectManager [currentId=" + currentId + ", id=" + id + "]";
+	}
+	
+	
 
 }

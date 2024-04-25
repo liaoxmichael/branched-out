@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.web.client.RestClient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.rest.ResponseObject;
 import models.rest.RestUtilities;
-import models.rest.Storable;
+import models.rest.RestReadyInterface;
 
-public class Page implements Identifiable, Storable // should be abstract; made concrete for testing
+public class Page implements Identifiable, RestReadyInterface // should be abstract; made concrete for testing
 {
 	int id;
 	@JsonIgnore
@@ -50,7 +49,7 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 		return id;
 	}
 
-	public record PageResponse(String request, boolean successful, String message, Page data) {
+	public static record ResponseRecord(String request, boolean successful, String message, Page data) {
 	}
 
 	public static final String RESOURCE = "pages";
@@ -58,32 +57,26 @@ public class Page implements Identifiable, Storable // should be abstract; made 
 
 	public static Page retrieve(int id)
 	{
-		RestClient client = RestClient.create();
-
-		if (RestUtilities.doesResourceExist(id, RESOURCE))
+		ObjectMapper mapper = new ObjectMapper();
+		try
 		{
-			PageResponse response = client.get()
-					.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(id))).retrieve()
-					.body(PageResponse.class);
-
-			return response.data;
+			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Page.class);
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// else
 		return null;
 	}
 
 	@Override
 	public boolean store()
 	{
-		RestClient client = RestClient.create();
-		if (!RestUtilities.doesResourceExist(RESOURCE))
-		{ // need to create the thing!
-			RestUtilities.createResource(RESOURCE, RESOURCE_DESC);
-		}
-		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, RESOURCE, String.valueOf(getId()))).body(this)
-				.retrieve().body(ResponseObject.class);
-		return result.successful();
+		return RestUtilities.store(this, Page.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	public void addEditor(User user)
