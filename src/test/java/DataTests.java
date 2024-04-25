@@ -56,49 +56,50 @@ class DataTests
 	{
 		testRecommender = new JobRecommender();
 
-		testManager = new IdentifiableObjectManager();
+		testManager = new IdentifiableObjectManager(); // 0
 		ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
+		objects.add((Identifiable) testManager);
 		assertEquals(objects, testManager.getObjects());
 
-		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 0
-		applePage = apple.getPage(); // 1
+		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
+		applePage = apple.getPage(); // 2
 		objects.add(apple);
 		objects.add(applePage);
 		assertEquals(objects, testManager.getObjects());
 
-		assertEquals(apple, testManager.getById(0));
-		assertEquals(applePage, testManager.getById(1));
+		assertEquals(apple, testManager.getById(1));
+		assertEquals(applePage, testManager.getById(2));
 
-		google = new Company("Google", "sundar.pichai@google.com", testManager); // 2
-		googlePage = google.getPage(); // 3
+		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
+		googlePage = google.getPage(); // 4
 		objects.add(google);
 		objects.add(googlePage);
+		assertEquals(objects, testManager.getObjects());
 
-		assertEquals(objects, testManager.getObjects()); // atp have checked multiple inputs!
+		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 5
+		alicePage = alice.getPage(); // 6
 
-		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 4
-		alicePage = alice.getPage(); // 5
+		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 7
+		bobPage = bob.getPage(); // 8
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 6
-		bobPage = bob.getPage(); // 7
+		java = new Skill("Java", testManager); // 9
+		javaPage = java.getPage(); // 10
 
-		java = new Skill("Java", testManager); // 8
-		javaPage = java.getPage(); // 9
+		python = new Skill("Python", testManager); // 11
+		pythonPage = python.getPage(); // 12
 
-		python = new Skill("Python", testManager); // 10
-		pythonPage = python.getPage(); // 11
+		helloWorld = new Project("Hello World", testManager); // 13
+		helloPage = helloWorld.getPage(); // 14
 
-		helloWorld = new Project("Hello World", testManager); // 12
-		helloPage = helloWorld.getPage(); // 13
-
-		myFirstProgram = new Project("My First Program", testManager); // 14
-		firstPage = myFirstProgram.getPage(); // 15
+		myFirstProgram = new Project("My First Program", testManager); // 15
+		firstPage = myFirstProgram.getPage(); // 16
 
 		// some spot checks on the array integrity
-		assertEquals(alicePage, testManager.getById(5));
-		assertEquals(java, testManager.getById(8));
-		assertEquals(python, testManager.getById(10));
-		assertEquals(firstPage, testManager.getById(15));
+		assertEquals(alice, testManager.getById(5));
+		assertEquals(alicePage, testManager.getById(6));
+		assertEquals(java, testManager.getById(9));
+		assertEquals(python, testManager.getById(11));
+		assertEquals(firstPage, testManager.getById(16));
 	}
 
 	@Test

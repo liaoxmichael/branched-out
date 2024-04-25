@@ -58,6 +58,7 @@ class RestUtilsTest
 		assertTrue(RestUtilities.createResource("test123", "testing"));
 		assertTrue(RestUtilities.doesResourceExist("test123"));
 		
+		// other utils should be tested in use
 	}
 
 }

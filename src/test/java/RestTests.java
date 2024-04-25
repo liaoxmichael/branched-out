@@ -59,7 +59,7 @@ class RestTests
 
 	Project myFirstProgram;
 	Page firstPage;
-	
+
 	JobPosting googleEngi;
 	JobPosting appleTech;
 
@@ -98,7 +98,7 @@ class RestTests
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Company c = client.get().uri(response.data().get(i).location()).retrieve()
-					.body(Company.CompanyResponse.class).data();
+					.body(Company.ResponseRecord.class).data();
 //			System.out.println(p);
 			assertEquals(list.get(i), c);
 		}
@@ -112,7 +112,7 @@ class RestTests
 		Response response = mapper.readValue(r, Response.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
-			Link l = client.get().uri(response.data().get(i).location()).retrieve().body(Link.LinkResponse.class)
+			Link l = client.get().uri(response.data().get(i).location()).retrieve().body(Link.ResponseRecord.class)
 					.data();
 //			System.out.println(p);
 			assertEquals(list.get(i), l);
@@ -127,7 +127,7 @@ class RestTests
 		Response response = mapper.readValue(r, Response.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
-			Page p = client.get().uri(response.data().get(i).location()).retrieve().body(Page.PageResponse.class)
+			Page p = client.get().uri(response.data().get(i).location()).retrieve().body(Page.ResponseRecord.class)
 					.data();
 //			System.out.println(p);
 			assertEquals(list.get(i), p);
@@ -142,7 +142,7 @@ class RestTests
 		Response response = mapper.readValue(r, Response.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
-			Person p = client.get().uri(response.data().get(i).location()).retrieve().body(Person.PersonResponse.class)
+			Person p = client.get().uri(response.data().get(i).location()).retrieve().body(Person.ResponseRecord.class)
 					.data();
 //			System.out.println(p);
 			assertEquals(list.get(i), p);
@@ -158,7 +158,7 @@ class RestTests
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			Project p = client.get().uri(response.data().get(i).location()).retrieve()
-					.body(Project.ProjectResponse.class).data();
+					.body(Project.ResponseRecord.class).data();
 //			System.out.println(p);
 			assertEquals(list.get(i), p);
 		}
@@ -172,9 +172,12 @@ class RestTests
 		Response response = mapper.readValue(r, Response.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
-			Skill s = client.get().uri(response.data().get(i).location()).retrieve().body(Skill.SkillResponse.class)
+			Skill s = client.get().uri(response.data().get(i).location()).retrieve().body(Skill.ResponseRecord.class)
 					.data();
+//			String p = client.get().uri(response.data().get(i).location()).retrieve().body(String.class);
 //			System.out.println(p);
+//			Skill.ResponseRecord rr = mapper.readValue(p, Skill.ResponseRecord.class);
+//			Skill s = rr.data();
 			assertEquals(list.get(i), s);
 		}
 	}
@@ -188,7 +191,7 @@ class RestTests
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			SkillProficiency sp = client.get().uri(response.data().get(i).location()).retrieve()
-					.body(SkillProficiency.SkillProficiencyResponse.class).data();
+					.body(SkillProficiency.ResponseRecord.class).data();
 //			System.out.println(p);
 			assertEquals(list.get(i), sp);
 		}
@@ -203,12 +206,12 @@ class RestTests
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			WorkExperience we = client.get().uri(response.data().get(i).location()).retrieve()
-					.body(WorkExperience.WorkExperienceResponse.class).data();
+					.body(WorkExperience.ResponseRecord.class).data();
 //			System.out.println(p);
 			assertEquals(list.get(i), we);
 		}
 	}
-	
+
 	void checkJobPostings(ArrayList<JobPosting> list) throws JsonMappingException, JsonProcessingException
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)).retrieve()
@@ -218,7 +221,7 @@ class RestTests
 		for (int i = 0; i < response.data().size(); i++)
 		{
 			JobPosting jp = client.get().uri(response.data().get(i).location()).retrieve()
-					.body(JobPosting.JobPostingResponse.class).data();
+					.body(JobPosting.ResponseRecord.class).data();
 //			System.out.println(p);
 			assertEquals(list.get(i), jp);
 		}
@@ -251,49 +254,49 @@ class RestTests
 		create(team, RestUtilities.TEAM_URI);
 
 		// instantiating all the objects to test with
-		testManager = new IdentifiableObjectManager();
+		testManager = new IdentifiableObjectManager(); // 0
 		testRecommender = new JobRecommender();
 
-		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 0
-		applePage = apple.getPage(); // 1
+		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
+		applePage = apple.getPage(); // 2
 
-		google = new Company("Google", "sundar.pichai@google.com", testManager); // 2
-		googlePage = google.getPage(); // 3
+		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
+		googlePage = google.getPage(); // 4
 
-		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 4
-		alicePage = alice.getPage(); // 5
+		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 5
+		alicePage = alice.getPage(); // 6
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 6
-		bobPage = bob.getPage(); // 7
+		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 7
+		bobPage = bob.getPage(); // 8
 
-		java = new Skill("Java", testManager); // 8
-		javaPage = java.getPage(); // 9
+		java = new Skill("Java", testManager); // 9
+		javaPage = java.getPage(); // 10
 
-		python = new Skill("Python", testManager); // 10
-		pythonPage = python.getPage(); // 11
+		python = new Skill("Python", testManager); // 11
+		pythonPage = python.getPage(); // 12
 
-		helloWorld = new Project("Hello World", testManager); // 12
-		helloPage = helloWorld.getPage(); // 13
+		helloWorld = new Project("Hello World", testManager); // 13
+		helloPage = helloWorld.getPage(); // 14
 
-		myFirstProgram = new Project("My First Program", testManager); // 14
-		firstPage = myFirstProgram.getPage(); // 15
+		myFirstProgram = new Project("My First Program", testManager); // 15
+		firstPage = myFirstProgram.getPage(); // 16
 	}
 
 	@Test
 	void testJobPostings() throws JsonMappingException, JsonProcessingException
 	{
-		googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager); // 16
-		
-		appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager); // 19
-		
+		googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager); // 17
+
+		appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager); // 21
+
 		ArrayList<JobPosting> jobPostings = new ArrayList<JobPosting>();
 		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)));
 
 		assertTrue(googleEngi.store()); // should create the directory AND add it
 		jobPostings.add(googleEngi);
 
-		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE))); // check if directory
-																									// exists
+		// check if directory exists
+		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE))); 
 		checkJobPostings(jobPostings);
 
 		assertFalse(googleEngi.store()); // shouldn't be able to store something already stored
@@ -303,15 +306,15 @@ class RestTests
 		checkJobPostings(jobPostings);
 
 		// testing retrieval
-		assertEquals(googleEngi, JobPosting.retrieve(16));
-		assertEquals(appleTech, JobPosting.retrieve(19));
+		assertEquals(googleEngi, JobPosting.retrieve(17));
+		assertEquals(appleTech, JobPosting.retrieve(21));
 
 		assertNull(JobPosting.retrieve(10)); // something that hasn't been stored yet; should return null as failure
 
 		// let's store something that isn't a company and try to retrieve it using
 		// Page.retrieve
 		assertTrue(applePage.store());
-		assertNull(JobPosting.retrieve(1)); // company != page
+		assertNull(JobPosting.retrieve(2)); // company != page
 
 		assertNull(JobPosting.retrieve(-1)); // should not exist
 	}
@@ -339,15 +342,15 @@ class RestTests
 		checkCompanies(companies);
 
 		// testing retrieval
-		assertEquals(apple, Company.retrieve(0)); // recall - apple id = 0
-		assertEquals(google, Company.retrieve(2));
+		assertEquals(apple, Company.retrieve(1)); // recall - apple id = 1
+		assertEquals(google, Company.retrieve(3));
 
 		assertNull(Company.retrieve(10)); // something that hasn't been stored yet; should return null as failure
 
 		// let's store something that isn't a company and try to retrieve it using
 		// Page.retrieve
 		assertTrue(applePage.store());
-		assertNull(Company.retrieve(1)); // company != page
+		assertNull(Company.retrieve(2)); // company != page
 
 		assertNull(Company.retrieve(-1)); // should not exist
 	}
@@ -358,8 +361,8 @@ class RestTests
 		ArrayList<Link> links = new ArrayList<Link>();
 
 		// need to make some links to test!
-		Link aliceMentor = new Link(alicePage, Link.RelationshipType.MENTOR_PERSON, testManager); // 16
-		Link bobMentor = new Link(bobPage, Link.RelationshipType.MENTOR_PERSON, testManager); // 17
+		Link aliceMentor = new Link(alicePage, Link.RelationshipType.MENTOR_PERSON, testManager); // 17
+		Link bobMentor = new Link(bobPage, Link.RelationshipType.MENTOR_PERSON, testManager); // 18
 
 		// testing storage
 		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)));
@@ -377,13 +380,13 @@ class RestTests
 		checkLinks(links);
 
 		// testing retrieval
-		assertEquals(aliceMentor, Link.retrieve(16));
-		assertEquals(bobMentor, Link.retrieve(17));
+		assertEquals(aliceMentor, Link.retrieve(17));
+		assertEquals(bobMentor, Link.retrieve(18));
 
 		assertNull(Link.retrieve(10));
 
 		assertTrue(applePage.store());
-		assertNull(Link.retrieve(1)); // link != page
+		assertNull(Link.retrieve(2)); // link != page
 
 		assertNull(Link.retrieve(-1));
 	}
@@ -399,8 +402,8 @@ class RestTests
 		assertTrue(applePage.store());
 		pages.add(applePage);
 
-		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Page.RESOURCE))); // check if directory
-																								// exists
+		// check if directory exists
+		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Page.RESOURCE)));
 		checkPages(pages);
 
 		assertFalse(applePage.store());
@@ -410,13 +413,13 @@ class RestTests
 		checkPages(pages);
 
 		// testing retrieval
-		assertEquals(applePage, Page.retrieve(1)); // recall - applePage id = 1
-		assertEquals(googlePage, Page.retrieve(3));
+		assertEquals(applePage, Page.retrieve(2)); // recall - applePage id = 2
+		assertEquals(googlePage, Page.retrieve(4));
 
 		assertNull(Page.retrieve(10));
 
 		assertTrue(apple.store()); // hehe apple store
-		assertNull(Page.retrieve(0)); // page != company
+		assertNull(Page.retrieve(1)); // page != company
 
 		assertNull(Page.retrieve(-1));
 	}
@@ -442,13 +445,13 @@ class RestTests
 		checkPeople(people);
 
 		// testing retrieval
-		assertEquals(alice, Person.retrieve(4));
-		assertEquals(bob, Person.retrieve(6));
+		assertEquals(alice, Person.retrieve(5));
+		assertEquals(bob, Person.retrieve(7));
 
 		assertNull(Person.retrieve(10));
 
 		assertTrue(applePage.store());
-		assertNull(Person.retrieve(1)); // person != page
+		assertNull(Person.retrieve(2)); // person != page
 
 		assertNull(Person.retrieve(-1));
 	}
@@ -474,13 +477,13 @@ class RestTests
 		checkProjects(projects);
 
 		// testing retrieval
-		assertEquals(helloWorld, Project.retrieve(12));
-		assertEquals(myFirstProgram, Project.retrieve(14));
+		assertEquals(helloWorld, Project.retrieve(13));
+		assertEquals(myFirstProgram, Project.retrieve(15));
 
 		assertNull(Project.retrieve(10));
 
 		assertTrue(applePage.store());
-		assertNull(Project.retrieve(1)); // project != page
+		assertNull(Project.retrieve(2)); // project != page
 
 		assertNull(Project.retrieve(-1));
 	}
@@ -502,17 +505,17 @@ class RestTests
 		assertFalse(java.store());
 
 		assertTrue(python.store());
-		skills.add(python);
+		skills.add(0, python); // need to insert earlier -- alphabetically 11 comes before 9
 		checkSkills(skills);
 
 		// testing retrieval
-		assertEquals(java, Skill.retrieve(8));
-		assertEquals(python, Skill.retrieve(10));
+		assertEquals(java, Skill.retrieve(9));
+		assertEquals(python, Skill.retrieve(11));
 
-		assertNull(Skill.retrieve(9));
+		assertNull(Skill.retrieve(10));
 
 		assertTrue(applePage.store());
-		assertNull(Skill.retrieve(1)); // skill != page
+		assertNull(Skill.retrieve(2)); // skill != page
 
 		assertNull(Skill.retrieve(-1));
 	}
@@ -524,11 +527,11 @@ class RestTests
 
 		// need to make some profs to test!
 		SkillProficiency javaExperienced = new SkillProficiency(java, SkillProficiency.ProficiencyLevel.ADVANCED,
-				testManager); // 16
-		SkillProficiency pythonExperienced = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.ADVANCED,
 				testManager); // 17
-		SkillProficiency pythonBeginner = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.BEGINNER,
+		SkillProficiency pythonExperienced = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.ADVANCED,
 				testManager); // 18
+		SkillProficiency pythonBeginner = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.BEGINNER,
+				testManager); // 19
 
 		// testing storage
 		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, SkillProficiency.RESOURCE)));
@@ -552,14 +555,14 @@ class RestTests
 		checkSkillProficiencies(profs);
 
 		// testing retrieval
-		assertEquals(javaExperienced, SkillProficiency.retrieve(16));
-		assertEquals(pythonExperienced, SkillProficiency.retrieve(17));
-		assertEquals(pythonBeginner, SkillProficiency.retrieve(18));
+		assertEquals(javaExperienced, SkillProficiency.retrieve(17));
+		assertEquals(pythonExperienced, SkillProficiency.retrieve(18));
+		assertEquals(pythonBeginner, SkillProficiency.retrieve(19));
 
 		assertNull(SkillProficiency.retrieve(9));
 
 		assertTrue(applePage.store());
-		assertNull(SkillProficiency.retrieve(1)); // skill proficiency != page
+		assertNull(SkillProficiency.retrieve(2)); // skill proficiency != page
 
 		assertNull(SkillProficiency.retrieve(-1));
 	}
@@ -571,9 +574,9 @@ class RestTests
 
 		// need to make some jobs to test!
 		WorkExperience mobileUX = new WorkExperience("Mobile UX Design Lead", "Crafted new Apple layout for home page.",
-				apple, testManager); // 16
+				apple, testManager); // 17
 		WorkExperience bardEngineer = new WorkExperience("Bard ML Engineer", "Launched the beta chatbot Bard.", google,
-				testManager); // 18 because 17 taken by Link created
+				testManager); // 19 because 18 taken by Link created
 
 		// testing storage
 		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, WorkExperience.RESOURCE)));
@@ -591,13 +594,13 @@ class RestTests
 		checkWorkExperiences(jobs);
 
 		// testing retrieval
-		assertEquals(mobileUX, WorkExperience.retrieve(16));
-		assertEquals(bardEngineer, WorkExperience.retrieve(18));
+		assertEquals(mobileUX, WorkExperience.retrieve(17));
+		assertEquals(bardEngineer, WorkExperience.retrieve(19));
 
 		assertNull(WorkExperience.retrieve(9));
 
 		assertTrue(applePage.store());
-		assertNull(WorkExperience.retrieve(1)); // work experience != page
+		assertNull(WorkExperience.retrieve(2)); // work experience != page
 
 		assertNull(WorkExperience.retrieve(-1));
 	}
