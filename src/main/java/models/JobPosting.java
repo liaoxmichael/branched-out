@@ -9,9 +9,9 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.recommender.JobRecommenderInterface;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.recommender.RecommendAll;
@@ -35,9 +35,6 @@ public class JobPosting extends Post implements RestReadyInterface
 	@JsonIgnore // this is a bad workaround but it is 3 am and i don't know how to fix
 	RecommendationStrategy strategy;
 
-	@JsonIgnore
-	JobRecommenderInterface recommender;
-
 	public JobPosting()
 	{
 	}
@@ -47,8 +44,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	 * @param company
 	 * @param manager
 	 */
-	public JobPosting(String title, Company company, JobRecommenderInterface recommender,
-			IdentifiableObjectManagerInterface manager)
+	public JobPosting(String title, Company company, IdentifiableObjectManagerInterface manager)
 	{
 		super(title, manager);
 		// initializing with a single-item array to match type but fix size
@@ -62,12 +58,17 @@ public class JobPosting extends Post implements RestReadyInterface
 
 		requiredSkills = new ArrayList<SkillProficiency>();
 		strategy = new RecommendAll(); // by default -- can be changed later
-		this.recommender = recommender;
 	}
 
-	public void recommendJob()
+	public void recommendJob(List<Person> people)
 	{
-		recommender.recommend(this);
+		for (Person p : people)
+		{
+			if (p.isOpenToWork() && strategy.check(p, this))
+			{
+				p.addJobPosting(this);
+			}
+		}
 	}
 
 	public SkillProficiency addRequiredSkill(Skill skill, SkillProficiency.ProficiencyLevel level)
@@ -111,6 +112,30 @@ public class JobPosting extends Post implements RestReadyInterface
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static List<JobPosting> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<JobPosting> list = new ArrayList<JobPosting>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, JobPosting.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
@@ -261,22 +286,6 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setStrategy(RecommendationStrategy strategy)
 	{
 		this.strategy = strategy;
-	}
-
-	/**
-	 * @return the recommender
-	 */
-	public JobRecommenderInterface getRecommender()
-	{
-		return recommender;
-	}
-
-	/**
-	 * @param recommender the recommender to set
-	 */
-	public void setRecommender(JobRecommenderInterface recommender)
-	{
-		this.recommender = recommender;
 	}
 
 	@Override

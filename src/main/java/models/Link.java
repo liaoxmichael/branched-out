@@ -1,9 +1,12 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestReadyInterface;
@@ -25,9 +28,9 @@ public class Link implements Identifiable, RestReadyInterface
 		FOLLOWING_USER, FOLLOWER_USER, MENTOR_PERSON, CONTRIBUTOR_PERSON, COORDINATOR_PERSON, JOB_APPLICANT_PERSON,
 
 		FROM_COMPANY,
-		
+
 		HAS_OPENING,
-		
+
 		RECOMMENDED_JOB,
 	}
 
@@ -100,6 +103,30 @@ public class Link implements Identifiable, RestReadyInterface
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static List<Link> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<Link> list = new ArrayList<Link>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, Link.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override

@@ -1,9 +1,12 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
@@ -64,6 +67,30 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static List<SkillProficiency> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<SkillProficiency> list = new ArrayList<SkillProficiency>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, SkillProficiency.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override

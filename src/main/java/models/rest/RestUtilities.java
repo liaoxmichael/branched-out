@@ -1,23 +1,26 @@
 package models.rest;
 
-import java.util.Map;
-import static java.util.Map.entry;
+import java.util.ArrayList;
+import java.util.List;
+
+//import java.util.Map;
+//import static java.util.Map.entry;
 
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import models.Company;
+//import models.Company;
 import models.Identifiable;
-import models.IdentifiableObjectManager;
-import models.JobPosting;
-import models.Link;
-import models.Page;
-import models.Person;
-import models.Project;
-import models.Skill;
-import models.SkillProficiency;
-import models.WorkExperience;
+//import models.IdentifiableObjectManager;
+//import models.JobPosting;
+//import models.Link;
+//import models.Page;
+//import models.Person;
+//import models.Project;
+//import models.Skill;
+//import models.SkillProficiency;
+//import models.WorkExperience;
 
 public final class RestUtilities
 {
@@ -59,7 +62,7 @@ public final class RestUtilities
 		}
 		return result;
 	}
-	
+
 //	public static Class<?> classToRecord(Class<?> target)
 //	{
 //		return classToRecordMap.get(target);
@@ -111,7 +114,27 @@ public final class RestUtilities
 		// else
 		return null;
 	}
-	
+
+	public static List<JsonNode> retrieveAll(String resourceName)
+	{
+		RestClient client = RestClient.create();
+
+		List<JsonNode> list = new ArrayList<JsonNode>();
+
+		if (RestUtilities.doesResourceExist(resourceName))
+		{
+			ResponseListData response = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName))
+					.retrieve().body(ResponseListData.class);
+			for (int i = 0; i < response.data().size(); i++)
+			{
+				ResponseData d = response.data().get(i);
+				ResponseNode n = client.get().uri(d.location()).retrieve().body(ResponseNode.class);
+				list.add(n.data());
+			}
+		}
+		return list;
+	}
+
 	public static boolean store(Identifiable obj, Class<?> targetClass, String resourceName, String resourceDesc)
 	{
 		RestClient client = RestClient.create();
@@ -120,8 +143,8 @@ public final class RestUtilities
 			RestUtilities.createResource(resourceName, resourceDesc);
 		}
 		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId()))).body(targetClass.cast(obj))
-				.retrieve().body(ResponseObject.class);
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId())))
+				.body(targetClass.cast(obj)).retrieve().body(ResponseObject.class);
 		return result.successful();
 	}
 }

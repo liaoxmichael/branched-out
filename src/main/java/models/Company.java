@@ -1,12 +1,13 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
-
 
 public class Company extends User
 {
@@ -82,6 +83,30 @@ public class Company extends User
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static List<Company> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<Company> list = new ArrayList<Company>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, Company.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
