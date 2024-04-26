@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 {
 
 	int id;
-	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 	public enum ProficiencyLevel {

@@ -72,6 +72,7 @@ public class Company extends User
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill in page
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Company.class);
 		} catch (JsonProcessingException e)
 		{

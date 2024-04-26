@@ -92,6 +92,7 @@ public class Link implements Identifiable, RestReadyInterface
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill back in Page
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Link.class);
 		} catch (JsonProcessingException e)
 		{

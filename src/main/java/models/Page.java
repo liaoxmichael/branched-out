@@ -61,6 +61,7 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill in Entity, Editors, Viewers
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Page.class);
 		} catch (JsonProcessingException e)
 		{

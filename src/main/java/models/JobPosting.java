@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.recommender.JobSite;
 import models.recommender.JobType;
-import models.recommender.RecommendAll;
 import models.recommender.RecommendationStrategy;
+import models.recommender.RecommendationStrategyKind;
+import models.recommender.StrategyFactory;
 import models.rest.RestUtilities;
 import models.rest.RestReadyInterface;
 
@@ -32,8 +32,7 @@ public class JobPosting extends Post implements RestReadyInterface
 
 	List<SkillProficiency> requiredSkills;
 
-	@JsonIgnore // this is a bad workaround but it is 3 am and i don't know how to fix
-	RecommendationStrategy strategy;
+	RecommendationStrategyKind strategyKind;
 
 	public JobPosting()
 	{
@@ -57,11 +56,12 @@ public class JobPosting extends Post implements RestReadyInterface
 		links.put("applicants", new ArrayList<Link>());
 
 		requiredSkills = new ArrayList<SkillProficiency>();
-		strategy = new RecommendAll(); // by default -- can be changed later
+		strategyKind = RecommendationStrategyKind.ALL; // by default -- can be changed later
 	}
 
 	public void recommendJob(List<Person> people)
 	{
+		RecommendationStrategy strategy = StrategyFactory.constructStrategy(strategyKind);
 		for (Person p : people)
 		{
 			if (p.isOpenToWork() && strategy.check(p, this))
@@ -273,19 +273,19 @@ public class JobPosting extends Post implements RestReadyInterface
 	}
 
 	/**
-	 * @return the strategy
+	 * @return the strategyKind
 	 */
-	public RecommendationStrategy getStrategy()
+	public RecommendationStrategyKind getStrategyKind()
 	{
-		return strategy;
+		return strategyKind;
 	}
 
 	/**
-	 * @param strategy the strategy to set
+	 * @param strategyKind the strategyKind to set
 	 */
-	public void setStrategy(RecommendationStrategy strategy)
+	public void setStrategyKind(RecommendationStrategyKind strategyKind)
 	{
-		this.strategy = strategy;
+		this.strategyKind = strategyKind;
 	}
 
 	@Override

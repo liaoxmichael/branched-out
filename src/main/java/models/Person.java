@@ -173,6 +173,7 @@ public class Person extends User implements RestReadyInterface
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill in page
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Person.class);
 		} catch (JsonProcessingException e)
 		{

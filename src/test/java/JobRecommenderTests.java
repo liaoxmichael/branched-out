@@ -16,9 +16,7 @@ import models.Skill;
 import models.SkillProficiency;
 import models.recommender.JobSite;
 import models.recommender.JobType;
-import models.recommender.RecommendBySitePreference;
-import models.recommender.RecommendBySkill;
-import models.recommender.RecommendByTypePreference;
+import models.recommender.RecommendationStrategyKind;
 
 class JobRecommenderTests
 {
@@ -116,8 +114,8 @@ class JobRecommenderTests
 	@Test
 	void testRecomendBySitePreference()
 	{
-		googleEngi.setStrategy(new RecommendBySitePreference());
-		appleTech.setStrategy(new RecommendBySitePreference());
+		googleEngi.setStrategyKind(RecommendationStrategyKind.BY_SITE);
+		appleTech.setStrategyKind(RecommendationStrategyKind.BY_SITE);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -206,8 +204,8 @@ class JobRecommenderTests
 	@Test
 	void testRecommendByTypePreference()
 	{
-		googleEngi.setStrategy(new RecommendByTypePreference());
-		appleTech.setStrategy(new RecommendByTypePreference());
+		googleEngi.setStrategyKind(RecommendationStrategyKind.BY_TYPE);
+		appleTech.setStrategyKind(RecommendationStrategyKind.BY_TYPE);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -296,8 +294,8 @@ class JobRecommenderTests
 	@Test
 	void testRecommendBySkill()
 	{
-		googleEngi.setStrategy(new RecommendBySkill());
-		appleTech.setStrategy(new RecommendBySkill());
+		googleEngi.setStrategyKind(RecommendationStrategyKind.BY_SKILL);
+		appleTech.setStrategyKind(RecommendationStrategyKind.BY_SKILL);
 
 		ArrayList<SkillProficiency> googleEngiSkills = new ArrayList<SkillProficiency>();
 		ArrayList<SkillProficiency> appleTechSkills = new ArrayList<SkillProficiency>();

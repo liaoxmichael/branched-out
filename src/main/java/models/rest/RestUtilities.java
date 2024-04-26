@@ -3,24 +3,24 @@ package models.rest;
 import java.util.ArrayList;
 import java.util.List;
 
-//import java.util.Map;
-//import static java.util.Map.entry;
+import java.util.Map;
+import static java.util.Map.entry;
 
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-//import models.Company;
+import models.Company;
 import models.Identifiable;
-//import models.IdentifiableObjectManager;
-//import models.JobPosting;
-//import models.Link;
-//import models.Page;
-//import models.Person;
-//import models.Project;
-//import models.Skill;
-//import models.SkillProficiency;
-//import models.WorkExperience;
+import models.IdentifiableObjectManager;
+import models.JobPosting;
+import models.Link;
+import models.Page;
+import models.Person;
+import models.Project;
+import models.Skill;
+import models.SkillProficiency;
+import models.WorkExperience;
 
 public final class RestUtilities
 {
@@ -33,15 +33,15 @@ public final class RestUtilities
 	public static final String TEAM_URI = join(BASE_URI, TEAM_NAME);
 
 	// this is worthless
-//	public static Map<Class<?>, Class<?>> classToRecordMap = Map.ofEntries(
-//			entry(Company.class, Company.ResponseRecord.class),
-//			entry(JobPosting.class, JobPosting.ResponseRecord.class),
-//			entry(IdentifiableObjectManager.class, IdentifiableObjectManager.ResponseRecord.class),
-//			entry(Link.class, Link.ResponseRecord.class), entry(Page.class, Page.ResponseRecord.class),
-//			entry(Person.class, Person.ResponseRecord.class), entry(Project.class, Project.ResponseRecord.class),
-//			entry(Skill.class, Skill.ResponseRecord.class),
-//			entry(SkillProficiency.class, SkillProficiency.ResponseRecord.class),
-//			entry(WorkExperience.class, WorkExperience.ResponseRecord.class));
+	public static Map<Class<?>, Class<?>> classToRecordMap = Map.ofEntries(
+			entry(Company.class, Company.ResponseRecord.class),
+			entry(JobPosting.class, JobPosting.ResponseRecord.class),
+			entry(IdentifiableObjectManager.class, IdentifiableObjectManager.ResponseRecord.class),
+			entry(Link.class, Link.ResponseRecord.class), entry(Page.class, Page.ResponseRecord.class),
+			entry(Person.class, Person.ResponseRecord.class), entry(Project.class, Project.ResponseRecord.class),
+			entry(Skill.class, Skill.ResponseRecord.class),
+			entry(SkillProficiency.class, SkillProficiency.ResponseRecord.class),
+			entry(WorkExperience.class, WorkExperience.ResponseRecord.class));
 
 	private RestUtilities()
 	{
@@ -63,10 +63,10 @@ public final class RestUtilities
 		return result;
 	}
 
-//	public static Class<?> classToRecord(Class<?> target)
-//	{
-//		return classToRecordMap.get(target);
-//	}
+	public static Class<?> classToRecord(Class<?> target)
+	{
+		return classToRecordMap.get(target);
+	}
 
 	public static boolean doesResourceExist(int id, String resource)
 	{

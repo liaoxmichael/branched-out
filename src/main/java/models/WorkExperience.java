@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +24,6 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	String title;
 	String description;
 
-	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 //	LocalDate startDate;

@@ -74,7 +74,8 @@ public class Skill extends Post implements RestReadyInterface
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
+				// need to fill in page
 				list.add(mapper.treeToValue(n, Skill.class));
 			}
 		} catch (JsonProcessingException e)
