@@ -4,23 +4,23 @@ import java.io.IOException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import models.BranchedOutModel;
-import models.TransitionalViewModel;
+import models.Entity;
+import models.ViewTransitionHandler;
 
 public class LoginController
 {
-	TransitionalViewModel tvm;
-	BranchedOutModel model;
+	ViewTransitionHandler viewModel;
+	Entity dataModel;
 
-	public void setModels(BranchedOutModel newModel, TransitionalViewModel tvm)
+	public void setModels(Entity newModel, ViewTransitionHandler viewModel)
 	{
-		this.tvm = tvm;
-		model = newModel;
+		this.viewModel = viewModel;
+		dataModel = newModel;
 	}
 	
     @FXML
     void onClickLogin(ActionEvent event) throws IOException {
-    	tvm.showMain();
+    	viewModel.showMain();
     }
 	
 }

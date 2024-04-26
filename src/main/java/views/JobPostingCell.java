@@ -6,11 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
-import models.TestJobPostingModel;
-import models.TransitionalViewModel;
+import models.JobPosting;
 import models.ViewTransitionHandler;
 
-public class JobPostingCell extends ListCell<TestJobPostingModel>
+public class JobPostingCell extends ListCell<JobPosting>
 {
 	
 	AnchorPane view;
@@ -18,9 +17,9 @@ public class JobPostingCell extends ListCell<TestJobPostingModel>
 	JobPostingCellController controller;
 	ViewTransitionHandler model;
 	
-	public JobPostingCell(ListView<TestJobPostingModel> view, TransitionalViewModel model) throws IOException {
+	public JobPostingCell(ListView<JobPosting> view, ViewTransitionHandler model) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(TransitionalViewModel.class.getResource("../views/JobPostingCellView.fxml")); 
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/JobPostingCellView.fxml")); 
 
 		this.view = loader.load();
 		this.model = model;
@@ -31,7 +30,7 @@ public class JobPostingCell extends ListCell<TestJobPostingModel>
 	}
 	
 	@Override
-	protected void updateItem(TestJobPostingModel item, boolean empty) 
+	protected void updateItem(JobPosting item, boolean empty) 
 	{
 		job = item;
 		

@@ -39,11 +39,11 @@ public class ViewTransitionHandler
 		controller.setModels(dataModel, this);
 	}
 
-	public void showSearchDisplay() throws IOException
+	public void showSearchDisplay() throws IOException // possible enum?
 	{
 		// set center to display list of job postings
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(TransitionalViewModel.class.getResource("../views/SearchDisplayView.fxml"));
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/SearchDisplayView.fxml"));
 
 		ScrollPane view = loader.load();
 
@@ -53,11 +53,11 @@ public class ViewTransitionHandler
 
 	}
 
-	public void showProfile() throws IOException
+	public void showProfile(User user) throws IOException
 	{
 		// set center to user profile
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(TransitionalViewModel.class.getResource("../views/UserView.fxml"));
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/UserView.fxml"));
 
 		ScrollPane view = loader.load();
 
@@ -67,11 +67,11 @@ public class ViewTransitionHandler
 		controller.loadData();
 	}
 
-	public void showSkill() throws IOException
+	public void showSkill(Skill skill) throws IOException
 	{
 		// show skill page from user profile
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(TransitionalViewModel.class.getResource("../views/SkillView.fxml"));
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/SkillView.fxml"));
 
 		ScrollPane view = loader.load();
 
@@ -81,11 +81,11 @@ public class ViewTransitionHandler
 		//controller.loadData(); // TODO
 	}
 
-	public void showJobPosting(TestJobPostingModel job) throws IOException
+	public void showJobPosting(JobPosting job) throws IOException
 	{
 		// TODO takes us from display job postings to job posting page
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(TransitionalViewModel.class.getResource("../views/JobPostingView.fxml"));
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/JobPostingView.fxml"));
 
 		ScrollPane view = loader.load();
 
