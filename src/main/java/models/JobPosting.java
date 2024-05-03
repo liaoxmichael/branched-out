@@ -16,6 +16,7 @@ import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.recommender.RecommendAll;
 import models.recommender.RecommendationStrategy;
+import models.recommender.RecommendationStrategyKind;
 import models.rest.RestUtilities;
 import models.rest.RestReadyInterface;
 
@@ -32,8 +33,7 @@ public class JobPosting extends Post implements RestReadyInterface
 
 	List<SkillProficiency> requiredSkills;
 
-	@JsonIgnore // this is a bad workaround but it is 3 am and i don't know how to fix
-	RecommendationStrategy strategy;
+	RecommendationStrategyKind strategyKind;
 
 	@JsonIgnore
 	JobRecommenderInterface recommender;
@@ -61,7 +61,7 @@ public class JobPosting extends Post implements RestReadyInterface
 		links.put("applicants", new ArrayList<Link>());
 
 		requiredSkills = new ArrayList<SkillProficiency>();
-		strategy = new RecommendAll(); // by default -- can be changed later
+		strategyKind = RecommendationStrategyKind.ALL; // by default -- can be changed later
 		this.recommender = recommender;
 	}
 
@@ -248,19 +248,19 @@ public class JobPosting extends Post implements RestReadyInterface
 	}
 
 	/**
-	 * @return the strategy
+	 * @return the strategyKind
 	 */
-	public RecommendationStrategy getStrategy()
+	public RecommendationStrategyKind getStrategyKind()
 	{
-		return strategy;
+		return strategyKind;
 	}
 
 	/**
-	 * @param strategy the strategy to set
+	 * @param strategyKind the strategyKind to set
 	 */
-	public void setStrategy(RecommendationStrategy strategy)
+	public void setStrategyKind(RecommendationStrategyKind strategyKind)
 	{
-		this.strategy = strategy;
+		this.strategyKind = strategyKind;
 	}
 
 	/**

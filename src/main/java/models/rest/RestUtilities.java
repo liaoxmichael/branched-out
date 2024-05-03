@@ -1,23 +1,23 @@
 package models.rest;
 
-import java.util.Map;
-import static java.util.Map.entry;
-
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import models.Company;
 import models.Identifiable;
-import models.IdentifiableObjectManager;
-import models.JobPosting;
-import models.Link;
-import models.Page;
-import models.Person;
-import models.Project;
-import models.Skill;
-import models.SkillProficiency;
-import models.WorkExperience;
+
+//import java.util.Map;
+//import static java.util.Map.entry;
+//import models.Company;
+//import models.IdentifiableObjectManager;
+//import models.JobPosting;
+//import models.Link;
+//import models.Page;
+//import models.Person;
+//import models.Project;
+//import models.Skill;
+//import models.SkillProficiency;
+//import models.WorkExperience;
 
 public final class RestUtilities
 {

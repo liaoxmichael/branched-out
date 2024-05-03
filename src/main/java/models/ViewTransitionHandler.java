@@ -23,75 +23,115 @@ public class ViewTransitionHandler
 		dataModel = model;
 	}
 
-	public void showMain() throws IOException
+	public void showMain()
 	{
 		// set mainview to dashboard
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ViewTransitionHandler.class.getResource("../views/MainView.fxml"));
 
-		Pane view = loader.load();
+		Pane view;
+		try
+		{
+			view = loader.load();
 
-		MainController controller = loader.getController();
-		mainview.setTop(null);
-		mainview.setCenter(view);
-		mainview = (BorderPane) view; // reset mainview to take perspective of actual Main (w/ nav bar) instead of
-										// LoginView
-		controller.setModels(dataModel, this);
+			MainController controller = loader.getController();
+			mainview.setTop(null);
+			mainview.setCenter(view);
+			mainview = (BorderPane) view; // reset mainview to take perspective of actual Main (w/ nav bar) instead of
+											// LoginView
+			controller.setModels(dataModel, this);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void showSearchDisplay() throws IOException // possible enum?
+	public void showSearchDisplay() // possible enum for classes?
 	{
 		// set center to display list of job postings
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ViewTransitionHandler.class.getResource("../views/SearchDisplayView.fxml"));
 
-		ScrollPane view = loader.load();
-
-		SearchDisplayController controller = loader.getController();
-		mainview.setCenter(view);
-		controller.setModels(model, this);
+		ScrollPane view;
+		try
+		{
+			view = loader.load();
+			
+			SearchDisplayController controller = loader.getController();
+			mainview.setCenter(view);
+//			controller.setModels(model, this);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	public void showProfile(User user) throws IOException
+	public void showProfile(User user)
 	{
 		// set center to user profile
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ViewTransitionHandler.class.getResource("../views/UserView.fxml"));
 
-		ScrollPane view = loader.load();
-
-		UserController controller = loader.getController();
-		mainview.setCenter(view);
-		controller.setModels(model, this);
-		controller.loadData();
+		ScrollPane view;
+		try
+		{
+			view = loader.load();
+			
+			UserController controller = loader.getController();
+			mainview.setCenter(view);
+//			controller.setModels(model, this);
+//			controller.loadData();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void showSkill(Skill skill) throws IOException
+	public void showSkill(Skill skill)
 	{
 		// show skill page from user profile
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ViewTransitionHandler.class.getResource("../views/SkillView.fxml"));
 
-		ScrollPane view = loader.load();
-
-		SkillController controller = loader.getController();
-		mainview.setCenter(view);
-		controller.setModels(model, this);
-		//controller.loadData(); // TODO
+		ScrollPane view;
+		try
+		{
+			view = loader.load();
+			
+			SkillController controller = loader.getController();
+			mainview.setCenter(view);
+//			controller.setModels(model, this);
+			// controller.loadData(); // TODO
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void showJobPosting(JobPosting job) throws IOException
+	public void showJobPosting(JobPosting job)
 	{
 		// TODO takes us from display job postings to job posting page
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ViewTransitionHandler.class.getResource("../views/JobPostingView.fxml"));
 
-		ScrollPane view = loader.load();
-
-		JobPostingController controller = loader.getController();
-		mainview.setCenter(view);
-		controller.setModels(job, this);
+		ScrollPane view;
+		try
+		{
+			view = loader.load();
+			
+			JobPostingController controller = loader.getController();
+			mainview.setCenter(view);
+//			controller.setModels(job, this);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }

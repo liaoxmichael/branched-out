@@ -3,25 +3,28 @@ package views;
 import java.io.IOException;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import models.BranchedOutModel;
-import models.TestJobPostingModel;
-import models.TransitionalViewModel;
+import models.Entity;
+import models.ViewTransitionHandler;
 
 public class SearchDisplayController
 {
-	TransitionalViewModel tvm;
-	BranchedOutModel model;
+	ViewTransitionHandler viewModel;
+	Entity dataModel;
 
 	@FXML
-	private ListView<TestJobPostingModel> jobView;
+	private ListView<Entity> listView;
+	
+	@FXML
+	private Label searchTypeLabel;
 
 	public void setModels(BranchedOutModel newModel, TransitionalViewModel tvm)
 	{
-		this.tvm = tvm;
-		model = newModel;
+		this.viewModel = tvm;
+		dataModel = newModel;
 		
 		loadData();
 
@@ -43,7 +46,7 @@ public class SearchDisplayController
 	{
 		TestJobPostingModel model = jobView.getSelectionModel().getSelectedItem();
 //		System.out.println(model);
-		tvm.showJobPosting(model);
+		viewModel.showJobPosting(model);
 	}
 
 	public void loadData()
@@ -57,7 +60,7 @@ public class SearchDisplayController
 				// TODO Auto-generated method stub
 				try
 				{
-					return new JobPostingCell(param, tvm);
+					return new JobPostingCell(param, viewModel);
 				} catch (IOException e)
 				{
 					// TODO Auto-generated catch block
@@ -68,7 +71,7 @@ public class SearchDisplayController
 
 		});
 
-		jobView.setItems(model.getJobs());
+		jobView.setItems(dataModel.getJobs());
 	}
 
 }

@@ -71,6 +71,30 @@ public abstract class Entity implements Identifiable, RestReadyInterface
 	}
 
 	/**
+	 * @return the pageId
+	 */
+	public int getPageId()
+	{
+		return pageId;
+	}
+
+	/**
+	 * @param pageId the pageId to set
+	 */
+	public void setPageId(int pageId)
+	{
+		this.pageId = pageId;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+
+	/**
 	 * @return the links
 	 */
 	public Map<String, List<Link>> getLinks()
