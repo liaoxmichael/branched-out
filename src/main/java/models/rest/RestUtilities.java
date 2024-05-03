@@ -1,23 +1,26 @@
 package models.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Identifiable;
 
-//import java.util.Map;
-//import static java.util.Map.entry;
-//import models.Company;
-//import models.IdentifiableObjectManager;
-//import models.JobPosting;
-//import models.Link;
-//import models.Page;
-//import models.Person;
-//import models.Project;
-//import models.Skill;
-//import models.SkillProficiency;
-//import models.WorkExperience;
+import java.util.Map;
+import static java.util.Map.entry;
+import models.Company;
+import models.IdentifiableObjectManager;
+import models.JobPosting;
+import models.Link;
+import models.Page;
+import models.Person;
+import models.Project;
+import models.Skill;
+import models.SkillProficiency;
+import models.WorkExperience;
 
 public final class RestUtilities
 {
@@ -30,15 +33,15 @@ public final class RestUtilities
 	public static final String TEAM_URI = join(BASE_URI, TEAM_NAME);
 
 	// this is worthless
-//	public static Map<Class<?>, Class<?>> classToRecordMap = Map.ofEntries(
-//			entry(Company.class, Company.ResponseRecord.class),
-//			entry(JobPosting.class, JobPosting.ResponseRecord.class),
-//			entry(IdentifiableObjectManager.class, IdentifiableObjectManager.ResponseRecord.class),
-//			entry(Link.class, Link.ResponseRecord.class), entry(Page.class, Page.ResponseRecord.class),
-//			entry(Person.class, Person.ResponseRecord.class), entry(Project.class, Project.ResponseRecord.class),
-//			entry(Skill.class, Skill.ResponseRecord.class),
-//			entry(SkillProficiency.class, SkillProficiency.ResponseRecord.class),
-//			entry(WorkExperience.class, WorkExperience.ResponseRecord.class));
+	public static Map<Class<?>, Class<?>> classToRecordMap = Map.ofEntries(
+			entry(Company.class, Company.ResponseRecord.class),
+			entry(JobPosting.class, JobPosting.ResponseRecord.class),
+			entry(IdentifiableObjectManager.class, IdentifiableObjectManager.ResponseRecord.class),
+			entry(Link.class, Link.ResponseRecord.class), entry(Page.class, Page.ResponseRecord.class),
+			entry(Person.class, Person.ResponseRecord.class), entry(Project.class, Project.ResponseRecord.class),
+			entry(Skill.class, Skill.ResponseRecord.class),
+			entry(SkillProficiency.class, SkillProficiency.ResponseRecord.class),
+			entry(WorkExperience.class, WorkExperience.ResponseRecord.class));
 
 	private RestUtilities()
 	{
@@ -59,11 +62,11 @@ public final class RestUtilities
 		}
 		return result;
 	}
-	
-//	public static Class<?> classToRecord(Class<?> target)
-//	{
-//		return classToRecordMap.get(target);
-//	}
+
+	public static Class<?> classToRecord(Class<?> target)
+	{
+		return classToRecordMap.get(target);
+	}
 
 	public static boolean doesResourceExist(int id, String resource)
 	{
@@ -111,7 +114,27 @@ public final class RestUtilities
 		// else
 		return null;
 	}
-	
+
+	public static List<JsonNode> retrieveAll(String resourceName)
+	{
+		RestClient client = RestClient.create();
+
+		List<JsonNode> list = new ArrayList<JsonNode>();
+
+		if (RestUtilities.doesResourceExist(resourceName))
+		{
+			ResponseListData response = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName))
+					.retrieve().body(ResponseListData.class);
+			for (int i = 0; i < response.data().size(); i++)
+			{
+				ResponseData d = response.data().get(i);
+				ResponseNode n = client.get().uri(d.location()).retrieve().body(ResponseNode.class);
+				list.add(n.data());
+			}
+		}
+		return list;
+	}
+
 	public static boolean store(Identifiable obj, Class<?> targetClass, String resourceName, String resourceDesc)
 	{
 		RestClient client = RestClient.create();
@@ -120,8 +143,8 @@ public final class RestUtilities
 			RestUtilities.createResource(resourceName, resourceDesc);
 		}
 		ResponseObject result = client.post()
-				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId()))).body(targetClass.cast(obj))
-				.retrieve().body(ResponseObject.class);
+				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId())))
+				.body(targetClass.cast(obj)).retrieve().body(ResponseObject.class);
 		return result.successful();
 	}
 }

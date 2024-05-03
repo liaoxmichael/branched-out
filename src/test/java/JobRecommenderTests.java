@@ -14,13 +14,9 @@ import models.Link;
 import models.Person;
 import models.Skill;
 import models.SkillProficiency;
-import models.recommender.JobRecommender;
-import models.recommender.JobRecommenderInterface;
 import models.recommender.JobSite;
 import models.recommender.JobType;
-import models.recommender.RecommendBySitePreference;
-import models.recommender.RecommendBySkill;
-import models.recommender.RecommendByTypePreference;
+import models.recommender.RecommendationStrategyKind;
 
 class JobRecommenderTests
 {
@@ -28,6 +24,7 @@ class JobRecommenderTests
 	ArrayList<Link> aliceRecommendedJobs;
 	Person bob;
 	ArrayList<Link> bobRecommendedJobs;
+	ArrayList<Person> people;
 
 	Skill java;
 	Skill python;
@@ -42,16 +39,14 @@ class JobRecommenderTests
 	Link appleTechLink;
 
 	IdentifiableObjectManagerInterface testManager;
-	JobRecommenderInterface testRecommender;
 
 	@BeforeEach
 	void setUp() throws Exception
 	{
 		testManager = new IdentifiableObjectManager();
-		testRecommender = new JobRecommender();
 
-		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager);
-		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager);
+		alice = new Person("Alice", "ateam@gmail.com", testManager);
+		bob = new Person("Bob", "bobert33@yahoo.com", testManager);
 
 		java = new Skill("Java", testManager);
 		python = new Skill("Python", testManager);
@@ -59,8 +54,8 @@ class JobRecommenderTests
 		apple = new Company("Apple", "tim.cook@apple.com", testManager);
 		google = new Company("Google", "sundar.pichai@google.com", testManager);
 
-		googleEngi = new JobPosting("Senior Software Developer", google, testRecommender, testManager);
-		appleTech = new JobPosting("Apple Genius Technician", apple, testRecommender, testManager);
+		googleEngi = new JobPosting("Senior Software Developer", google, testManager);
+		appleTech = new JobPosting("Apple Genius Technician", apple, testManager);
 
 		// check links properly
 		assertEquals(
@@ -78,6 +73,10 @@ class JobRecommenderTests
 		ArrayList<Link> applePostings = new ArrayList<Link>();
 		applePostings.add(new Link(appleTech.getPage(), Link.RelationshipType.HAS_OPENING, testManager));
 		assertEquals(applePostings, apple.getLinks().get("jobPostings"));
+		
+		people = new ArrayList<Person>();
+		people.add(alice);
+		people.add(bob);
 	}
 
 	@Test
@@ -89,7 +88,7 @@ class JobRecommenderTests
 		// test that deregistering works
 		bob.unmarkHireable();
 
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 		aliceRecommendedJobs.add(googleEngiLink);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
@@ -97,14 +96,14 @@ class JobRecommenderTests
 
 		bob.markHireable();
 
-		googleEngi.recommendJob(); // check that re-recommendation does not double up on Alice's jobs & appears in
+		googleEngi.recommendJob(people); // check that re-recommendation does not double up on Alice's jobs & appears in
 									// Bob's
 		bobRecommendedJobs.add(googleEngiLink);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
 
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		aliceRecommendedJobs.add(appleTechLink);
 		bobRecommendedJobs.add(appleTechLink);
 
@@ -115,8 +114,8 @@ class JobRecommenderTests
 	@Test
 	void testRecomendBySitePreference()
 	{
-		googleEngi.setStrategy(new RecommendBySitePreference());
-		appleTech.setStrategy(new RecommendBySitePreference());
+		googleEngi.setStrategyKind(RecommendationStrategyKind.BY_SITE);
+		appleTech.setStrategyKind(RecommendationStrategyKind.BY_SITE);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -157,7 +156,7 @@ class JobRecommenderTests
 		bob.addJobSitePreference(JobSite.HYBRID); // should early return
 
 		// test null job posting site
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -165,7 +164,7 @@ class JobRecommenderTests
 		googleEngi.setSite(JobSite.ON_SITE);
 		appleTech.setSite(JobSite.HYBRID);
 
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 		aliceRecommendedJobs.add(googleEngiLink);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
@@ -173,7 +172,7 @@ class JobRecommenderTests
 
 		alice.addJobSitePreference(JobSite.HYBRID); // see if overlap works
 
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		aliceRecommendedJobs.add(appleTechLink);
 		bobRecommendedJobs.add(appleTechLink);
 
@@ -181,7 +180,7 @@ class JobRecommenderTests
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
 
 		// test removal of jobs & re-recommendation
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
 
@@ -195,7 +194,7 @@ class JobRecommenderTests
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		aliceRecommendedJobs.add(appleTechLink);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
@@ -205,8 +204,8 @@ class JobRecommenderTests
 	@Test
 	void testRecommendByTypePreference()
 	{
-		googleEngi.setStrategy(new RecommendByTypePreference());
-		appleTech.setStrategy(new RecommendByTypePreference());
+		googleEngi.setStrategyKind(RecommendationStrategyKind.BY_TYPE);
+		appleTech.setStrategyKind(RecommendationStrategyKind.BY_TYPE);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -247,7 +246,7 @@ class JobRecommenderTests
 		bob.addJobTypePreference(JobType.INTERNSHIP); // should early return
 
 		// test null job posting site
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -255,7 +254,7 @@ class JobRecommenderTests
 		googleEngi.setType(JobType.FULL_TIME);
 		appleTech.setType(JobType.TEMPORARY);
 
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 		aliceRecommendedJobs.add(googleEngiLink);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
@@ -263,7 +262,7 @@ class JobRecommenderTests
 
 		alice.addJobTypePreference(JobType.TEMPORARY); // see if overlap works
 
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		aliceRecommendedJobs.add(appleTechLink);
 		bobRecommendedJobs.add(appleTechLink);
 
@@ -271,7 +270,7 @@ class JobRecommenderTests
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
 
 		// test removal of jobs & re-recommendation
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
 
@@ -285,7 +284,7 @@ class JobRecommenderTests
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		aliceRecommendedJobs.add(appleTechLink);
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
@@ -295,8 +294,8 @@ class JobRecommenderTests
 	@Test
 	void testRecommendBySkill()
 	{
-		googleEngi.setStrategy(new RecommendBySkill());
-		appleTech.setStrategy(new RecommendBySkill());
+		googleEngi.setStrategyKind(RecommendationStrategyKind.BY_SKILL);
+		appleTech.setStrategyKind(RecommendationStrategyKind.BY_SKILL);
 
 		ArrayList<SkillProficiency> googleEngiSkills = new ArrayList<SkillProficiency>();
 		ArrayList<SkillProficiency> appleTechSkills = new ArrayList<SkillProficiency>();
@@ -340,7 +339,7 @@ class JobRecommenderTests
 
 		bob.addSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
 
-		appleTech.recommendJob();
+		appleTech.recommendJob(people);
 		aliceRecommendedJobs.add(appleTechLink); // only alice matches
 
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
@@ -349,7 +348,7 @@ class JobRecommenderTests
 		googleEngi.addRequiredSkill(python, SkillProficiency.ProficiencyLevel.INTERMEDIATE);
 		googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.ADVANCED);
 
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 		// neither should qualify
 		assertEquals(aliceRecommendedJobs, alice.getLinks().get("recommendedJobs"));
 		assertEquals(bobRecommendedJobs, bob.getLinks().get("recommendedJobs"));
@@ -358,7 +357,7 @@ class JobRecommenderTests
 		googleEngi.addRequiredSkill(java, SkillProficiency.ProficiencyLevel.BEGINNER);
 		googleEngi.addRequiredSkill(python, SkillProficiency.ProficiencyLevel.BEGINNER);
 
-		googleEngi.recommendJob();
+		googleEngi.recommendJob(people);
 		aliceRecommendedJobs.add(googleEngiLink);
 		bobRecommendedJobs.add(googleEngiLink);
 		// both qualify

@@ -17,8 +17,6 @@ import models.Skill;
 import models.SkillProficiency;
 import models.User;
 import models.WorkExperience;
-import models.recommender.JobRecommender;
-import models.recommender.JobRecommenderInterface;
 
 class DataTests
 {
@@ -49,13 +47,10 @@ class DataTests
 	Page firstPage;
 
 	IdentifiableObjectManagerInterface testManager;
-	JobRecommenderInterface testRecommender;
 
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		testRecommender = new JobRecommender();
-
 		testManager = new IdentifiableObjectManager(); // 0
 		ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
 		objects.add((Identifiable) testManager);
@@ -76,10 +71,10 @@ class DataTests
 		objects.add(googlePage);
 		assertEquals(objects, testManager.getObjects());
 
-		alice = new Person("Alice", "ateam@gmail.com", testRecommender, testManager); // 5
+		alice = new Person("Alice", "ateam@gmail.com", testManager); // 5
 		alicePage = alice.getPage(); // 6
 
-		bob = new Person("Bob", "bobert33@yahoo.com", testRecommender, testManager); // 7
+		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 7
 		bobPage = bob.getPage(); // 8
 
 		java = new Skill("Java", testManager); // 9

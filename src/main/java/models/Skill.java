@@ -1,8 +1,10 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
@@ -61,6 +63,31 @@ public class Skill extends Post implements RestReadyInterface
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static List<Skill> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<Skill> list = new ArrayList<Skill>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+//				System.out.println(n);
+				// need to fill in page
+				list.add(mapper.treeToValue(n, Skill.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override

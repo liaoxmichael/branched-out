@@ -1,14 +1,15 @@
 //import java.time.LocalDate;
 package models;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
@@ -23,7 +24,6 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	String title;
 	String description;
 
-	@JsonIgnore
 	protected IdentifiableObjectManagerInterface manager;
 
 //	LocalDate startDate;
@@ -74,6 +74,30 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static List<WorkExperience> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<WorkExperience> list = new ArrayList<WorkExperience>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, WorkExperience.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override

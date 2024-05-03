@@ -71,6 +71,7 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill objects back in
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), IdentifiableObjectManager.class);
 		} catch (JsonProcessingException e)
 		{

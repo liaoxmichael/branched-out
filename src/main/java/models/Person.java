@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import models.recommender.JobRecommenderInterface;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.rest.RestUtilities;
@@ -22,16 +21,14 @@ public class Person extends User implements RestReadyInterface
 
 	List<JobType> jobTypePreferences;
 	List<JobSite> jobSitePreferences;
-
-	@JsonIgnore
-	JobRecommenderInterface recommender;
+	
+	boolean openToWork;
 
 	public Person()
 	{
 	}
 
-	public Person(String name, String email, JobRecommenderInterface recommender,
-			IdentifiableObjectManagerInterface manager)
+	public Person(String name, String email, IdentifiableObjectManagerInterface manager)
 	{
 		super(name, email, manager);
 		skills = new ArrayList<SkillProficiency>();
@@ -41,20 +38,35 @@ public class Person extends User implements RestReadyInterface
 		jobSitePreferences = new ArrayList<JobSite>();
 
 		links.put("recommendedJobs", new ArrayList<Link>());
-
-		this.recommender = recommender;
-		// automatically subscribe -- can use functions later on to unsubscribe
+		
+		// by default open to work
 		markHireable();
+	}
+
+	/**
+	 * @return the openToWork
+	 */
+	public boolean isOpenToWork()
+	{
+		return openToWork;
+	}
+
+	/**
+	 * @param openToWork the openToWork to set
+	 */
+	public void setOpenToWork(boolean openToWork)
+	{
+		this.openToWork = openToWork;
 	}
 
 	public void markHireable()
 	{
-		recommender.registerHireable(this);
+		setOpenToWork(true);
 	}
 
 	public void unmarkHireable()
 	{
-		recommender.unregisterHireable(this);
+		setOpenToWork(false);
 	}
 
 	public void addJobPosting(JobPosting jobPosting)
@@ -161,6 +173,7 @@ public class Person extends User implements RestReadyInterface
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill in page
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Person.class);
 		} catch (JsonProcessingException e)
 		{
@@ -172,6 +185,30 @@ public class Person extends User implements RestReadyInterface
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static List<Person> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<Person> list = new ArrayList<Person>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, Person.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override

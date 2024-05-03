@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
@@ -60,6 +61,7 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
+			// need to fill in Entity, Editors, Viewers
 			return mapper.treeToValue(RestUtilities.retrieve(id, RESOURCE), Page.class);
 		} catch (JsonProcessingException e)
 		{
@@ -71,6 +73,30 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static List<Page> retrieveAll()
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<Page> list = new ArrayList<Page>();
+		List<JsonNode> nodes = RestUtilities.retrieveAll(RESOURCE);
+		try
+		{
+			for (JsonNode n : nodes)
+			{
+				System.out.println(n);
+				list.add(mapper.treeToValue(n, Page.class));
+			}
+		} catch (JsonProcessingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override

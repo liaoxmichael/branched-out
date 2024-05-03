@@ -22,6 +22,5 @@ public class StrategyFactory
 		default: // should not ever happen but just in case
 			return null;
 		}
-
 	}
 }
