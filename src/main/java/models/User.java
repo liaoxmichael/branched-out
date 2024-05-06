@@ -13,6 +13,8 @@ public abstract class User extends Entity
 	String avatarURL;
 	String bannerURL;
 
+	String password; // new
+
 	public User()
 	{
 		super();
@@ -54,6 +56,30 @@ public abstract class User extends Entity
 		links.get("following").remove(target); // this will return false if it's not there; no big deal.
 		// it's reciprocal; need to remove from other user's list
 		user.getLinks().get("followers").remove(new Link(page, Link.RelationshipType.FOLLOWER_USER, manager));
+	}
+
+	public boolean verifyUser(String username, String pass)
+	{
+		if (password == null) {
+			return email.equals(username);
+		}
+		return email.equals(username) && password.equals(pass);
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword()
+	{
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password)
+	{
+		this.password = password;
 	}
 
 	/**

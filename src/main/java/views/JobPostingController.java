@@ -6,14 +6,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import models.JobPosting;
 import models.TestJobPostingModel;
 import models.TransitionalViewModel;
+import models.ViewTransitionHandler;
 
 public class JobPostingController
 {
 
-	TransitionalViewModel tvm;
-	TestJobPostingModel model;
+	ViewTransitionHandler viewModel;
+	JobPosting dataModel;
 	
     @FXML
     private Label companyName;
@@ -43,31 +45,30 @@ public class JobPostingController
     private Label type;
 
 
-	public void setModels(TestJobPostingModel newModel, TransitionalViewModel tvm)
+	public void setModels(JobPosting newModel, ViewTransitionHandler viewModel)
 	{
-		System.out.println(newModel.locationName);
-		this.tvm = tvm;
-		model = newModel;
+		this.viewModel = viewModel;
+		dataModel = newModel;
 		loadData();
 	}
 
 	@FXML
 	void onClickBack(ActionEvent event) throws IOException
 	{
-		tvm.showSearchDisplay();
+		viewModel.showSearchDisplay();
 	}
 
 	public void loadData()
 	{
-		title.setText(model.title);
-		companyName.setText(model.company);
-		datePosted.setText(model.datePosted);
-		desc.setText(model.desc);
+		title.setText(dataModel.getTitle());
+		companyName.setText(dataModel.getLinks().get("company").get(0).getName());
+		datePosted.setText(dataModel.datePosted);
+		desc.setText(dataModel.desc);
 //		System.out.println(model.locationName);
-		locationName.setText(model.locationName);
-		site.setText(model.site);
-		numApplicants.setText(String.valueOf(model.numApplicants));
-		type.setText(model.type);
+		locationName.setText(dataModel.locationName);
+		site.setText(dataModel.site);
+		numApplicants.setText(String.valueOf(dataModel.numApplicants));
+		type.setText(dataModel.type);
 		
 	}
 

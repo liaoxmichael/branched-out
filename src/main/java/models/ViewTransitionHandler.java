@@ -2,6 +2,7 @@ package models;
 
 import java.io.IOException;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -15,15 +16,13 @@ import views.UserController;
 public class ViewTransitionHandler
 {
 	BorderPane mainview;
-	Entity dataModel;
 
-	public ViewTransitionHandler(BorderPane view, Entity model)
+	public ViewTransitionHandler(BorderPane view)
 	{
 		mainview = view;
-		dataModel = model;
 	}
 
-	public void showMain()
+	public void showMainFromLogin(User user)
 	{
 		// set mainview to dashboard
 		FXMLLoader loader = new FXMLLoader();
@@ -39,7 +38,29 @@ public class ViewTransitionHandler
 			mainview.setCenter(view);
 			mainview = (BorderPane) view; // reset mainview to take perspective of actual Main (w/ nav bar) instead of
 											// LoginView
-			controller.setModels(dataModel, this);
+			controller.setModels(user, this);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void showMain(User user)
+	{
+		// set mainview to dashboard
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/MainView.fxml"));
+
+		Pane view;
+		try
+		{
+			view = loader.load();
+
+			MainController controller = loader.getController();
+			mainview.setCenter(view);
+
+			controller.setModels(user, this);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block
@@ -47,7 +68,7 @@ public class ViewTransitionHandler
 		}
 	}
 
-	public void showSearchDisplay() // possible enum for classes?
+	public <T extends Entity> void showSearchDisplay(ObservableList<T> entities) // possible enum for classes?
 	{
 		// set center to display list of job postings
 		FXMLLoader loader = new FXMLLoader();
@@ -58,9 +79,9 @@ public class ViewTransitionHandler
 		{
 			view = loader.load();
 			
-			SearchDisplayController controller = loader.getController();
+			SearchDisplayController<T> controller = loader.getController();
 			mainview.setCenter(view);
-//			controller.setModels(model, this);
+			controller.setModels(entities, this);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

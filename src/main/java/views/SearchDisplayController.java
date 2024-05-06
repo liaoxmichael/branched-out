@@ -1,7 +1,9 @@
 package views;
 
 import java.io.IOException;
+import java.util.List;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -10,68 +12,41 @@ import javafx.util.Callback;
 import models.Entity;
 import models.ViewTransitionHandler;
 
-public class SearchDisplayController
+public class SearchDisplayController<T extends Entity>
 {
 	ViewTransitionHandler viewModel;
-	Entity dataModel;
 
 	@FXML
-	private ListView<Entity> listView;
+	private ListView<T> listView;
 	
 	@FXML
 	private Label searchTypeLabel;
 
-	public void setModels(BranchedOutModel newModel, TransitionalViewModel tvm)
+	public void setModels(ObservableList<T> entities, ViewTransitionHandler viewModel)
 	{
-		this.viewModel = tvm;
-		dataModel = newModel;
-		
-		loadData();
+		this.viewModel = viewModel;
 
-		jobView.getSelectionModel().selectedItemProperty().addListener((e) ->
+		listView.getSelectionModel().selectedItemProperty().addListener((e) ->
 		{
 			try
 			{
-				onClickJob();
+				onClickItem();
 			} catch (IOException e1)
 			{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
+
+		listView.setItems(entities);
 	}
 
 	@FXML
-	void onClickJob() throws IOException
+	void onClickItem() throws IOException
 	{
-		TestJobPostingModel model = jobView.getSelectionModel().getSelectedItem();
+		T model = listView.getSelectionModel().getSelectedItem();
 //		System.out.println(model);
 		viewModel.showJobPosting(model);
-	}
-
-	public void loadData()
-	{
-		jobView.setCellFactory(new Callback<ListView<TestJobPostingModel>, ListCell<TestJobPostingModel>>()
-		{
-
-			@Override
-			public ListCell<TestJobPostingModel> call(ListView<TestJobPostingModel> param)
-			{
-				// TODO Auto-generated method stub
-				try
-				{
-					return new JobPostingCell(param, viewModel);
-				} catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-		});
-
-		jobView.setItems(dataModel.getJobs());
 	}
 
 }

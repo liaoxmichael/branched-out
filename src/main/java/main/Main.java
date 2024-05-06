@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import models.ViewTransitionHandler;
+import views.LoginController;
 
 public class Main extends Application
 {
@@ -12,17 +14,13 @@ public class Main extends Application
 	public void start(Stage stage) throws Exception
 	{
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("views/LoginView.fxml")); // we can change this later if need be
+		loader.setLocation(Main.class.getResource("../views/LoginView.fxml")); // we can change this later if need be
 
 		BorderPane view = loader.load();
-		
-		// TODO
 
-//		BranchedOutModel branchedOutModel = new BranchedOutModel();
-//
-//		LoginController controller = loader.getController();
-//		TransitionalViewModel model = new TransitionalViewModel(view, branchedOutModel);
-//		controller.setModels(branchedOutModel, model);
+		LoginController controller = loader.getController();
+		ViewTransitionHandler model = new ViewTransitionHandler(view);
+		controller.setModels(model);
 
 		Scene s = new Scene(view);
 		stage.setScene(s);
