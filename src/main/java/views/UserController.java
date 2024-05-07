@@ -4,8 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.ImageView;
+import models.SkillProficiency;
 import models.User;
 import models.ViewTransitionHandler;
+import models.WorkExperience;
 
 public class UserController
 {
@@ -13,45 +16,42 @@ public class UserController
 	User dataModel;
 
 	@FXML
-	private Button addExperienceBtn;
+    private Button addJobButton;
 
-	@FXML
-	private Button addSkillBtn;
+    @FXML
+    private Button addSkillButton;
 
-	@FXML
-	private Label bio;
+    @FXML
+    private ImageView bannerImage;
 
-	@FXML
-	private Button editExperienceBtn;
+    @FXML
+    private Label bioLabel;
 
-	@FXML
-	private Button editProfileBtn;
+    @FXML
+    private Button editProfileButton;
 
-	@FXML
-	private Button editSkillBtn;
+    @FXML
+    private ListView<WorkExperience> jobsList;
 
-	@FXML
-	private Label name;
+    @FXML
+    private Label nameLabel;
 
-	@FXML
-	private Label numFollowers;
+    @FXML
+    private Label numFollowersLabel;
 
-	@FXML
-	private Label numFollowing;
+    @FXML
+    private Label numFollowingLabel;
 
-	@FXML
-	private Label pronouns;
-	
-	@FXML
-	private ListView<String> skillsList;
-	
-	@FXML
-	private ListView<String> jobsList;
-	
-	@FXML
-	private ListView<String> communitiesList;
+    @FXML
+    private ImageView profileImage;
 
-	public void setModels(User newModel, ViewTransitionHandler viewModel)
+    @FXML
+    private Label pronounsLabel;
+
+    @FXML
+    private ListView<SkillProficiency> skillsList;
+
+	public void setModels(User newModel, User currentUser, ViewTransitionHandler viewModel)
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;

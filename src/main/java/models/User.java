@@ -11,7 +11,7 @@ public abstract class User extends Entity
 	String email;
 	String phone;
 	String avatarURL;
-	String bannerURL;
+	String bannerURL = "https://generative-placeholders.glitch.me/image?width=1200&height=150\""; // default
 
 	String password; // new
 
@@ -205,9 +205,7 @@ public abstract class User extends Entity
 	@Override
 	public String toString()
 	{
-		return "User [name=" + name + ", bio=" + bio + ", email=" + email + ", phone=" + phone + ", avatarURL="
-				+ avatarURL + ", bannerURL=" + bannerURL + ", id=" + id + ", links=" + links + ", externalWebLinks="
-				+ externalWebLinks + "]";
+		return name;
 	}
 
 }

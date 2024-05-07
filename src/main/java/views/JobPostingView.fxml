@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -26,21 +28,21 @@
                 <RowConstraints minHeight="10.0" valignment="TOP" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <HBox maxWidth="1200.0" GridPane.vgrow="ALWAYS">
+                  <HBox maxWidth="1200.0" spacing="20.0" GridPane.vgrow="ALWAYS">
                      <children>
-                        <Button minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#onClickBack" text="Logo">
+                        <Button id="logoButton" fx:id="logoButton" contentDisplay="GRAPHIC_ONLY" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#onClickLogo" style="-fx-background-color: transparent;" text="Logo">
                            <HBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
                         </Button>
                         <VBox>
                            <children>
-                              <Label fx:id="title" text="Job Title" wrapText="true">
+                              <Label id="titleLabel" fx:id="titleLabel" text="Job Title" wrapText="true">
                                  <font>
                                     <Font size="48.0" />
                                  </font>
                                  <VBox.margin>
-                                    <Insets left="20.0" top="10.0" />
+                                    <Insets top="10.0" />
                                  </VBox.margin>
                               </Label>
                               <HBox>
@@ -50,10 +52,10 @@
                                           <Font size="36.0" />
                                        </font>
                                        <padding>
-                                          <Insets bottom="10.0" left="20.0" />
+                                          <Insets bottom="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="type" alignment="BOTTOM_LEFT" text="Job Type" wrapText="true">
+                                    <Label id="typeLabel" fx:id="typeLabel" alignment="BOTTOM_LEFT" text="Job Type" wrapText="true">
                                        <font>
                                           <Font size="36.0" />
                                        </font>
@@ -71,7 +73,7 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <Button fx:id="recommendJobBtn" mnemonicParsing="false" text="Recommend Job">
+                              <Button id="recommendButton" fx:id="recommendButton" mnemonicParsing="false" text="Recommend Job">
                                  <VBox.margin>
                                     <Insets left="30.0" />
                                  </VBox.margin>
@@ -85,7 +87,14 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                      </GridPane.margin>
                      <children>
-                        <Button minWidth="40.0" mnemonicParsing="false" text="Edit" wrapText="true" HBox.hgrow="SOMETIMES" />
+                        <Button id="editJobPostingButton" fx:id="editJobPostingButton" contentDisplay="GRAPHIC_ONLY" minWidth="40.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Edit" wrapText="true" HBox.hgrow="SOMETIMES">
+                           <graphic>
+                              <ImageView fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../resources/pencil.circle.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                      </children>
                   </HBox>
                </children>
@@ -97,7 +106,7 @@
          <center>
             <VBox BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="companyName" text="Company Name">
+                  <Label id="companyNameLabel" fx:id="companyNameLabel" text="Company Name">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -105,64 +114,59 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <HBox>
+                  <HBox spacing="10.0">
                      <children>
-                        <Label fx:id="locationName" text="Location">
+                        <Label id="locationLabel" fx:id="locationLabel" text="Location">
                            <font>
                               <Font size="24.0" />
                            </font>
                         </Label>
-                        <Label text="(">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                        </Label>
-                        <Label fx:id="site" layoutX="97.0" layoutY="10.0" text="Job Site">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="153.0" layoutY="10.0" text=")">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Label>
+                        <HBox>
+                           <children>
+                              <Label text="(">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label id="siteLabel" fx:id="siteLabel" text="Job Site">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label text=")">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
                   </HBox>
-                  <HBox>
+                  <HBox spacing="10.0">
                      <children>
                         <Label text="Number of applicants:">
                            <font>
                               <Font size="24.0" />
                            </font>
                         </Label>
-                        <Label fx:id="numApplicants" layoutX="10.0" layoutY="10.0" text="#">
+                        <Label id="numApplicantsLabel" fx:id="numApplicantsLabel" layoutX="10.0" layoutY="10.0" text="#">
                            <font>
                               <Font size="24.0" />
                            </font>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
                         </Label>
                      </children>
                   </HBox>
-                  <HBox>
+                  <HBox spacing="10.0">
                      <children>
                         <Label text="Date Posted:">
                            <font>
                               <Font size="24.0" />
                            </font>
                         </Label>
-                        <Label fx:id="datePosted" layoutX="10.0" layoutY="10.0" text="Date">
+                        <Label id="datePostedLabel" fx:id="datePostedLabel" layoutX="10.0" layoutY="10.0" text="Date">
                            <font>
                               <Font size="24.0" />
                            </font>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
                         </Label>
                      </children>
                   </HBox>
@@ -176,7 +180,7 @@
                               <Insets bottom="10.0" />
                            </padding>
                         </Label>
-                        <Label fx:id="desc" text="Description">
+                        <Label id="descriptionLabel" fx:id="descriptionLabel" text="Description">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -196,7 +200,7 @@
                               <Insets bottom="10.0" />
                            </padding>
                         </Label>
-                        <ListView prefHeight="200.0" prefWidth="200.0" />
+                        <ListView id="skillsList" fx:id="skillsList" prefHeight="200.0" prefWidth="200.0" />
                      </children>
                      <VBox.margin>
                         <Insets top="20.0" />

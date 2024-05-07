@@ -1,17 +1,56 @@
 package views;
 
-import models.BranchedOutModel;
-import models.TransitionalViewModel;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import models.Person;
+import models.Skill;
+import models.User;
+import models.ViewTransitionHandler;
 
 public class SkillController
 {
-	TransitionalViewModel tvm;
-	BranchedOutModel model;
+	ViewTransitionHandler viewModel;
+	Skill dataModel;
 
-	public void setModels(BranchedOutModel newModel, TransitionalViewModel tvm)
+	@FXML
+	private Button addMentorButton;
+
+	@FXML
+	private Label descriptionLabel;
+
+	@FXML
+	private Button editButton;
+
+	@FXML
+	private ListView<Person> mentorList;
+
+	@FXML
+	private Label nameLabel;
+
+	public void setModels(Skill newModel, User currentUser, ViewTransitionHandler viewModel)
 	{
-		this.tvm = tvm;
-		model = newModel;
+		this.viewModel = viewModel;
+		dataModel = newModel;
+
+		if (dataModel.getPage().canEdit(currentUser))
+		{
+			
+		}
 	}
-	
+
+	@FXML
+	void onAddClick(ActionEvent event)
+	{
+
+	}
+
+	@FXML
+	void onEditClick(ActionEvent event)
+	{
+
+	}
+
 }

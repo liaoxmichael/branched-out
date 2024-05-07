@@ -141,6 +141,10 @@ public class Link implements Identifiable, RestReadyInterface
 	 */
 	public Page getPage()
 	{
+		if (page == null)
+		{
+			page = Page.retrieve(pageId);
+		}
 		return page;
 	}
 

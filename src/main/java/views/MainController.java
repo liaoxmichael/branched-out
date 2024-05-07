@@ -47,6 +47,8 @@ public class MainController
 	void onClickSearch(ActionEvent event)
 	{
 		String type = entityTypeSelector.getSelectionModel().getSelectedItem();
+		
+		
 		viewModel.showSearchDisplay();
 	}
 	

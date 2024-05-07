@@ -16,6 +16,7 @@ import views.UserController;
 public class ViewTransitionHandler
 {
 	BorderPane mainview;
+	User currentUser;
 
 	public ViewTransitionHandler(BorderPane view)
 	{
@@ -36,8 +37,9 @@ public class ViewTransitionHandler
 			MainController controller = loader.getController();
 			mainview.setTop(null);
 			mainview.setCenter(view);
-			mainview = (BorderPane) view; // reset mainview to take perspective of actual Main (w/ nav bar) instead of
-											// LoginView
+			// reset mainview to take perspective of actual MainView instead of LoginView
+			mainview = (BorderPane) view;
+			currentUser = user;
 			controller.setModels(user, this);
 		} catch (IOException e)
 		{
@@ -45,7 +47,7 @@ public class ViewTransitionHandler
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void showMain(User user)
 	{
 		// set mainview to dashboard
@@ -68,7 +70,7 @@ public class ViewTransitionHandler
 		}
 	}
 
-	public <T extends Entity> void showSearchDisplay(ObservableList<T> entities) // possible enum for classes?
+	public void showSearchDisplay(ObservableList<Entity> entities) // possible enum for classes?
 	{
 		// set center to display list of job postings
 		FXMLLoader loader = new FXMLLoader();
@@ -78,8 +80,8 @@ public class ViewTransitionHandler
 		try
 		{
 			view = loader.load();
-			
-			SearchDisplayController<T> controller = loader.getController();
+
+			SearchDisplayController controller = loader.getController();
 			mainview.setCenter(view);
 			controller.setModels(entities, this);
 		} catch (IOException e)
@@ -100,11 +102,10 @@ public class ViewTransitionHandler
 		try
 		{
 			view = loader.load();
-			
+
 			UserController controller = loader.getController();
 			mainview.setCenter(view);
-//			controller.setModels(model, this);
-//			controller.loadData();
+			controller.setModels(user, currentUser, this);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block
@@ -122,10 +123,10 @@ public class ViewTransitionHandler
 		try
 		{
 			view = loader.load();
-			
+
 			SkillController controller = loader.getController();
 			mainview.setCenter(view);
-//			controller.setModels(model, this);
+			controller.setModels(skill, currentUser, this);
 			// controller.loadData(); // TODO
 		} catch (IOException e)
 		{
@@ -144,7 +145,7 @@ public class ViewTransitionHandler
 		try
 		{
 			view = loader.load();
-			
+
 			JobPostingController controller = loader.getController();
 			mainview.setCenter(view);
 //			controller.setModels(job, this);

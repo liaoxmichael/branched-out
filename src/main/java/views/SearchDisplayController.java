@@ -1,52 +1,49 @@
 package views;
 
-import java.io.IOException;
-import java.util.List;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.util.Callback;
 import models.Entity;
+import models.JobPosting;
+import models.Skill;
+import models.User;
 import models.ViewTransitionHandler;
 
-public class SearchDisplayController<T extends Entity>
+public class SearchDisplayController
 {
 	ViewTransitionHandler viewModel;
 
 	@FXML
-	private ListView<T> listView;
-	
+	private ListView<Entity> listView;
+
 	@FXML
 	private Label searchTypeLabel;
 
-	public void setModels(ObservableList<T> entities, ViewTransitionHandler viewModel)
+	public void setModels(ObservableList<Entity> entities, ViewTransitionHandler viewModel)
 	{
 		this.viewModel = viewModel;
 
 		listView.getSelectionModel().selectedItemProperty().addListener((e) ->
 		{
-			try
-			{
-				onClickItem();
-			} catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			onClickItem();
 		});
 
 		listView.setItems(entities);
 	}
 
 	@FXML
-	void onClickItem() throws IOException
+	void onClickItem()
 	{
-		T model = listView.getSelectionModel().getSelectedItem();
-//		System.out.println(model);
-		viewModel.showJobPosting(model);
+		Entity model = listView.getSelectionModel().getSelectedItem();
+		if (model instanceof JobPosting)
+		{
+			viewModel.showJobPosting((JobPosting) model);
+		} else if (model instanceof User) {
+			viewModel.showProfile((User) model);
+		} else if (model instanceof Skill) {
+			viewModel.showSkill((Skill) model);
+		}
 	}
 
 }

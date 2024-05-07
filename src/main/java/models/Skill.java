@@ -99,8 +99,7 @@ public class Skill extends Post implements RestReadyInterface
 	@Override
 	public String toString()
 	{
-		return "Skill [title=" + title + ", description=" + description + ", id=" + id + ", links=" + links
-				+ ", externalWebLinks=" + externalWebLinks + "]";
+		return title;
 	}
 
 }

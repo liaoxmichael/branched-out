@@ -320,12 +320,4 @@ public class Person extends User implements RestReadyInterface
 				&& Objects.equals(skills, other.skills);
 	}
 
-	@Override
-	public String toString()
-	{
-		return "Person [pronouns=" + pronouns + ", skills=" + skills + ", jobs=" + jobs + ", name=" + name + ", bio="
-				+ bio + ", email=" + email + ", phone=" + phone + ", avatarURL=" + avatarURL + ", bannerURL="
-				+ bannerURL + ", id=" + id + ", links=" + links + ", externalWebLinks=" + externalWebLinks + "]";
-	}
-
 }

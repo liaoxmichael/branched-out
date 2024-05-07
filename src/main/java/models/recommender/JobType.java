@@ -1,11 +1,13 @@
 package models.recommender;
 
 public enum JobType {
-	INTERNSHIP,
-	SEASONAL,
-	TEMPORARY,
-	VOLUNTEER,
-	FULL_TIME,
-	PART_TIME,
-	OTHER;
+	INTERNSHIP("Internship"), SEASONAL("Seasonal"), TEMPORARY("Temporary"), VOLUNTEER("Volunteer"),
+	FULL_TIME("Full-time"), PART_TIME("Part-time"), OTHER("Other");
+
+	public final String label;
+
+	JobType(String label)
+	{
+		this.label = label;
+	}
 }

@@ -18,7 +18,14 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 	protected IdentifiableObjectManagerInterface manager;
 
 	public enum ProficiencyLevel {
-		BEGINNER, INTERMEDIATE, ADVANCED
+		BEGINNER("Beginner"), INTERMEDIATE("Intermediate"), ADVANCED("Advanced");
+
+		public final String label;
+
+		ProficiencyLevel(String label)
+		{
+			this.label = label;
+		}
 	}
 
 	ProficiencyLevel level;
@@ -151,7 +158,7 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 	@Override
 	public String toString()
 	{
-		return "SkillProficiency [id=" + id + ", level=" + level + ", skill=" + skill + "]";
+		return level.label + " " + skill;
 	}
 
 }

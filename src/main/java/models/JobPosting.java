@@ -23,9 +23,8 @@ public class JobPosting extends Post implements RestReadyInterface
 {
 	LocalDateTime expiration;
 	LocalDate startDate;
+	LocalDate datePosted;
 
-	int weeklyHours;
-	String payRange;
 	JobType type;
 	JobSite site;
 	String location;
@@ -57,6 +56,11 @@ public class JobPosting extends Post implements RestReadyInterface
 
 		requiredSkills = new ArrayList<SkillProficiency>();
 		strategyKind = RecommendationStrategyKind.ALL; // by default -- can be changed later
+	}
+
+	public Company getCompany()
+	{
+		return (Company) getLinks().get("company").get(0).getPage().getEntity();
 	}
 
 	public void recommendJob(List<Person> people)
@@ -145,6 +149,22 @@ public class JobPosting extends Post implements RestReadyInterface
 	}
 
 	/**
+	 * @return the datePosted
+	 */
+	public LocalDate getDatePosted()
+	{
+		return datePosted;
+	}
+
+	/**
+	 * @param datePosted the datePosted to set
+	 */
+	public void setDatePosted(LocalDate datePosted)
+	{
+		this.datePosted = datePosted;
+	}
+
+	/**
 	 * @return the expiration
 	 */
 	public LocalDateTime getExpiration()
@@ -174,38 +194,6 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setStartDate(LocalDate startDate)
 	{
 		this.startDate = startDate;
-	}
-
-	/**
-	 * @return the weeklyHours
-	 */
-	public int getWeeklyHours()
-	{
-		return weeklyHours;
-	}
-
-	/**
-	 * @param weeklyHours the weeklyHours to set
-	 */
-	public void setWeeklyHours(int weeklyHours)
-	{
-		this.weeklyHours = weeklyHours;
-	}
-
-	/**
-	 * @return the payRange
-	 */
-	public String getPayRange()
-	{
-		return payRange;
-	}
-
-	/**
-	 * @param payRange the payRange to set
-	 */
-	public void setPayRange(String payRange)
-	{
-		this.payRange = payRange;
 	}
 
 	/**
@@ -294,7 +282,7 @@ public class JobPosting extends Post implements RestReadyInterface
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ Objects.hash(expiration, location, payRange, requiredSkills, site, startDate, type, weeklyHours);
+				+ Objects.hash(datePosted, expiration, location, requiredSkills, site, startDate, strategyKind, type);
 		return result;
 	}
 
@@ -308,18 +296,16 @@ public class JobPosting extends Post implements RestReadyInterface
 		if (getClass() != obj.getClass())
 			return false;
 		JobPosting other = (JobPosting) obj;
-		return Objects.equals(expiration, other.expiration) && Objects.equals(location, other.location)
-				&& Objects.equals(payRange, other.payRange) && Objects.equals(requiredSkills, other.requiredSkills)
-				&& site == other.site && Objects.equals(startDate, other.startDate) && type == other.type
-				&& weeklyHours == other.weeklyHours;
+		return Objects.equals(datePosted, other.datePosted) && Objects.equals(expiration, other.expiration)
+				&& Objects.equals(location, other.location) && Objects.equals(requiredSkills, other.requiredSkills)
+				&& site == other.site && Objects.equals(startDate, other.startDate)
+				&& strategyKind == other.strategyKind && type == other.type;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "JobPosting [expiration=" + expiration + ", startDate=" + startDate + ", weeklyHours=" + weeklyHours
-				+ ", payRange=" + payRange + ", type=" + type + ", site=" + site + ", location=" + location
-				+ ", requiredSkills=" + requiredSkills + "]";
+		return title + " at " + getCompany();
 	}
 
 }

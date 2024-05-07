@@ -116,12 +116,4 @@ public class Company extends User
 		return RestUtilities.store(this, Company.class, RESOURCE, RESOURCE_DESC);
 	}
 
-	@Override
-	public String toString()
-	{
-		return "Company [name=" + name + ", bio=" + bio + ", email=" + email + ", phone=" + phone + ", avatarURL="
-				+ avatarURL + ", bannerURL=" + bannerURL + ", id=" + id + ", links=" + links + ", externalWebLinks="
-				+ externalWebLinks + "]";
-	}
-
 }

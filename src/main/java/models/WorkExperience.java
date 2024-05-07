@@ -46,6 +46,11 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 		this.manager = manager;
 	}
 
+	public Company getCompany()
+	{
+		return (Company) getLinks().get("company").get(0).getPage().getEntity();
+	}
+
 	@Override
 	public int getId()
 	{
@@ -177,8 +182,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	@Override
 	public String toString()
 	{
-		return "WorkExperience [id=" + id + ", links=" + links + ", title=" + title + ", description=" + description
-				+ "]";
+		return title + " at " + getCompany();
 	}
 
 }

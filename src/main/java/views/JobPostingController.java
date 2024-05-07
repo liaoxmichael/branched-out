@@ -1,14 +1,14 @@
 package views;
 
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import models.JobPosting;
-import models.TestJobPostingModel;
-import models.TransitionalViewModel;
+import models.SkillProficiency;
 import models.ViewTransitionHandler;
 
 public class JobPostingController
@@ -16,34 +16,42 @@ public class JobPostingController
 
 	ViewTransitionHandler viewModel;
 	JobPosting dataModel;
-	
-    @FXML
-    private Label companyName;
 
-    @FXML
-    private Label datePosted;
+	@FXML
+	private Label companyNameLabel;
 
-    @FXML
-    private Label desc;
+	@FXML
+	private Label datePostedLabel;
 
-    @FXML
-    private Label locationName;
+	@FXML
+	private Label descriptionLabel;
 
-    @FXML
-    private Label numApplicants;
+	@FXML
+	private Button editJobPostingButton;
 
-    @FXML
-    private Button recommendJobBtn;
+	@FXML
+	private Label locationLabel;
 
-    @FXML
-    private Label site;
+	@FXML
+	private Button logoButton;
 
-    @FXML
-    private Label title;
+	@FXML
+	private Label numApplicantsLabel;
 
-    @FXML
-    private Label type;
+	@FXML
+	private Button recommendButton;
 
+	@FXML
+	private Label siteLabel;
+
+	@FXML
+	private ListView<SkillProficiency> skillsList;
+
+	@FXML
+	private Label titleLabel;
+
+	@FXML
+	private Label typeLabel;
 
 	public void setModels(JobPosting newModel, ViewTransitionHandler viewModel)
 	{
@@ -53,23 +61,21 @@ public class JobPostingController
 	}
 
 	@FXML
-	void onClickBack(ActionEvent event) throws IOException
+	void onClickLogo(ActionEvent event)
 	{
-		viewModel.showSearchDisplay();
+		viewModel.showProfile(dataModel.getCompany());
 	}
 
 	public void loadData()
 	{
-		title.setText(dataModel.getTitle());
-		companyName.setText(dataModel.getLinks().get("company").get(0).getName());
-		datePosted.setText(dataModel.datePosted);
-		desc.setText(dataModel.desc);
-//		System.out.println(model.locationName);
-		locationName.setText(dataModel.locationName);
-		site.setText(dataModel.site);
-		numApplicants.setText(String.valueOf(dataModel.numApplicants));
-		type.setText(dataModel.type);
-		
+		titleLabel.setText(dataModel.getTitle());
+		companyNameLabel.setText(dataModel.getCompany().getName());
+		datePostedLabel.setText(new SimpleDateFormat("MMM d, yyyy HH:mm a").format(dataModel.getDatePosted()));
+		descriptionLabel.setText(dataModel.getDescription());
+		locationLabel.setText(dataModel.getLocation());
+		siteLabel.setText(dataModel.getSite().label);
+		numApplicantsLabel.setText(String.valueOf(dataModel.getLinks().get("applicants").size()));
+		typeLabel.setText(dataModel.getType().label);
 	}
 
 }
