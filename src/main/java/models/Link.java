@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +16,8 @@ public class Link implements Identifiable, RestReadyInterface
 {
 
 	int id;
-	@JsonIgnore
-	Page page;
+//	@JsonIgnore
+//	Page page;
 	int pageId;
 
 	public enum RelationshipType {
@@ -42,21 +42,14 @@ public class Link implements Identifiable, RestReadyInterface
 
 	public Link(Page page, RelationshipType type, IdentifiableObjectManagerInterface manager)
 	{
-		id = manager.getNextId();
-		this.page = page;
-		pageId = this.page.getId();
+		id = manager.nextId();
+//		this.page = page;
+		pageId = page.getId();
 		relation = type;
 
 		manager.register(this);
-	}
-
-	public Link(int pageId, RelationshipType type, IdentifiableObjectManagerInterface manager)
-	{
-		id = manager.getNextId();
-		this.pageId = pageId;
-		relation = type;
-
-		manager.register(this);
+		
+		store();
 	}
 
 	@Override
@@ -79,6 +72,7 @@ public class Link implements Identifiable, RestReadyInterface
 	public void setPageId(int pageId)
 	{
 		this.pageId = pageId;
+		update();
 	}
 
 	public static record ResponseRecord(String request, boolean successful, String message, Link data) {
@@ -135,17 +129,19 @@ public class Link implements Identifiable, RestReadyInterface
 	{
 		return RestUtilities.store(this, Link.class, RESOURCE, RESOURCE_DESC);
 	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, Link.class, RESOURCE, RESOURCE_DESC);
+	}
 
 	/**
 	 * @return the page
 	 */
 	public Page getPage()
 	{
-		if (page == null)
-		{
-			page = Page.retrieve(pageId);
-		}
-		return page;
+		return Page.retrieve(pageId);
 	}
 
 	/**
@@ -153,7 +149,8 @@ public class Link implements Identifiable, RestReadyInterface
 	 */
 	public void setPage(Page page)
 	{
-		this.page = page;
+		pageId = page.getId();
+		update();
 	}
 
 	/**
@@ -170,12 +167,13 @@ public class Link implements Identifiable, RestReadyInterface
 	public void setRelation(RelationshipType relation)
 	{
 		this.relation = relation;
+		update();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(page, relation);
+		return Objects.hash(pageId, relation);
 	}
 
 	@Override

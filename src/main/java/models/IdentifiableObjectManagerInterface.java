@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IdentifiableObjectManagerInterface
 {
-	public int getNextId();
+	public int nextId();
 
 	public int getCurrentId();
 

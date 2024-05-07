@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import models.adapters.Displayable;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.recommender.RecommendationStrategy;
@@ -19,7 +21,7 @@ import models.recommender.StrategyFactory;
 import models.rest.RestUtilities;
 import models.rest.RestReadyInterface;
 
-public class JobPosting extends Post implements RestReadyInterface
+public class JobPosting extends Post implements RestReadyInterface, Displayable
 {
 	LocalDateTime expiration;
 	LocalDate startDate;
@@ -56,11 +58,13 @@ public class JobPosting extends Post implements RestReadyInterface
 
 		requiredSkills = new ArrayList<SkillProficiency>();
 		strategyKind = RecommendationStrategyKind.ALL; // by default -- can be changed later
+		
+		store();
 	}
 
-	public Company getCompany()
+	public Company whichCompany()
 	{
-		return (Company) getLinks().get("company").get(0).getPage().getEntity();
+		return Company.retrieve(getLinks().get("company").get(0).getPage().getEntityId());
 	}
 
 	public void recommendJob(List<Person> people)
@@ -71,8 +75,15 @@ public class JobPosting extends Post implements RestReadyInterface
 			if (p.isOpenToWork() && strategy.check(p, this))
 			{
 				p.addJobPosting(this);
+				p.update();
 			}
 		}
+	}
+
+	public void recommendJob() // version that interacts with server
+	{
+		List<Person> people = Person.retrieveAll();
+		recommendJob(people);
 	}
 
 	public SkillProficiency addRequiredSkill(Skill skill, SkillProficiency.ProficiencyLevel level)
@@ -85,13 +96,16 @@ public class JobPosting extends Post implements RestReadyInterface
 			return requiredSkills.get(skillIndex);
 		}
 		requiredSkills.add(newProf);
+		update();
 		return newProf;
 	}
 
 	public boolean removeRequiredSkill(Skill skill)
 	{
 		// level doesn't matter
-		return requiredSkills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
+		boolean result = requiredSkills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
+		update();
+		return result;
 	}
 
 	public static record ResponseRecord(String request, boolean successful, String message, JobPosting data) {
@@ -147,6 +161,76 @@ public class JobPosting extends Post implements RestReadyInterface
 	{
 		return RestUtilities.store(this, JobPosting.class, RESOURCE, RESOURCE_DESC);
 	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, JobPosting.class, RESOURCE, RESOURCE_DESC);
+	}
+
+	@Override
+	public void setTitle(String title)
+	{
+		super.setTitle(title);
+		update();
+	}
+
+	@Override
+	public void setDescription(String description)
+	{
+		super.setDescription(description);
+		update();
+	}
+
+	@Override
+	public void addExternalWebLink(String link)
+	{
+		super.addExternalWebLink(link);
+		update();
+	}
+
+	@Override
+	public boolean removeExternalWebLink(String link)
+	{
+		boolean result = super.removeExternalWebLink(link);
+		update();
+		return result;
+	}
+
+	@Override
+	public void setPage(Page page)
+	{
+		super.setPage(page);
+		update();
+	}
+
+	@Override
+	public void setPageId(int pageId)
+	{
+		super.setPageId(pageId);
+		update();
+	}
+
+	@Override
+	public void setId(int id)
+	{
+		super.setId(id);
+		update();
+	}
+
+	@Override
+	public void setLinks(Map<String, List<Link>> links)
+	{
+		super.setLinks(links);
+		update();
+	}
+
+	@Override
+	public void setExternalWebLinks(List<String> externalWebLinks)
+	{
+		super.setExternalWebLinks(externalWebLinks);
+		update();
+	}
 
 	/**
 	 * @return the datePosted
@@ -162,6 +246,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setDatePosted(LocalDate datePosted)
 	{
 		this.datePosted = datePosted;
+		update();
 	}
 
 	/**
@@ -178,6 +263,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setExpiration(LocalDateTime expiration)
 	{
 		this.expiration = expiration;
+		update();
 	}
 
 	/**
@@ -194,6 +280,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setStartDate(LocalDate startDate)
 	{
 		this.startDate = startDate;
+		update();
 	}
 
 	/**
@@ -210,6 +297,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setType(JobType type)
 	{
 		this.type = type;
+		update();
 	}
 
 	/**
@@ -226,6 +314,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setSite(JobSite site)
 	{
 		this.site = site;
+		update();
 	}
 
 	/**
@@ -242,6 +331,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setLocation(String location)
 	{
 		this.location = location;
+		update();
 	}
 
 	/**
@@ -258,6 +348,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setRequiredSkills(List<SkillProficiency> requiredSkills)
 	{
 		this.requiredSkills = requiredSkills;
+		update();
 	}
 
 	/**
@@ -274,6 +365,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	public void setStrategyKind(RecommendationStrategyKind strategyKind)
 	{
 		this.strategyKind = strategyKind;
+		update();
 	}
 
 	@Override
@@ -305,7 +397,7 @@ public class JobPosting extends Post implements RestReadyInterface
 	@Override
 	public String toString()
 	{
-		return title + " at " + getCompany();
+		return title + " at " + whichCompany();
 	}
 
 }

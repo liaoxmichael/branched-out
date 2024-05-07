@@ -5,4 +5,6 @@ public interface RestReadyInterface
 //	public Object retrieve(int id, String resourceName);
 
 	public boolean store();
+	
+	public boolean update();
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,14 +15,14 @@ import models.rest.RestReadyInterface;
 public class Page implements Identifiable, RestReadyInterface // should be abstract; made concrete for testing
 {
 	int id;
-	@JsonIgnore
-	protected Entity entity;
+//	@JsonIgnore
+//	protected Entity entity;
 	int entityId;
-	@JsonIgnore
-	protected List<User> editors;
+//	@JsonIgnore
+//	protected List<User> editors;
 	protected List<Integer> editorIds;
-	@JsonIgnore
-	protected List<User> blockedViewers;
+//	@JsonIgnore
+//	protected List<User> blockedViewers;
 	protected List<Integer> blockedViewerIds;
 	protected IdentifiableObjectManagerInterface manager;
 
@@ -32,16 +32,19 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 
 	public Page(Entity entity, IdentifiableObjectManagerInterface manager)
 	{
-		id = manager.getNextId();
+		id = manager.nextId();
 		manager.register(this);
 
-		this.entity = entity;
-		editors = new ArrayList<User>();
+//		this.entity = entity;
+		entityId = entity.getId();
+//		editors = new ArrayList<User>();
 		editorIds = new ArrayList<Integer>();
-		blockedViewers = new ArrayList<User>();
+//		blockedViewers = new ArrayList<User>();
 		blockedViewerIds = new ArrayList<Integer>();
 
 		this.manager = manager;
+
+		store();
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 		}
 		return null;
 	}
-	
+
 	public static List<Page> retrieveAll()
 	{
 		ObjectMapper mapper = new ObjectMapper();
@@ -104,41 +107,52 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	{
 		return RestUtilities.store(this, Page.class, RESOURCE, RESOURCE_DESC);
 	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, Page.class, RESOURCE, RESOURCE_DESC);
+	}
 
 	public void addEditor(User user)
 	{
-		int index = editors.indexOf(user);
+		int index = editorIds.indexOf(user.getId());
 
 		if (index != -1) // if already an editor: early termination
 		{
 			return;
 		} // else
-		editors.add(user);
+//		editor.add(user);
 		editorIds.add(user.getId());
+		update();
 	}
 
 	public boolean removeEditor(User user)
 	{
-
-		return editors.remove(user) && editorIds.remove(Integer.valueOf(user.getId()));
+		boolean result = editorIds.remove(Integer.valueOf(user.getId()));
+		update();
+		return result;
 	}
 
 	public void blockViewer(User user)
 	{
-		int index = blockedViewers.indexOf(user);
+		int index = blockedViewerIds.indexOf(user.getId());
 
 		if (index != -1) // if already blocked: early termination
 		{
 			return;
 		} // else
 
-		blockedViewers.add(user);
+//		blockedViewers.add(user);
 		blockedViewerIds.add(user.getId());
+		update();
 	}
 
 	public boolean unblockViewer(User user)
 	{
-		return blockedViewers.remove(user) && blockedViewerIds.remove(Integer.valueOf(user.getId()));
+		boolean result = blockedViewerIds.remove(Integer.valueOf(user.getId()));
+		update();
+		return result;
 	}
 
 	/**
@@ -146,17 +160,14 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	 */
 	public boolean canEdit(User user)
 	{
-		boolean found = false;
-		for (User u : editors)
+		for (int id : editorIds)
 		{
-			if (user.equals(u))
+			if (user.getId() == id)
 			{
-				found = true;
-				break;
+				return true;
 			}
 		}
-		return found;
-		// return canEdit.contains(user);
+		return false;
 	}
 
 	/**
@@ -164,7 +175,14 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	 */
 	public boolean cantView(User user)
 	{
-		return blockedViewers.contains(user);
+		for (int id : blockedViewerIds)
+		{
+			if (user.getId() == id)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -181,6 +199,7 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	public void setEntityId(int entityId)
 	{
 		this.entityId = entityId;
+		update();
 	}
 
 	/**
@@ -196,20 +215,21 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	 */
 	public void setEditorIds(List<Integer> editorIds)
 	{
-		List<User> newSet = new ArrayList<User>();
-		for (Integer i : editorIds)
-		{
-			if (Person.retrieve(i) != null)
-			{
-				newSet.add(Person.retrieve(i));
-			} else if (Company.retrieve(i) != null)
-			{
-				newSet.add(Company.retrieve(i));
-			}
-		}
-		this.editors = newSet;
+//		List<User> newSet = new ArrayList<User>();
+//		for (Integer i : editorIds)
+//		{
+//			if (Person.retrieve(i) != null)
+//			{
+//				newSet.add(Person.retrieve(i));
+//			} else if (Company.retrieve(i) != null)
+//			{
+//				newSet.add(Company.retrieve(i));
+//			}
+//		}
+//		this.editors = newSet;
 
 		this.editorIds = editorIds;
+		update();
 	}
 
 	/**
@@ -225,84 +245,38 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	 */
 	public void setBlockedViewerIds(List<Integer> blockedViewerIds)
 	{
-		List<User> newSet = new ArrayList<User>();
-		for (Integer i : blockedViewerIds)
-		{
-			if (Person.retrieve(i) != null)
-			{
-				newSet.add(Person.retrieve(i));
-			} else if (Company.retrieve(i) != null)
-			{
-				newSet.add(Company.retrieve(i));
-			}
-		}
-		this.blockedViewers = newSet;
+//		List<User> newList = new ArrayList<User>();
+//		for (Integer i : blockedViewerIds)
+//		{
+//			if (Person.retrieve(i) != null)
+//			{
+//				newList.add(Person.retrieve(i));
+//			} else if (Company.retrieve(i) != null)
+//			{
+//				newList.add(Company.retrieve(i));
+//			}
+//		}
+//		this.blockedViewers = newList;
 
 		this.blockedViewerIds = blockedViewerIds;
+		update();
 	}
 
-	/**
-	 * @return the editors
-	 */
-	public List<User> getEditors()
-	{
-		return editors;
-	}
+//	/**
+//	 * @return the entity
+//	 */
+//	public Entity getEntity()
+//	{
+//		return entity;
+//	}
 
-	/**
-	 * @param editors the editors to set
-	 */
-	public void setEditors(List<User> editors)
-	{
-		List<Integer> newIds = new ArrayList<Integer>();
-		for (User u : editors)
-		{
-			newIds.add(u.getId());
-		}
-		this.editorIds = newIds;
-
-		this.editors = editors;
-
-	}
-
-	/**
-	 * @return the blockedViewers
-	 */
-	public List<User> getBlockedViewers()
-	{
-		return blockedViewers;
-	}
-
-	/**
-	 * @param blockedViewers the blockedViewers to set
-	 */
-	public void setBlockedViewers(List<User> blockedViewers)
-	{
-		List<Integer> newIds = new ArrayList<Integer>();
-		for (User u : blockedViewers)
-		{
-			newIds.add(u.getId());
-		}
-		this.blockedViewerIds = newIds;
-
-		this.blockedViewers = blockedViewers;
-	}
-
-	/**
-	 * @return the entity
-	 */
-	public Entity getEntity()
-	{
-		return entity;
-	}
-
-	/**
-	 * @param entity the entity to set
-	 */
-	public void setEntity(Entity entity)
-	{
-		this.entity = entity;
-	}
+//	/**
+//	 * @param entity the entity to set
+//	 */
+//	public void setEntity(Entity entity)
+//	{
+//		this.entity = entity;
+//	}
 
 	@Override
 	public int hashCode()
@@ -326,9 +300,40 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	@Override
 	public String toString()
 	{
-		return "Page [id=" + id + ", entity=" + entity + ", entityId=" + entityId + ", editors=" + editors
-				+ ", editorIds=" + editorIds + ", blockedViewers=" + blockedViewers + ", blockedViewerIds="
+		return "Page [id=" + id + ", entityId=" + entityId + ", editorIds=" + editorIds + ", blockedViewerIds="
 				+ blockedViewerIds + ", manager=" + manager + "]";
+	}
+
+	public List<User> fetchEditors()
+	{
+		List<User> newList = new ArrayList<User>();
+		for (Integer i : editorIds)
+		{
+			if (Person.retrieve(i) != null)
+			{
+				newList.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				newList.add(Company.retrieve(i));
+			}
+		}
+		return newList;
+	}
+
+	public List<User> fetchBlockedViewers()
+	{
+		List<User> newList = new ArrayList<User>();
+		for (Integer i : blockedViewerIds)
+		{
+			if (Person.retrieve(i) != null)
+			{
+				newList.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				newList.add(Company.retrieve(i));
+			}
+		}
+		return newList;
 	}
 
 }

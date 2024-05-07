@@ -2,15 +2,17 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
+import models.adapters.Displayable;
 import models.rest.RestReadyInterface;
 
-public class Skill extends Post implements RestReadyInterface
+public class Skill extends Post implements RestReadyInterface, Displayable
 {
 
 	public Skill()
@@ -22,6 +24,8 @@ public class Skill extends Post implements RestReadyInterface
 	{
 		super(title, manager);
 		links.put("mentors", new ArrayList<Link>());
+
+		store();
 	}
 
 	public void addMentor(Person person)
@@ -34,11 +38,16 @@ public class Skill extends Post implements RestReadyInterface
 
 		links.get("mentors") // guaranteed because of constructor; else risky and could return null
 				.add(newLink);
+
+		update();
 	}
 
 	public boolean removeMentor(Person person)
 	{
-		return links.get("mentors").remove(new Link(person.getPage(), Link.RelationshipType.MENTOR_PERSON, manager));
+		boolean result = links.get("mentors")
+				.remove(new Link(person.getPage(), Link.RelationshipType.MENTOR_PERSON, manager));
+		update();
+		return result;
 	}
 
 	public static record ResponseRecord(String request, boolean successful, String message, Skill data) {
@@ -64,7 +73,7 @@ public class Skill extends Post implements RestReadyInterface
 		}
 		return null;
 	}
-	
+
 	public static List<Skill> retrieveAll()
 	{
 		ObjectMapper mapper = new ObjectMapper();
@@ -89,11 +98,81 @@ public class Skill extends Post implements RestReadyInterface
 		}
 		return list;
 	}
+	
+	@Override
+	public void setTitle(String title)
+	{
+		super.setTitle(title);
+		update();
+	}
+	
+	@Override
+	public void setDescription(String description)
+	{
+		super.setDescription(description);
+		update();
+	}
+	
+	@Override
+	public void addExternalWebLink(String link)
+	{
+		super.addExternalWebLink(link);
+		update();
+	}
+
+	@Override
+	public boolean removeExternalWebLink(String link)
+	{
+		boolean result = super.removeExternalWebLink(link);
+		update();
+		return result;
+	}
+
+	@Override
+	public void setPage(Page page)
+	{
+		super.setPage(page);
+		update();
+	}
+
+	@Override
+	public void setPageId(int pageId)
+	{
+		super.setPageId(pageId);
+		update();
+	}
+
+	@Override
+	public void setId(int id)
+	{
+		super.setId(id);
+		update();
+	}
+
+	@Override
+	public void setLinks(Map<String, List<Link>> links)
+	{
+		super.setLinks(links);
+		update();
+	}
+
+	@Override
+	public void setExternalWebLinks(List<String> externalWebLinks)
+	{
+		super.setExternalWebLinks(externalWebLinks);
+		update();
+	}
 
 	@Override
 	public boolean store()
 	{
 		return RestUtilities.store(this, Skill.class, RESOURCE, RESOURCE_DESC);
+	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, Skill.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	@Override

@@ -32,6 +32,8 @@ public final class RestUtilities
 	public static final String TEAM_DESC = "Michael Liao's personal team resources";
 	public static final String TEAM_URI = join(BASE_URI, TEAM_NAME);
 
+	private static RestClient client = RestClient.create();
+
 	// this is worthless
 	public static Map<Class<?>, Class<?>> classToRecordMap = Map.ofEntries(
 			entry(Company.class, Company.ResponseRecord.class),
@@ -70,7 +72,7 @@ public final class RestUtilities
 
 	public static boolean doesResourceExist(int id, String resource)
 	{
-		RestClient client = RestClient.create();
+//		RestClient client = RestClient.create();
 		ResponseObject responseObject = client.get()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resource, String.valueOf(id))).retrieve()
 				.body(ResponseObject.class);
@@ -81,7 +83,7 @@ public final class RestUtilities
 	// overloaded version with no id to check resource directories
 	public static boolean doesResourceExist(String resource)
 	{
-		RestClient client = RestClient.create();
+//		RestClient client = RestClient.create();
 		ResponseObject responseObject = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, resource))
 				.retrieve().body(ResponseObject.class);
 
@@ -90,7 +92,7 @@ public final class RestUtilities
 
 	public static boolean createResource(String resource, String resource_desc)
 	{
-		RestClient client = RestClient.create();
+//		RestClient client = RestClient.create();
 		ResponseData r = new ResponseData(resource, resource_desc,
 				RestUtilities.join(RestUtilities.TEAM_URI, resource));
 		ResponseObject responseObject = client.post().uri(RestUtilities.join(RestUtilities.TEAM_URI, resource)).body(r)
@@ -101,7 +103,7 @@ public final class RestUtilities
 
 	public static JsonNode retrieve(int id, String resourceName)
 	{
-		RestClient client = RestClient.create();
+//		RestClient client = RestClient.create();
 
 		if (RestUtilities.doesResourceExist(id, resourceName))
 		{
@@ -117,7 +119,7 @@ public final class RestUtilities
 
 	public static List<JsonNode> retrieveAll(String resourceName)
 	{
-		RestClient client = RestClient.create();
+//		RestClient client = RestClient.create();
 
 		List<JsonNode> list = new ArrayList<JsonNode>();
 
@@ -137,14 +139,26 @@ public final class RestUtilities
 
 	public static boolean store(Identifiable obj, Class<?> targetClass, String resourceName, String resourceDesc)
 	{
-		RestClient client = RestClient.create();
+		ResponseObject result;
+//		RestClient client = RestClient.create();
 		if (!RestUtilities.doesResourceExist(resourceName))
 		{ // need to create the thing!
 			RestUtilities.createResource(resourceName, resourceDesc);
 		}
-		ResponseObject result = client.post()
+		result = client.post()
 				.uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId())))
 				.body(targetClass.cast(obj)).retrieve().body(ResponseObject.class);
+		System.out.println(result.message());
+		return result.successful();
+	}
+
+	public static boolean update(Identifiable obj, Class<?> targetClass, String resourceName, String resourceDesc)
+	{
+		ResponseObject result;
+		result = client.put().uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId())))
+				.body(targetClass.cast(obj)).retrieve().body(ResponseObject.class);
+
+		System.out.println(result.message());
 		return result.successful();
 	}
 }

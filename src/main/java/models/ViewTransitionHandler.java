@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import models.adapters.Displayable;
 import views.JobPostingController;
 import views.MainController;
 import views.SearchDisplayController;
@@ -50,27 +51,10 @@ public class ViewTransitionHandler
 
 	public void showMain(User user)
 	{
-		// set mainview to dashboard
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ViewTransitionHandler.class.getResource("../views/MainView.fxml"));
-
-		Pane view;
-		try
-		{
-			view = loader.load();
-
-			MainController controller = loader.getController();
-			mainview.setCenter(view);
-
-			controller.setModels(user, this);
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mainview.setCenter(null);
 	}
 
-	public void showSearchDisplay(ObservableList<Entity> entities) // possible enum for classes?
+	public void showSearchDisplay(ObservableList<Displayable> entities) // possible enum for classes?
 	{
 		// set center to display list of job postings
 		FXMLLoader loader = new FXMLLoader();
@@ -127,7 +111,6 @@ public class ViewTransitionHandler
 			SkillController controller = loader.getController();
 			mainview.setCenter(view);
 			controller.setModels(skill, currentUser, this);
-			// controller.loadData(); // TODO
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block
@@ -148,7 +131,7 @@ public class ViewTransitionHandler
 
 			JobPostingController controller = loader.getController();
 			mainview.setCenter(view);
-//			controller.setModels(job, this);
+			controller.setModels(job, currentUser, this);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

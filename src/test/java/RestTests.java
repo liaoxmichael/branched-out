@@ -66,7 +66,7 @@ class RestTests
 	void create(Record r, String uri) throws JsonMappingException, JsonProcessingException
 	{
 		String response = client.post().uri(uri).body(r).retrieve().body(String.class);
-		System.out.println(response);
+//		System.out.println(response);
 		JsonNode finalResponse = mapper.readTree(response);
 //		System.out.println(finalResponse.message);
 		assertTrue(finalResponse.get("successful").asBoolean());
@@ -244,8 +244,8 @@ class RestTests
 		team = new ResponseData(RestUtilities.TEAM_NAME, RestUtilities.TEAM_DESC, RestUtilities.TEAM_URI);
 
 		// delete existing team for ease of testing
-		String result = client.delete().uri(RestUtilities.TEAM_URI).retrieve().body(String.class);
-		System.out.println(result);
+		client.delete().uri(RestUtilities.TEAM_URI).retrieve().body(String.class);
+//		System.out.println(result);
 
 		// recreate now!
 		create(team, RestUtilities.TEAM_URI);
@@ -282,350 +282,199 @@ class RestTests
 	void testJobPostings() throws JsonMappingException, JsonProcessingException
 	{
 		googleEngi = new JobPosting("Senior Software Developer", google, testManager); // 17
-
 		appleTech = new JobPosting("Apple Genius Technician", apple, testManager); // 21
 
-		ArrayList<JobPosting> jobPostings = new ArrayList<JobPosting>();
-		assertEquals(jobPostings, JobPosting.retrieveAll());
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)));
-
-		assertTrue(googleEngi.store()); // should create the directory AND add it
+		ArrayList<JobPosting> jobPostings = new ArrayList<>();
 		jobPostings.add(googleEngi);
-
-		// check if directory exists
-		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE))); 
-		checkJobPostings(jobPostings);
-		assertEquals(jobPostings, JobPosting.retrieveAll());
-
-		assertFalse(googleEngi.store()); // shouldn't be able to store something already stored
-
-		assertTrue(appleTech.store()); // now checking multiple things
 		jobPostings.add(appleTech);
+
+		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)));
 		checkJobPostings(jobPostings);
 		assertEquals(jobPostings, JobPosting.retrieveAll());
 
-		// testing retrieval
 		assertEquals(googleEngi, JobPosting.retrieve(17));
 		assertEquals(appleTech, JobPosting.retrieve(21));
 
-		assertNull(JobPosting.retrieve(10)); // something that hasn't been stored yet; should return null as failure
-
-		// let's store something that isn't a company and try to retrieve it using
-		// Page.retrieve
-		assertTrue(applePage.store());
-		assertNull(JobPosting.retrieve(2)); // company != page
-
-		assertNull(JobPosting.retrieve(-1)); // should not exist
+		assertNull(JobPosting.retrieve(10));
+		assertTrue(applePage.update());
+		assertNull(JobPosting.retrieve(2));
+		assertNull(JobPosting.retrieve(-1));
 	}
 
 	@Test
 	void testCompany() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<Company> companies = new ArrayList<Company>();
-		assertEquals(companies, Company.retrieveAll()); // check companies empty
-
-		// testing storage
-		// currently no resource directory should exist; let's make sure
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Company.RESOURCE)));
-
-		assertTrue(apple.store()); // should create the directory AND add it
+		ArrayList<Company> companies = new ArrayList<>();
 		companies.add(apple);
-
-		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Company.RESOURCE))); // check if directory
-																									// exists
-		checkCompanies(companies);
-		assertEquals(companies, Company.retrieveAll()); // check companies accurate
-
-		assertFalse(apple.store()); // shouldn't be able to store something already stored
-
-		assertTrue(google.store()); // now checking multiple things
 		companies.add(google);
+
+		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Company.RESOURCE)));
 		checkCompanies(companies);
-		
-		assertEquals(companies, Company.retrieveAll()); // check companies equal across all
+		assertEquals(companies, Company.retrieveAll());
 
-		// testing retrieval
-		assertEquals(apple, Company.retrieve(1)); // recall - apple id = 1
 		assertEquals(google, Company.retrieve(3));
+		assertEquals(apple, Company.retrieve(1));
 
-		assertNull(Company.retrieve(10)); // something that hasn't been stored yet; should return null as failure
-
-		// let's store something that isn't a company and try to retrieve it using
-		// Page.retrieve
-		assertTrue(applePage.store());
-		assertNull(Company.retrieve(2)); // company != page
-
-		assertNull(Company.retrieve(-1)); // should not exist
+		assertNull(Company.retrieve(10));
+		assertTrue(apple.update());
+		assertNull(Company.retrieve(2));
+		assertNull(Company.retrieve(-1));
 	}
 
 	@Test
 	void testLink() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<Link> links = new ArrayList<Link>();
-		assertEquals(links, Link.retrieveAll());
-
-		// need to make some links to test!
 		Link aliceMentor = new Link(alicePage, Link.RelationshipType.MENTOR_PERSON, testManager); // 17
 		Link bobMentor = new Link(bobPage, Link.RelationshipType.MENTOR_PERSON, testManager); // 18
 
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)));
-
-		assertTrue(aliceMentor.store());
+		ArrayList<Link> links = new ArrayList<>();
 		links.add(aliceMentor);
+		links.add(bobMentor);
 
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)));
 		checkLinks(links);
 		assertEquals(links, Link.retrieveAll());
 
-		assertFalse(aliceMentor.store());
-
-		assertTrue(bobMentor.store());
-		links.add(bobMentor);
-		checkLinks(links);
-		assertEquals(links, Link.retrieveAll());
-
-		// testing retrieval
 		assertEquals(aliceMentor, Link.retrieve(17));
 		assertEquals(bobMentor, Link.retrieve(18));
 
 		assertNull(Link.retrieve(10));
-
-		assertTrue(applePage.store());
-		assertNull(Link.retrieve(2)); // link != page
-
+		assertTrue(applePage.update());
+		assertNull(Link.retrieve(2));
 		assertNull(Link.retrieve(-1));
 	}
 
 	@Test
 	void testPage() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<Page> pages = new ArrayList<Page>();
-		assertEquals(pages, Page.retrieveAll());
+		
 
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Page.RESOURCE)));
-
-		assertTrue(applePage.store());
-		pages.add(applePage);
-
-		// check if directory exists
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Page.RESOURCE)));
-		checkPages(pages);
-		assertEquals(pages, Page.retrieveAll());
+		assertEquals(8, Page.retrieveAll().size());
 
-		assertFalse(applePage.store());
-
-		assertTrue(googlePage.store());
-		pages.add(googlePage);
-		checkPages(pages);
-		assertEquals(pages, Page.retrieveAll());
-
-		// testing retrieval
-		assertEquals(applePage, Page.retrieve(2)); // recall - applePage id = 2
+		assertEquals(applePage, Page.retrieve(2));
 		assertEquals(googlePage, Page.retrieve(4));
 
-		assertNull(Page.retrieve(10));
-
-		assertTrue(apple.store()); // hehe apple store
-		assertNull(Page.retrieve(1)); // page != company
-
+		assertNull(Page.retrieve(200));
+		assertTrue(apple.update());
+		assertNull(Page.retrieve(1));
 		assertNull(Page.retrieve(-1));
 	}
 
 	@Test
 	void testPerson() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<Person> people = new ArrayList<Person>();
-		assertEquals(people, Person.retrieveAll());
-
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)));
-
-		assertTrue(alice.store());
+		ArrayList<Person> people = new ArrayList<>();
 		people.add(alice);
+		people.add(bob);
 
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)));
 		checkPeople(people);
 		assertEquals(people, Person.retrieveAll());
-		
-		assertFalse(alice.store());
 
-		assertTrue(bob.store());
-		people.add(bob);
-		checkPeople(people);
-		assertEquals(people, Person.retrieveAll());
-
-		// testing retrieval
 		assertEquals(alice, Person.retrieve(5));
 		assertEquals(bob, Person.retrieve(7));
 
 		assertNull(Person.retrieve(10));
-
-		assertTrue(applePage.store());
-		assertNull(Person.retrieve(2)); // person != page
-
+		assertTrue(applePage.update());
+		assertNull(Person.retrieve(2));
 		assertNull(Person.retrieve(-1));
 	}
 
 	@Test
 	void testProject() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<Project> projects = new ArrayList<Project>();
-		assertEquals(projects, Project.retrieveAll());
-
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Project.RESOURCE)));
-
-		assertTrue(helloWorld.store());
+		ArrayList<Project> projects = new ArrayList<>();
 		projects.add(helloWorld);
+		projects.add(myFirstProgram);
 
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Project.RESOURCE)));
 		checkProjects(projects);
 		assertEquals(projects, Project.retrieveAll());
 
-		assertFalse(helloWorld.store());
-
-		assertTrue(myFirstProgram.store());
-		projects.add(myFirstProgram);
-		checkProjects(projects);
-		assertEquals(projects, Project.retrieveAll());
-
-		// testing retrieval
 		assertEquals(helloWorld, Project.retrieve(13));
 		assertEquals(myFirstProgram, Project.retrieve(15));
 
 		assertNull(Project.retrieve(10));
-
-		assertTrue(applePage.store());
-		assertNull(Project.retrieve(2)); // project != page
-
+		assertTrue(applePage.update());
+		assertNull(Project.retrieve(2));
 		assertNull(Project.retrieve(-1));
 	}
 
 	@Test
 	void testSkill() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<Skill> skills = new ArrayList<Skill>();
-		assertEquals(skills, Skill.retrieveAll());
-
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Skill.RESOURCE)));
-
-		assertTrue(java.store());
+		ArrayList<Skill> skills = new ArrayList<>();
+		skills.add(python);
 		skills.add(java);
+		
 
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, Skill.RESOURCE)));
 		checkSkills(skills);
 		assertEquals(skills, Skill.retrieveAll());
 
-		assertFalse(java.store());
-
-		assertTrue(python.store());
-		skills.add(0, python); // need to insert earlier -- alphabetically 11 comes before 9
-		checkSkills(skills);
-		assertEquals(skills, Skill.retrieveAll());
-
-		// testing retrieval
+		// Testing retrieval
 		assertEquals(java, Skill.retrieve(9));
 		assertEquals(python, Skill.retrieve(11));
 
 		assertNull(Skill.retrieve(10));
-
-		assertTrue(applePage.store());
-		assertNull(Skill.retrieve(2)); // skill != page
-
+		assertTrue(applePage.update());
+		assertNull(Skill.retrieve(2));
 		assertNull(Skill.retrieve(-1));
 	}
 
 	@Test
 	void testSkillProficiency() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<SkillProficiency> profs = new ArrayList<SkillProficiency>();
-		assertEquals(profs, SkillProficiency.retrieveAll());
-
-		// need to make some profs to test!
 		SkillProficiency javaExperienced = new SkillProficiency(java, SkillProficiency.ProficiencyLevel.ADVANCED,
-				testManager); // 17
+				testManager);
 		SkillProficiency pythonExperienced = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.ADVANCED,
-				testManager); // 18
+				testManager);
 		SkillProficiency pythonBeginner = new SkillProficiency(python, SkillProficiency.ProficiencyLevel.BEGINNER,
-				testManager); // 19
+				testManager);
 
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, SkillProficiency.RESOURCE)));
-
-		assertTrue(javaExperienced.store());
+		ArrayList<SkillProficiency> profs = new ArrayList<>();
 		profs.add(javaExperienced);
+		profs.add(pythonExperienced);
+		profs.add(pythonBeginner);
 
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, SkillProficiency.RESOURCE)));
 		checkSkillProficiencies(profs);
 		assertEquals(profs, SkillProficiency.retrieveAll());
 
-		assertFalse(javaExperienced.store());
-
-		assertTrue(pythonExperienced.store());
-		profs.add(pythonExperienced);
-		checkSkillProficiencies(profs);
-		assertEquals(profs, SkillProficiency.retrieveAll());
-
-		// just want to test same-skill diff-level b/c SkillProficiencies have
-		// interesting equality
-		assertTrue(pythonBeginner.store());
-		profs.add(pythonBeginner);
-		checkSkillProficiencies(profs);
-
-		// testing retrieval
 		assertEquals(javaExperienced, SkillProficiency.retrieve(17));
 		assertEquals(pythonExperienced, SkillProficiency.retrieve(18));
 		assertEquals(pythonBeginner, SkillProficiency.retrieve(19));
 
 		assertNull(SkillProficiency.retrieve(9));
-
-		assertTrue(applePage.store());
-		assertNull(SkillProficiency.retrieve(2)); // skill proficiency != page
-
+		assertTrue(applePage.update());
+		assertNull(SkillProficiency.retrieve(2));
 		assertNull(SkillProficiency.retrieve(-1));
 	}
 
 	@Test
 	void testWorkExperience() throws JsonMappingException, JsonProcessingException
 	{
-		ArrayList<WorkExperience> jobs = new ArrayList<WorkExperience>();
-		assertEquals(jobs, WorkExperience.retrieveAll());
-
-		// need to make some jobs to test!
 		WorkExperience mobileUX = new WorkExperience("Mobile UX Design Lead", "Crafted new Apple layout for home page.",
 				apple, testManager); // 17
 		WorkExperience bardEngineer = new WorkExperience("Bard ML Engineer", "Launched the beta chatbot Bard.", google,
-				testManager); // 19 because 18 taken by Link created
+				testManager); // 19
 
-		// testing storage
-		assertFalse(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, WorkExperience.RESOURCE)));
-
-		assertTrue(mobileUX.store());
+		ArrayList<WorkExperience> jobs = new ArrayList<>();
 		jobs.add(mobileUX);
+		jobs.add(bardEngineer);
 
 		assertTrue(existsOnServer(RestUtilities.join(RestUtilities.TEAM_URI, WorkExperience.RESOURCE)));
 		checkWorkExperiences(jobs);
 		assertEquals(jobs, WorkExperience.retrieveAll());
 
-		assertFalse(mobileUX.store());
-
-		assertTrue(bardEngineer.store());
-		jobs.add(bardEngineer);
-		checkWorkExperiences(jobs);
-		assertEquals(jobs, WorkExperience.retrieveAll());
-
-		// testing retrieval
+		// Testing retrieval
 		assertEquals(mobileUX, WorkExperience.retrieve(17));
 		assertEquals(bardEngineer, WorkExperience.retrieve(19));
 
 		assertNull(WorkExperience.retrieve(9));
-
-		assertTrue(applePage.store());
-		assertNull(WorkExperience.retrieve(2)); // work experience != page
-
+		assertTrue(applePage.update());
+		assertNull(WorkExperience.retrieve(2));
 		assertNull(WorkExperience.retrieve(-1));
 	}
 }

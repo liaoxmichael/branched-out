@@ -37,7 +37,9 @@ public class SkillController
 
 		if (dataModel.getPage().canEdit(currentUser))
 		{
-			
+			editButton.setDisable(false);
+		} else {
+			editButton.setDisable(true);
 		}
 	}
 

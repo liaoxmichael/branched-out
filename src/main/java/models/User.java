@@ -80,6 +80,7 @@ public abstract class User extends Entity
 	public void setPassword(String password)
 	{
 		this.password = password;
+		store();
 	}
 
 	/**
@@ -96,6 +97,7 @@ public abstract class User extends Entity
 	public void setName(String name)
 	{
 		this.name = name;
+		store();
 	}
 
 	/**

@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
 public final class EntityUtils
 {
 	public final static ObservableList<String> entityTypes = FXCollections.observableArrayList("Companies",
-			"Job Postings", "People", "Skills", "Projects");
+			"Job Postings", "People", "Skills");
 
 	private EntityUtils() // do not instantiate
 	{

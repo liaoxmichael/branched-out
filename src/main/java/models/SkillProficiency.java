@@ -9,9 +9,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
+import models.adapters.Displayable;
 import models.rest.RestReadyInterface;
 
-public class SkillProficiency implements Identifiable, RestReadyInterface
+public class SkillProficiency implements Identifiable, RestReadyInterface, Displayable
 {
 
 	int id;
@@ -37,11 +38,13 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 
 	public SkillProficiency(Skill skill, ProficiencyLevel level, IdentifiableObjectManagerInterface manager)
 	{
-		id = manager.getNextId();
+		id = manager.nextId();
 		this.skill = skill;
 		this.level = level;
 		manager.register(this); // registering with the manager
 		this.manager = manager;
+		
+		store();
 	}
 
 	@Override
@@ -103,6 +106,12 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 	{
 		return RestUtilities.store(this, SkillProficiency.class, RESOURCE, RESOURCE_DESC);
 	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, SkillProficiency.class, RESOURCE, RESOURCE_DESC);
+	}
 
 	/**
 	 * @return the level
@@ -118,6 +127,7 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 	public void setLevel(ProficiencyLevel level)
 	{
 		this.level = level;
+		update();
 	}
 
 	/**
@@ -134,6 +144,7 @@ public class SkillProficiency implements Identifiable, RestReadyInterface
 	public void setSkill(Skill skill)
 	{
 		this.skill = skill;
+		update();
 	}
 
 	@Override

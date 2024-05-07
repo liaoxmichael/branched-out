@@ -26,13 +26,14 @@ public abstract class Entity implements Identifiable, RestReadyInterface
 
 	public Entity(IdentifiableObjectManagerInterface manager)
 	{
-		id = manager.getNextId();
+		id = manager.nextId();
 		manager.register(this);
 		links = new HashMap<String, List<Link>>();
 		externalWebLinks = new ArrayList<String>();
 
 		// automatically initialize a page
 		page = new Page(this, manager);
+		pageId = page.getId();
 
 		this.manager = manager;
 	}
@@ -58,6 +59,9 @@ public abstract class Entity implements Identifiable, RestReadyInterface
 	 */
 	public Page getPage()
 	{
+		if (page == null) {
+			page = Page.retrieve(pageId);
+		}
 		return page;
 	}
 
@@ -67,7 +71,7 @@ public abstract class Entity implements Identifiable, RestReadyInterface
 	public void setPage(Page page)
 	{
 		this.page = page;
-		pageId = page.id;
+		pageId = page.getId();
 	}
 
 	/**
@@ -143,12 +147,6 @@ public abstract class Entity implements Identifiable, RestReadyInterface
 			return false;
 		Entity other = (Entity) obj;
 		return Objects.equals(externalWebLinks, other.externalWebLinks) && Objects.equals(links, other.links);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "Entity [id=" + id + ", links=" + links + ", externalWebLinks=" + externalWebLinks + "]";
 	}
 
 }

@@ -4,26 +4,26 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import models.Entity;
 import models.JobPosting;
 import models.Skill;
 import models.User;
 import models.ViewTransitionHandler;
+import models.adapters.Displayable;
 
 public class SearchDisplayController
 {
 	ViewTransitionHandler viewModel;
 
 	@FXML
-	private ListView<Entity> listView;
+	private ListView<Displayable> listView;
 
 	@FXML
 	private Label searchTypeLabel;
 
-	public void setModels(ObservableList<Entity> entities, ViewTransitionHandler viewModel)
+	public void setModels(ObservableList<Displayable> entities, ViewTransitionHandler viewModel)
 	{
 		this.viewModel = viewModel;
-
+		
 		listView.getSelectionModel().selectedItemProperty().addListener((e) ->
 		{
 			onClickItem();
@@ -35,7 +35,7 @@ public class SearchDisplayController
 	@FXML
 	void onClickItem()
 	{
-		Entity model = listView.getSelectionModel().getSelectedItem();
+		Displayable model = listView.getSelectionModel().getSelectedItem();
 		if (model instanceof JobPosting)
 		{
 			viewModel.showJobPosting((JobPosting) model);
@@ -44,6 +44,7 @@ public class SearchDisplayController
 		} else if (model instanceof Skill) {
 			viewModel.showSkill((Skill) model);
 		}
+		
 	}
 
 }

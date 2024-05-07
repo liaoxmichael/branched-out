@@ -21,13 +21,15 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	{
 		objects = new ArrayList<Identifiable>(); // may be able to nix this entirely with involvement of server
 		register(this);
+		store();
 	}
 
 	@Override
-	public int getNextId()
+	public int nextId()
 	{
 		int assignedId = currentId; 
 		currentId++;
+		update();
 		return assignedId;
 	}
 
@@ -88,7 +90,13 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	@Override
 	public boolean store()
 	{
-		return RestUtilities.store(this, Company.class, RESOURCE, RESOURCE_DESC);
+		return RestUtilities.store(this, IdentifiableObjectManager.class, RESOURCE, RESOURCE_DESC);
+	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, IdentifiableObjectManager.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	@Override
@@ -103,6 +111,7 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	public void setObjects(List<Identifiable> objects)
 	{
 		this.objects = objects;
+		update();
 	}
 
 	/**
@@ -111,6 +120,7 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	public void setCurrentId(int currentId)
 	{
 		this.currentId = currentId;
+		update();
 	}
 
 	/**
@@ -119,6 +129,7 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	public void setId(int id)
 	{
 		this.id = id;
+		update();
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import models.JobPosting;
 import models.SkillProficiency;
+import models.User;
 import models.ViewTransitionHandler;
 
 public class JobPostingController
@@ -53,23 +54,32 @@ public class JobPostingController
 	@FXML
 	private Label typeLabel;
 
-	public void setModels(JobPosting newModel, ViewTransitionHandler viewModel)
+	public void setModels(JobPosting newModel, User currentUser, ViewTransitionHandler viewModel)
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;
+
+		if (dataModel.getPage().canEdit(currentUser))
+		{
+			editJobPostingButton.setDisable(false);
+		} else
+		{
+			editJobPostingButton.setDisable(true);
+		}
+
 		loadData();
 	}
 
 	@FXML
 	void onClickLogo(ActionEvent event)
 	{
-		viewModel.showProfile(dataModel.getCompany());
+		viewModel.showProfile(dataModel.whichCompany());
 	}
 
 	public void loadData()
 	{
 		titleLabel.setText(dataModel.getTitle());
-		companyNameLabel.setText(dataModel.getCompany().getName());
+		companyNameLabel.setText(dataModel.whichCompany().getName());
 		datePostedLabel.setText(new SimpleDateFormat("MMM d, yyyy HH:mm a").format(dataModel.getDatePosted()));
 		descriptionLabel.setText(dataModel.getDescription());
 		locationLabel.setText(dataModel.getLocation());

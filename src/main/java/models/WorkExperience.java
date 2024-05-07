@@ -13,9 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.rest.RestUtilities;
+import models.adapters.Displayable;
 import models.rest.RestReadyInterface;
 
-public class WorkExperience implements Identifiable, RestReadyInterface
+public class WorkExperience implements Identifiable, RestReadyInterface, Displayable
 {
 
 	int id;
@@ -35,7 +36,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 
 	public WorkExperience(String title, String description, Company company, IdentifiableObjectManagerInterface manager)
 	{
-		id = manager.getNextId();
+		id = manager.nextId();
 		this.title = title;
 		this.description = description;
 		links = new Hashtable<String, List<Link>>();
@@ -44,11 +45,13 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 
 		manager.register(this); // registering with the manager
 		this.manager = manager;
+
+		store();
 	}
 
-	public Company getCompany()
+	public Company whichCompany()
 	{
-		return (Company) getLinks().get("company").get(0).getPage().getEntity();
+		return Company.retrieve(getLinks().get("company").get(0).getPage().getEntityId());
 	}
 
 	@Override
@@ -110,6 +113,12 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	{
 		return RestUtilities.store(this, WorkExperience.class, RESOURCE, RESOURCE_DESC);
 	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, WorkExperience.class, RESOURCE, RESOURCE_DESC);
+	}
 
 	/**
 	 * @return the links
@@ -125,6 +134,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	public void setLinks(Map<String, List<Link>> links)
 	{
 		this.links = links;
+		update();
 	}
 
 	/**
@@ -141,6 +151,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	public void setTitle(String title)
 	{
 		this.title = title;
+		update();
 	}
 
 	/**
@@ -157,6 +168,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	public void setDescription(String description)
 	{
 		this.description = description;
+		update();
 	}
 
 	@Override
@@ -182,7 +194,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface
 	@Override
 	public String toString()
 	{
-		return title + " at " + getCompany();
+		return title + " at " + whichCompany();
 	}
 
 }

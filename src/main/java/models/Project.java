@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,6 +24,8 @@ public class Project extends Post implements RestReadyInterface
 		links.put("contributors", new ArrayList<Link>());
 		links.put("coordinators", new ArrayList<Link>());
 		links.put("companies", new ArrayList<Link>());
+		
+		store();
 	}
 
 	public void addContributor(Person person)
@@ -38,6 +41,8 @@ public class Project extends Post implements RestReadyInterface
 				.add(newLink);
 		// it's reciprocal; need to add to person's projects list
 		person.getLinks().get("projects").add(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+		update();
+		person.update();
 	}
 
 	public void removeContributor(Person person)
@@ -46,6 +51,8 @@ public class Project extends Post implements RestReadyInterface
 		links.get("contributors").remove(target); // this will return false if it's not there; no big deal.
 		// it's reciprocal; need to remove from other user's list
 		person.getLinks().get("projects").remove(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+		person.update();
+		update();
 	}
 
 	public void addCoordinator(Person person)
@@ -59,6 +66,8 @@ public class Project extends Post implements RestReadyInterface
 
 		links.get("coordinators").add(newLink);
 		person.getLinks().get("projects").add(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+		person.store();
+		update();
 	}
 
 	public void removeCoordinator(Person person)
@@ -66,6 +75,9 @@ public class Project extends Post implements RestReadyInterface
 		Link target = new Link(person.getPage(), Link.RelationshipType.COORDINATOR_PERSON, manager);
 		links.get("coordinators").remove(target);
 		person.getLinks().get("projects").remove(new Link(page, Link.RelationshipType.HAS_PROJECT, manager));
+		person.store();
+		update();
+		
 	}
 
 	public void addCompany(Company company)
@@ -79,6 +91,7 @@ public class Project extends Post implements RestReadyInterface
 
 		links.get("companies").add(newLink);
 		company.addProject(this);
+		update();
 	}
 
 	public void removeCompany(Company company)
@@ -86,6 +99,71 @@ public class Project extends Post implements RestReadyInterface
 		Link target = new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager);
 		links.get("companies").remove(target);
 		company.removeProject(this);
+		update();
+	}
+
+	@Override
+	public void setTitle(String title)
+	{
+		super.setTitle(title);
+		update();
+	}
+
+	@Override
+	public void setDescription(String description)
+	{
+		super.setDescription(description);
+		update();
+	}
+
+	@Override
+	public void addExternalWebLink(String link)
+	{
+		super.addExternalWebLink(link);
+		update();
+	}
+
+	@Override
+	public boolean removeExternalWebLink(String link)
+	{
+		boolean result = super.removeExternalWebLink(link);
+		update();
+		return result;
+	}
+
+	@Override
+	public void setPage(Page page)
+	{
+		super.setPage(page);
+		update();
+	}
+
+	@Override
+	public void setPageId(int pageId)
+	{
+		super.setPageId(pageId);
+		update();
+	}
+
+	@Override
+	public void setId(int id)
+	{
+		super.setId(id);
+		update();
+	}
+
+	@Override
+	public void setLinks(Map<String, List<Link>> links)
+	{
+		super.setLinks(links);
+		update();
+	}
+
+	@Override
+	public void setExternalWebLinks(List<String> externalWebLinks)
+	{
+		super.setExternalWebLinks(externalWebLinks);
+		update();
 	}
 
 	public static record ResponseRecord(String request, boolean successful, String message, Project data) {
@@ -141,6 +219,12 @@ public class Project extends Post implements RestReadyInterface
 	public boolean store()
 	{
 		return RestUtilities.store(this, Project.class, RESOURCE, RESOURCE_DESC);
+	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, Project.class, RESOURCE, RESOURCE_DESC);
 	}
 
 	@Override

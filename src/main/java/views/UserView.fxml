@@ -34,7 +34,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/pencil.circle.png" />
+                              <Image url="@../pencil.circle.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -152,7 +152,7 @@
                                  <graphic>
                                     <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../resources/plus.circle.png" />
+                                          <Image url="@../plus.circle.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -178,7 +178,7 @@
                                  <graphic>
                                     <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../../resources/plus.circle.png" />
+                                          <Image url="@../plus.circle.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

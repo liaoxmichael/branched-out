@@ -7,9 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import models.adapters.Displayable;
 import models.rest.RestUtilities;
 
-public class Company extends User
+public class Company extends User implements Displayable
 {
 	public Company()
 	{
@@ -21,6 +22,8 @@ public class Company extends User
 		super(name, email, manager);
 		links.put("projects", new ArrayList<Link>());
 		links.put("jobPostings", new ArrayList<Link>());
+		
+		store();
 	}
 
 	public void addProject(Project project)
@@ -34,12 +37,16 @@ public class Company extends User
 		} // else
 
 		links.get("projects").add(newLink);
+		update();
+		// TODO: why is project not also getting a link?
 	}
 
 	public boolean removeProject(Project project)
 	{
 		Link target = new Link(project.getPage(), Link.RelationshipType.HAS_PROJECT, manager);
-		return links.get("projects").remove(target);
+		boolean result = links.get("projects").remove(target);
+		update();
+		return result;
 	}
 
 	public void addJobPosting(JobPosting post)
@@ -53,12 +60,15 @@ public class Company extends User
 		} // else
 
 		links.get("jobPostings").add(newLink);
+		update();
 	}
 
 	public boolean removeJobPosting(JobPosting post)
 	{
 		Link target = new Link(post.getPage(), Link.RelationshipType.HAS_OPENING, manager);
-		return links.get("recommendedJobs").remove(target);
+		boolean result = links.get("recommendedJobs").remove(target);
+		update();
+		return result;
 	}
 
 	public static record ResponseRecord(String request, boolean successful, String message, Company data) {
@@ -114,6 +124,12 @@ public class Company extends User
 	public boolean store()
 	{
 		return RestUtilities.store(this, Company.class, RESOURCE, RESOURCE_DESC);
+	}
+	
+	@Override
+	public boolean update()
+	{
+		return RestUtilities.update(this, Company.class, RESOURCE, RESOURCE_DESC);
 	}
 
 }

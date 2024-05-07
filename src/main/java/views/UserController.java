@@ -25,7 +25,7 @@ public class UserController
     private ImageView bannerImage;
 
     @FXML
-    private Label bioLabel;
+    private Label bioLabel; // hide & reveal textfield underneath?
 
     @FXML
     private Button editProfileButton;
@@ -55,5 +55,12 @@ public class UserController
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;
+		
+		if (dataModel.getPage().canEdit(currentUser))
+		{
+			editProfileButton.setDisable(false);
+		} else {
+			editProfileButton.setDisable(true);
+		}
 	}
 }
