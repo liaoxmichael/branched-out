@@ -59,6 +59,10 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 
 	public SkillProficiency(Skill skill, ProficiencyLevel level, IdentifiableObjectManagerInterface manager)
 	{
+		if (manager == null)
+		{
+			manager = IdentifiableObjectManager.retrieve(0);
+		}
 		id = manager.nextId();
 		this.skill = skill;
 		this.level = level;

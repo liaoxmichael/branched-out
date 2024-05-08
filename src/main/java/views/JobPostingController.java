@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import models.Company;
 import models.JobPosting;
 import models.Skill;
+import models.SkillProficiency;
 import models.SkillProficiency.ProficiencyLevel;
 import models.User;
 import models.ViewTransitionHandler;
@@ -74,7 +75,7 @@ public class JobPostingController
 	private ChoiceBox<Skill> skillSelector;
 
 	@FXML
-	private ListView<String> skillsList;
+	private ListView<SkillProficiency> skillsList;
 
 	@FXML
 	private Button submitSkillButton;
@@ -225,14 +226,18 @@ public class JobPostingController
 	@FXML
 	void onClickCancel(ActionEvent event)
 	{
-		// TODO
 		FXUtils.hideElement(addSkillContainer);
 	}
 
 	@FXML
 	void onClickSubmit(ActionEvent event)
 	{
-		// TODO
+		Skill skill = skillSelector.getSelectionModel().getSelectedItem();
+		ProficiencyLevel level = ProficiencyLevel.labelToEnum(proficiencyLevelSelector.getSelectionModel().getSelectedItem());
+		dataModel.addRequiredSkill(skill, level);
+		dataModel.update();
+		skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
+		
 		FXUtils.hideElement(addSkillContainer);
 	}
 
@@ -246,6 +251,8 @@ public class JobPostingController
 		numApplicantsLabel.textProperty().bind(
 				Bindings.size(FXCollections.observableArrayList(dataModel.getLinks().get("applicants"))).asString());
 		typeLabel.setText(dataModel.getType().label);
+		
+		skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
 	}
 
 }
