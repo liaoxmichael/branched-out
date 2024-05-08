@@ -2,6 +2,7 @@ package views;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,15 +13,18 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import models.Company;
+import models.Link;
 import models.Person;
 import models.Skill;
 import models.SkillProficiency;
 import models.User;
 import models.ViewTransitionHandler;
 import models.WorkExperience;
+import models.adapters.Displayable;
 import models.adapters.FXUtils;
 
 public class UserController
@@ -112,6 +116,12 @@ public class UserController
 	@FXML
 	private Button submitSkillButton;
 
+	@FXML
+	private HBox followersContainer;
+
+	@FXML
+	private HBox followingContainer;
+
 	boolean isCompany;
 	boolean currentlyEditing;
 	Person personModel;
@@ -152,26 +162,63 @@ public class UserController
 			FXUtils.hideElement(biographyTextArea);
 			FXUtils.hideElement(nameTextField);
 			FXUtils.hideElement(pronounsTextField);
-			
+
 			FXUtils.hideElement(addSkillContainer);
 			FXUtils.hideElement(addJobContainer);
+
+			bannerImage.setImage(new Image(dataModel.getBannerURL(), true)); // background load images
+			profileImage.setImage(new Image(dataModel.getAvatarURL(), true));
 			loadData();
 		}
 	}
 
 	private void exitEditingMode()
 	{
+		FXUtils.hideElement(biographyTextArea);
+		FXUtils.hideElement(nameTextField);
+		if (!isCompany)
+		{
+			FXUtils.hideElement(pronounsTextField);
+		}
 		updateDataModel();
+		loadData();
+		FXUtils.showElement(bioLabel);
+		FXUtils.showElement(nameLabel);
+		if (!isCompany)
+		{
+			FXUtils.showElement(pronounsLabel);
+		}
 	}
 
 	private void enterEditingMode()
 	{
+		FXUtils.hideElement(bioLabel);
+		FXUtils.hideElement(nameLabel);
+		if (!isCompany)
+		{
+			FXUtils.hideElement(pronounsLabel);
+		}
 
+		biographyTextArea.setText(dataModel.getBio());
+		FXUtils.showElement(biographyTextArea);
+
+		nameTextField.setText(dataModel.getName());
+		FXUtils.showElement(nameTextField);
+		if (!isCompany)
+		{
+			pronounsTextField.setText(personModel.getPronouns());
+			FXUtils.showElement(pronounsTextField);
+		}
 	}
 
 	private void updateDataModel()
 	{
-
+		dataModel.setBio(biographyTextArea.getText());
+		dataModel.setName(nameTextField.getText());
+		if (!isCompany)
+		{
+			personModel.setPronouns(pronounsTextField.getText());
+		}
 		dataModel.update();
 	}
 
@@ -195,8 +242,6 @@ public class UserController
 	{
 		nameLabel.setText(dataModel.getName());
 		bioLabel.setText(dataModel.getBio());
-		bannerImage.setImage(new Image(dataModel.getBannerURL()));
-		profileImage.setImage(new Image(dataModel.getAvatarURL()));
 
 		numFollowersLabel.textProperty().bind(
 				Bindings.size(FXCollections.observableArrayList(dataModel.getLinks().get("followers"))).asString());
@@ -207,7 +252,16 @@ public class UserController
 	@FXML
 	void onClickEdit(ActionEvent event)
 	{
-
+		currentlyEditing = !currentlyEditing;
+		if (currentlyEditing)
+		{
+			editProfileButton.setText("Save");
+			enterEditingMode();
+		} else
+		{
+			editProfileButton.setText("Edit");
+			exitEditingMode();
+		}
 	}
 
 	@FXML
@@ -234,5 +288,22 @@ public class UserController
 	{
 		// TODO
 		FXUtils.hideElement(addSkillContainer);
+	}
+
+	@FXML
+	void onClickFollowers(MouseEvent event)
+	{
+		ObservableList<Displayable> list = FXCollections.observableArrayList();
+		for (Link l : dataModel.getLinks().get("followers"))
+		{
+			
+		}
+		viewModel.showSearchDisplay(null, "Followers of " + dataModel.getName());
+	}
+
+	@FXML
+	void onClickFollowing(MouseEvent event)
+	{
+
 	}
 }

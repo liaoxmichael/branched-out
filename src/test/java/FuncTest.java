@@ -2,6 +2,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
@@ -33,9 +34,8 @@ class FuncTest
 	}
 
 	@Test
-	void test()
+	void test(FxRobot robot)
 	{
-		fail("Not yet implemented");
 	}
 
 }

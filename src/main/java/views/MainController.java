@@ -67,7 +67,7 @@ public class MainController
 			break;
 		}
 
-		viewModel.showSearchDisplay(entities);
+		viewModel.showSearchDisplay(entities, type);
 	}
 
 	@FXML

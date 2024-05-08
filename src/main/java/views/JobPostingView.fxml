@@ -34,10 +34,13 @@
                <children>
                   <HBox maxWidth="1200.0" spacing="20.0" GridPane.vgrow="ALWAYS">
                      <children>
-                        <Button id="logoButton" fx:id="logoButton" contentDisplay="TEXT_ONLY" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#onClickLogo" style="-fx-background-color: transparent;" text="Logo">
+                        <Button id="logoButton" fx:id="logoButton" contentDisplay="GRAPHIC_ONLY" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#onClickLogo" style="-fx-background-color: transparent;" text="Logo">
                            <HBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
+                           <graphic>
+                              <ImageView id="logoImage" fx:id="logoImage" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
                         </Button>
                         <VBox>
                            <children>

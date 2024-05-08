@@ -10,8 +10,8 @@ public abstract class User extends Entity
 	String bio;
 	String email;
 	String phone;
-	String avatarURL = "https://generative-placeholders.glitch.me/image?width=200&height=200&style=circles"; // default
-	String bannerURL = "https://generative-placeholders.glitch.me/image?width=1200&height=150\""; // default
+	String avatarURL = "/person.circle.png"; // default
+	String bannerURL = "/banner.png"; // default
 
 	String password; // new
 

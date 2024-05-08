@@ -54,7 +54,7 @@ public class ViewTransitionHandler
 		mainview.setCenter(null);
 	}
 
-	public void showSearchDisplay(ObservableList<Displayable> entities) // possible enum for classes?
+	public void showSearchDisplay(ObservableList<Displayable> entities, String newLabel) // possible enum for classes?
 	{
 		// set center to display list of job postings
 		FXMLLoader loader = new FXMLLoader();
@@ -67,7 +67,7 @@ public class ViewTransitionHandler
 
 			SearchDisplayController controller = loader.getController();
 			mainview.setCenter(view);
-			controller.setModels(entities, this);
+			controller.setModels(entities, newLabel, this);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

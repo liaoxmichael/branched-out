@@ -41,7 +41,15 @@ public class AppRunner
 		Skill python = new Skill("Python", testManager); // 11
 		JobPosting googleDev = new JobPosting("Senior Software Developer", google, testManager); // 13
 		JobPosting appleTech = new JobPosting("Apple Genius Technician", apple, testManager); // 17
-
+		
+		google.setAvatarURL("/googleg.png");
+		google.setBio("You've heard of us.");
+		google.update();
+		
+		apple.setBio("Making designer tech.");
+		apple.setAvatarURL("/apple.png");
+		apple.update();
+		
 		googleDev.setDescription(
 				"We're looking for a highly-motivated designer and developer who can maintain our existing codebase while helping to onboard junior developers as we expand.");
 		googleDev.setLocation("San Francisco, CA");
@@ -57,13 +65,16 @@ public class AppRunner
 		appleTech.setType(JobType.SEASONAL);
 		appleTech.update();
 
-		bob.setPassword("1234");
 		bob.addSkill(python, ProficiencyLevel.BEGINNER);
+		bob.setPronouns("he/they");
+		bob.setBio("I don't know what I'm doing.");
 		bob.update();
 
-		alice.setPassword("asdfgh");
+		alice.setPassword("1234");
 		alice.addSkill(python, ProficiencyLevel.INTERMEDIATE);
 		alice.addSkill(java, ProficiencyLevel.ADVANCED);
+		alice.setPronouns("she/her");
+		alice.setBio("Admin at Google. Just trying to innovate.");
 		alice.update();
 
 		google.fetchPage().blockViewer(bob);

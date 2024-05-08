@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import models.Company;
@@ -92,6 +94,9 @@ public class JobPostingController
 	@FXML
 	private ChoiceBox<String> typeSelector;
 
+	@FXML
+	private ImageView logoImage;
+
 	boolean currentlyEditing;
 	Company company;
 
@@ -129,6 +134,7 @@ public class JobPostingController
 
 			FXUtils.hideElement(addSkillContainer);
 			company = dataModel.fetchCompany();
+			logoImage.setImage(new Image(company.getAvatarURL(), true));
 			loadData();
 		}
 	}
@@ -198,10 +204,6 @@ public class JobPostingController
 			editJobPostingButton.setText("Edit");
 			// hide all textfields, commit changes, show all labels
 			exitEditingMode();
-
-			siteLabel.setText(dataModel.getSite().label);
-
-			titleLabel.setText(dataModel.getTitle());
 		}
 	}
 
@@ -233,11 +235,12 @@ public class JobPostingController
 	void onClickSubmit(ActionEvent event)
 	{
 		Skill skill = skillSelector.getSelectionModel().getSelectedItem();
-		ProficiencyLevel level = ProficiencyLevel.labelToEnum(proficiencyLevelSelector.getSelectionModel().getSelectedItem());
+		ProficiencyLevel level = ProficiencyLevel
+				.labelToEnum(proficiencyLevelSelector.getSelectionModel().getSelectedItem());
 		dataModel.addRequiredSkill(skill, level);
 		dataModel.update();
 		skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
-		
+
 		FXUtils.hideElement(addSkillContainer);
 	}
 
@@ -251,7 +254,7 @@ public class JobPostingController
 		numApplicantsLabel.textProperty().bind(
 				Bindings.size(FXCollections.observableArrayList(dataModel.getLinks().get("applicants"))).asString());
 		typeLabel.setText(dataModel.getType().label);
-		
+
 		skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
 	}
 
