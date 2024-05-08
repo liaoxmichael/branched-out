@@ -44,6 +44,7 @@ public class AppRunner
 		
 		google.setAvatarURL("/googleg.png");
 		google.setBio("You've heard of us.");
+		google.followUser(alice);
 		google.update();
 		
 		apple.setBio("Making designer tech.");
@@ -75,6 +76,7 @@ public class AppRunner
 		alice.addSkill(java, ProficiencyLevel.ADVANCED);
 		alice.setPronouns("she/her");
 		alice.setBio("Admin at Google. Just trying to innovate.");
+		alice.followUser(google);
 		alice.update();
 
 		google.fetchPage().blockViewer(bob);

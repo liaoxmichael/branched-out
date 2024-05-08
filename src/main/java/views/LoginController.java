@@ -41,7 +41,7 @@ public class LoginController
 			errorMessageLabel.setText("Wrong username or password. Try again.");
 		} else {
 			errorMessageLabel.setText(null);
-			viewModel.showMainFromLogin(user);
+			viewModel.showMain(user);
 		}
 	}
 

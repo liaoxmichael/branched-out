@@ -15,7 +15,7 @@ import models.ViewTransitionHandler;
 import models.adapters.Displayable;
 import models.adapters.EntityType;
 
-public class MainController
+public class NavBarController
 {
 	ViewTransitionHandler viewModel;
 	User dataModel;
@@ -27,7 +27,7 @@ public class MainController
 	private Button homeButton;
 
 	@FXML
-	private Button profileButton;
+	private Button logoutButton;
 
 	@FXML
 	private Button searchButton;
@@ -41,9 +41,9 @@ public class MainController
 	}
 
 	@FXML
-	void onClickProfile(ActionEvent event)
+	void onClickLogout(ActionEvent event)
 	{
-		viewModel.showProfile(dataModel);
+		viewModel.showLogin();
 	}
 
 	@FXML

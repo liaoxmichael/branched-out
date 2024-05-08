@@ -36,6 +36,9 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 
 	public WorkExperience(String title, String description, Company company, IdentifiableObjectManagerInterface manager)
 	{
+		if (manager == null) {
+			manager = IdentifiableObjectManager.retrieve(0);
+		}
 		id = manager.nextId();
 		this.title = title;
 		this.description = description;

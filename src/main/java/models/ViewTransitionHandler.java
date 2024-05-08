@@ -9,7 +9,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import models.adapters.Displayable;
 import views.JobPostingController;
-import views.MainController;
+import views.LoginController;
+import views.NavBarController;
 import views.SearchDisplayController;
 import views.SkillController;
 import views.UserController;
@@ -24,34 +25,27 @@ public class ViewTransitionHandler
 		mainview = view;
 	}
 
-	public void showMainFromLogin(User user)
+	public void showMain(User user)
 	{
 		// set mainview to dashboard
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ViewTransitionHandler.class.getResource("../views/MainView.fxml"));
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/NavBarView.fxml"));
 
 		Pane view;
 		try
 		{
 			view = loader.load();
 
-			MainController controller = loader.getController();
-			mainview.setTop(null);
-			mainview.setCenter(view);
-			// reset mainview to take perspective of actual MainView instead of LoginView
-			mainview = (BorderPane) view;
+			NavBarController controller = loader.getController();
+			mainview.setTop(view);
 			currentUser = user;
 			controller.setModels(user, this);
+			showProfile(user);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public void showMain(User user)
-	{
-		mainview.setCenter(null);
 	}
 
 	public void showSearchDisplay(ObservableList<Displayable> entities, String newLabel) // possible enum for classes?
@@ -150,6 +144,28 @@ public class ViewTransitionHandler
 			view = loader.load();
 
 			mainview.setCenter(view);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void showLogin()
+	{
+		// set mainview to dashboard
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/LoginView.fxml"));
+
+		Pane view;
+		try
+		{
+			view = loader.load();
+
+			LoginController controller = loader.getController();
+			mainview.setTop(null);
+			mainview.setCenter(view);
+			controller.setModels(this);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

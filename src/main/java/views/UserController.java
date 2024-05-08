@@ -24,12 +24,13 @@ import models.SkillProficiency;
 import models.User;
 import models.ViewTransitionHandler;
 import models.WorkExperience;
+import models.SkillProficiency.ProficiencyLevel;
 import models.adapters.Displayable;
 import models.adapters.FXUtils;
 
 public class UserController
 {
-	ViewTransitionHandler viewModel;
+	ViewTransitionHandler viewModel; // if time: add follow button to diff users
 	User dataModel;
 
 	@FXML
@@ -137,12 +138,14 @@ public class UserController
 			viewModel.showBlockError();
 		} else
 		{
-
 			if (dataModel.fetchPage().canEdit(currentUser))
 			{
 				editProfileButton.setDisable(false);
 				addSkillButton.setDisable(false);
 				addJobButton.setDisable(false);
+				proficiencyLevelSelector.setItems(ProficiencyLevel.getEnumItems());
+				skillSelector.setItems(FXCollections.observableArrayList(Skill.retrieveAll()));
+				companySelector.setItems(FXCollections.observableArrayList(Company.retrieveAll()));
 			} else
 			{
 				editProfileButton.setDisable(true);
@@ -265,6 +268,18 @@ public class UserController
 	}
 
 	@FXML
+	public void onClickAddJob(ActionEvent event)
+	{
+		FXUtils.showElement(addJobContainer);
+	}
+
+	@FXML
+	public void onClickAddSkill(ActionEvent event)
+	{
+		FXUtils.showElement(addSkillContainer);
+	}
+
+	@FXML
 	void onClickCancelJob(ActionEvent event)
 	{
 		FXUtils.hideElement(addJobContainer);
@@ -279,14 +294,22 @@ public class UserController
 	@FXML
 	void onClickSubmitJob(ActionEvent event)
 	{
-		// TODO
+		Company company = companySelector.getSelectionModel().getSelectedItem();
+		personModel.addJob(jobTitleTextField.getText(), jobDescriptionTextArea.getText(), company);
+		personModel.update();
+		jobsList.setItems(FXCollections.observableArrayList(personModel.getJobs()));
 		FXUtils.hideElement(addJobContainer);
 	}
 
 	@FXML
 	void onClickSubmitSkill(ActionEvent event)
 	{
-		// TODO
+		Skill skill = skillSelector.getSelectionModel().getSelectedItem();
+		ProficiencyLevel level = ProficiencyLevel
+				.labelToEnum(proficiencyLevelSelector.getSelectionModel().getSelectedItem());
+		personModel.addSkill(skill, level);
+		personModel.update();
+		skillsList.setItems(FXCollections.observableArrayList(personModel.getSkills()));
 		FXUtils.hideElement(addSkillContainer);
 	}
 
@@ -296,14 +319,34 @@ public class UserController
 		ObservableList<Displayable> list = FXCollections.observableArrayList();
 		for (Link l : dataModel.getLinks().get("followers"))
 		{
-			
+			int i = l.fetchPage().getEntityId();
+			if (Person.retrieve(i) != null)
+			{
+				list.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				list.add(Company.retrieve(i));
+			}
 		}
-		viewModel.showSearchDisplay(null, "Followers of " + dataModel.getName());
+		viewModel.showSearchDisplay(list, "Followers of " + dataModel.getName());
 	}
 
 	@FXML
 	void onClickFollowing(MouseEvent event)
 	{
+		ObservableList<Displayable> list = FXCollections.observableArrayList();
+		for (Link l : dataModel.getLinks().get("following"))
+		{
+			int i = l.fetchPage().getEntityId();
+			if (Person.retrieve(i) != null)
+			{
+				list.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				list.add(Company.retrieve(i));
+			}
+		}
 
+		viewModel.showSearchDisplay(list, "Users " + dataModel.getName() + " is following");
 	}
 }

@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1200.0" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.UserController">
@@ -119,28 +118,28 @@
                         </HBox>
                         <VBox alignment="TOP_RIGHT" style="-fx-border-color: black;" GridPane.columnIndex="1">
                            <children>
-                              <HBox id="followersContainer" fx:id="followersContainer" onMouseClicked="#onClickFollowers">
+                              <HBox id="followersContainer" fx:id="followersContainer" onMouseClicked="#onClickFollowers" spacing="10.0">
                                  <children>
-                                    <Label id="numFollowersLabel" fx:id="numFollowersLabel" text="#">
+                                    <Label layoutX="10.0" layoutY="10.0" text=" Followers:" textFill="BLUE" underline="true">
                                        <font>
                                           <Font size="36.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="10.0" layoutY="10.0" text=" Followers">
+                                    <Label id="numFollowersLabel" fx:id="numFollowersLabel" text="#">
                                        <font>
                                           <Font size="36.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </HBox>
-                              <HBox id="followingContainer" fx:id="followingContainer" layoutX="10.0" layoutY="10.0" onMouseClicked="#onClickFollowing">
+                              <HBox id="followingContainer" fx:id="followingContainer" layoutX="10.0" layoutY="10.0" onMouseClicked="#onClickFollowing" spacing="10.0">
                                  <children>
-                                    <Label id="numFollowingLabel" fx:id="numFollowingLabel" text="#">
+                                    <Label layoutX="10.0" layoutY="10.0" text=" Following:" textFill="BLUE" underline="true">
                                        <font>
                                           <Font size="36.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="10.0" layoutY="10.0" text=" Following">
+                                    <Label id="numFollowingLabel" fx:id="numFollowingLabel" text="#">
                                        <font>
                                           <Font size="36.0" />
                                        </font>
@@ -173,7 +172,7 @@
                                     <Font size="36.0" />
                                  </font>
                               </Label>
-                              <Button id="addJobButton" fx:id="addJobButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" text="Add">
+                              <Button id="addJobButton" fx:id="addJobButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" onAction="#onClickAddJob" text="Add">
                                  <graphic>
                                     <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -212,7 +211,7 @@
                                     <Font size="36.0" />
                                  </font>
                               </Label>
-                              <Button id="addSkillButton" fx:id="addSkillButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" text="Add">
+                              <Button id="addSkillButton" fx:id="addSkillButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" onAction="#onClickAddSkill" text="Add">
                                  <graphic>
                                     <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
