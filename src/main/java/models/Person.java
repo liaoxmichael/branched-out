@@ -2,7 +2,6 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,7 +60,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 	public void setOpenToWork(boolean openToWork)
 	{
 		this.openToWork = openToWork;
-		update();
 	}
 
 	public void markHireable()
@@ -76,7 +74,7 @@ public class Person extends User implements RestReadyInterface, Displayable
 
 	public void addJobPosting(JobPosting jobPosting)
 	{
-		Link newLink = new Link(jobPosting.getPage(), Link.RelationshipType.RECOMMENDED_JOB, manager);
+		Link newLink = new Link(jobPosting.fetchPage(), Link.RelationshipType.RECOMMENDED_JOB, manager);
 		int linkIndex = links.get("recommendedJobs").indexOf(newLink);
 
 		if (linkIndex != -1)
@@ -85,13 +83,11 @@ public class Person extends User implements RestReadyInterface, Displayable
 		} // else
 
 		links.get("recommendedJobs").add(newLink);
-		update();
 	}
 
 	public boolean removeJobPosting(JobPosting jobPosting)
 	{
-		Link target = new Link(jobPosting.getPage(), Link.RelationshipType.RECOMMENDED_JOB, manager);
-		update();
+		Link target = new Link(jobPosting.fetchPage(), Link.RelationshipType.RECOMMENDED_JOB, manager);
 		return links.get("recommendedJobs").remove(target);
 	}
 
@@ -104,13 +100,11 @@ public class Person extends User implements RestReadyInterface, Displayable
 			return;
 		} // else
 		jobTypePreferences.add(jobType);
-		update();
 	}
 
 	public boolean removeJobTypePreference(JobType jobType)
 	{
 		boolean result = jobTypePreferences.remove(jobType);
-		store();
 		return result;
 	}
 
@@ -123,7 +117,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 			return;
 		} // else
 		jobSitePreferences.add(jobSite);
-		store();
 	}
 
 	public boolean removeJobSitePreference(JobSite jobSite)
@@ -141,14 +134,14 @@ public class Person extends User implements RestReadyInterface, Displayable
 			return skills.get(skillIndex);
 		}
 		skills.add(newProf);
-		update();
+		
 		return newProf;
 	}
 
 	public boolean removeSkill(Skill skill)
 	{
 		boolean result = skills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
-		update();
+		
 		// level doesn't matter
 		return result;
 	}
@@ -162,14 +155,14 @@ public class Person extends User implements RestReadyInterface, Displayable
 			return jobs.get(jobIndex);
 		} // in future, if date implemented, can throw overlapping exception
 		jobs.add(newJob);
-		update();
+		
 		return newJob;
 	}
 
 	public boolean removeJob(String jobTitle, String jobDesc, Company company)
 	{
 		boolean result = jobs.remove(new WorkExperience(jobTitle, jobDesc, company, manager));
-		update();
+		
 		return result;
 	}
 
@@ -213,7 +206,7 @@ public class Person extends User implements RestReadyInterface, Displayable
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, Person.class));
 			}
 		} catch (JsonProcessingException e)
@@ -240,121 +233,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 		return RestUtilities.update(this, Person.class, RESOURCE, RESOURCE_DESC);
 	}
 
-	@Override
-	public void followUser(User user)
-	{
-		super.followUser(user);
-		user.update();
-		update();
-	}
-
-	@Override
-	public void unfollowUser(User user)
-	{
-		super.unfollowUser(user);
-		user.update();
-		update();
-	}
-
-	@Override
-	public void setPassword(String password)
-	{
-		super.setPassword(password);
-		update();
-	}
-
-	@Override
-	public void setName(String name)
-	{
-		super.setName(name);
-		update();
-	}
-
-	@Override
-	public void setBio(String bio)
-	{
-		super.setBio(bio);
-		update();
-	}
-
-	@Override
-	public void setEmail(String email)
-	{
-		super.setEmail(email);
-		update();
-	}
-
-	@Override
-	public void setPhone(String phone)
-	{
-		super.setPhone(phone);
-		update();
-	}
-
-	@Override
-	public void setAvatarURL(String avatarURL)
-	{
-		super.setAvatarURL(avatarURL);
-		update();
-	}
-
-	@Override
-	public void setBannerURL(String bannerURL)
-	{
-		super.setBannerURL(bannerURL);
-		update();
-	}
-
-	@Override
-	public void addExternalWebLink(String link)
-	{
-		super.addExternalWebLink(link);
-		update();
-	}
-
-	@Override
-	public boolean removeExternalWebLink(String link)
-	{
-		boolean result = super.removeExternalWebLink(link);
-		update();
-		return result;
-	}
-
-	@Override
-	public void setPage(Page page)
-	{
-		super.setPage(page);
-		update();
-	}
-
-	@Override
-	public void setPageId(int pageId)
-	{
-		super.setPageId(pageId);
-		update();
-	}
-
-	@Override
-	public void setId(int id)
-	{
-		super.setId(id);
-		update();
-	}
-
-	@Override
-	public void setLinks(Map<String, List<Link>> links)
-	{
-		super.setLinks(links);
-		update();
-	}
-
-	@Override
-	public void setExternalWebLinks(List<String> externalWebLinks)
-	{
-		super.setExternalWebLinks(externalWebLinks);
-		update();
-	}
-
 	/**
 	 * @return the jobTypePreferences
 	 */
@@ -369,7 +247,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 	public void setJobTypePreferences(List<JobType> jobTypePreferences)
 	{
 		this.jobTypePreferences = jobTypePreferences;
-		update();
 	}
 
 	/**
@@ -386,7 +263,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 	public void setJobSitePreferences(List<JobSite> jobSitePreferences)
 	{
 		this.jobSitePreferences = jobSitePreferences;
-		update();
 	}
 
 	/**
@@ -403,7 +279,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 	public void setPronouns(String pronouns)
 	{
 		this.pronouns = pronouns;
-		update();
 	}
 
 	/**
@@ -420,7 +295,6 @@ public class Person extends User implements RestReadyInterface, Displayable
 	public void setSkills(List<SkillProficiency> skills)
 	{
 		this.skills = skills;
-		update();
 	}
 
 	/**

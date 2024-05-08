@@ -120,7 +120,6 @@ public class ViewTransitionHandler
 
 	public void showJobPosting(JobPosting job)
 	{
-		// TODO takes us from display job postings to job posting page
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ViewTransitionHandler.class.getResource("../views/JobPostingView.fxml"));
 
@@ -138,5 +137,23 @@ public class ViewTransitionHandler
 			e.printStackTrace();
 		}
 
+	}
+
+	public void showBlockError()
+	{
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(ViewTransitionHandler.class.getResource("../views/BlockErrorView.fxml"));
+
+		BorderPane view;
+		try
+		{
+			view = loader.load();
+
+			mainview.setCenter(view);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

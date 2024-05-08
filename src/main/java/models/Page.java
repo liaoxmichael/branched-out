@@ -87,7 +87,7 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, Page.class));
 			}
 		} catch (JsonProcessingException e)
@@ -199,7 +199,6 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 	public void setEntityId(int entityId)
 	{
 		this.entityId = entityId;
-		update();
 	}
 
 	/**
@@ -229,7 +228,6 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 //		this.editors = newSet;
 
 		this.editorIds = editorIds;
-		update();
 	}
 
 	/**
@@ -259,7 +257,6 @@ public class Page implements Identifiable, RestReadyInterface // should be abstr
 //		this.blockedViewers = newList;
 
 		this.blockedViewerIds = blockedViewerIds;
-		update();
 	}
 
 //	/**

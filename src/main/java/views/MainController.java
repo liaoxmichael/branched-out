@@ -13,7 +13,7 @@ import models.Skill;
 import models.User;
 import models.ViewTransitionHandler;
 import models.adapters.Displayable;
-import models.adapters.EntityUtils;
+import models.adapters.EntityType;
 
 public class MainController
 {
@@ -37,7 +37,7 @@ public class MainController
 		this.viewModel = viewModel;
 		dataModel = newModel;
 
-		entityTypeSelector.setItems(EntityUtils.entityTypes);
+		entityTypeSelector.setItems(EntityType.getEnumItems());
 	}
 
 	@FXML

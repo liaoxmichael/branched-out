@@ -60,18 +60,18 @@ class JobRecommenderTests
 		// check links properly
 		assertEquals(
 				Arrays.asList(
-						new Link[] { new Link(google.getPage(), Link.RelationshipType.FROM_COMPANY, testManager) }),
+						new Link[] { new Link(google.fetchPage(), Link.RelationshipType.FROM_COMPANY, testManager) }),
 				googleEngi.getLinks().get("company"));
 
 		aliceRecommendedJobs = new ArrayList<Link>();
 		bobRecommendedJobs = new ArrayList<Link>();
 
-		googleEngiLink = new Link(googleEngi.getPage(), Link.RelationshipType.RECOMMENDED_JOB, testManager);
-		appleTechLink = new Link(appleTech.getPage(), Link.RelationshipType.RECOMMENDED_JOB, testManager);
+		googleEngiLink = new Link(googleEngi.fetchPage(), Link.RelationshipType.RECOMMENDED_JOB, testManager);
+		appleTechLink = new Link(appleTech.fetchPage(), Link.RelationshipType.RECOMMENDED_JOB, testManager);
 
 		// check that company has jobpostings
 		ArrayList<Link> applePostings = new ArrayList<Link>();
-		applePostings.add(new Link(appleTech.getPage(), Link.RelationshipType.HAS_OPENING, testManager));
+		applePostings.add(new Link(appleTech.fetchPage(), Link.RelationshipType.HAS_OPENING, testManager));
 		assertEquals(applePostings, apple.getLinks().get("jobPostings"));
 		
 		people = new ArrayList<Person>();

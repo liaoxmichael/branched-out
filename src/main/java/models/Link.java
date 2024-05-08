@@ -72,7 +72,6 @@ public class Link implements Identifiable, RestReadyInterface
 	public void setPageId(int pageId)
 	{
 		this.pageId = pageId;
-		update();
 	}
 
 	public static record ResponseRecord(String request, boolean successful, String message, Link data) {
@@ -109,7 +108,7 @@ public class Link implements Identifiable, RestReadyInterface
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, Link.class));
 			}
 		} catch (JsonProcessingException e)
@@ -139,18 +138,9 @@ public class Link implements Identifiable, RestReadyInterface
 	/**
 	 * @return the page
 	 */
-	public Page getPage()
+	public Page fetchPage()
 	{
 		return Page.retrieve(pageId);
-	}
-
-	/**
-	 * @param page the page to set
-	 */
-	public void setPage(Page page)
-	{
-		pageId = page.getId();
-		update();
 	}
 
 	/**
@@ -167,7 +157,6 @@ public class Link implements Identifiable, RestReadyInterface
 	public void setRelation(RelationshipType relation)
 	{
 		this.relation = relation;
-		update();
 	}
 
 	@Override

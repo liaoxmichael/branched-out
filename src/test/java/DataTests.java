@@ -57,7 +57,7 @@ class DataTests
 		assertEquals(objects, testManager.getObjects());
 
 		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
-		applePage = apple.getPage(); // 2
+		applePage = apple.fetchPage(); // 2
 		objects.add(apple);
 		objects.add(applePage);
 		assertEquals(objects, testManager.getObjects());
@@ -66,28 +66,28 @@ class DataTests
 		assertEquals(applePage, testManager.getById(2));
 
 		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
-		googlePage = google.getPage(); // 4
+		googlePage = google.fetchPage(); // 4
 		objects.add(google);
 		objects.add(googlePage);
 		assertEquals(objects, testManager.getObjects());
 
 		alice = new Person("Alice", "ateam@gmail.com", testManager); // 5
-		alicePage = alice.getPage(); // 6
+		alicePage = alice.fetchPage(); // 6
 
 		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 7
-		bobPage = bob.getPage(); // 8
+		bobPage = bob.fetchPage(); // 8
 
 		java = new Skill("Java", testManager); // 9
-		javaPage = java.getPage(); // 10
+		javaPage = java.fetchPage(); // 10
 
 		python = new Skill("Python", testManager); // 11
-		pythonPage = python.getPage(); // 12
+		pythonPage = python.fetchPage(); // 12
 
 		helloWorld = new Project("Hello World", testManager); // 13
-		helloPage = helloWorld.getPage(); // 14
+		helloPage = helloWorld.fetchPage(); // 14
 
 		myFirstProgram = new Project("My First Program", testManager); // 15
-		firstPage = myFirstProgram.getPage(); // 16
+		firstPage = myFirstProgram.fetchPage(); // 16
 
 		// some spot checks on the array integrity
 		assertEquals(alice, testManager.getById(5));

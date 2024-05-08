@@ -35,7 +35,7 @@ public abstract class User extends Entity
 
 	public void followUser(User user)
 	{
-		Link newLink = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER, manager);
+		Link newLink = new Link(user.fetchPage(), Link.RelationshipType.FOLLOWING_USER, manager);
 		int linkIndex = links.get("following").indexOf(newLink);
 
 		if (linkIndex != -1) // if already following: early termination
@@ -52,7 +52,7 @@ public abstract class User extends Entity
 
 	public void unfollowUser(User user)
 	{
-		Link target = new Link(user.getPage(), Link.RelationshipType.FOLLOWING_USER, manager);
+		Link target = new Link(user.fetchPage(), Link.RelationshipType.FOLLOWING_USER, manager);
 		links.get("following").remove(target); // this will return false if it's not there; no big deal.
 		// it's reciprocal; need to remove from other user's list
 		user.getLinks().get("followers").remove(new Link(page, Link.RelationshipType.FOLLOWER_USER, manager));
@@ -80,7 +80,6 @@ public abstract class User extends Entity
 	public void setPassword(String password)
 	{
 		this.password = password;
-		store();
 	}
 
 	/**
@@ -97,7 +96,6 @@ public abstract class User extends Entity
 	public void setName(String name)
 	{
 		this.name = name;
-		store();
 	}
 
 	/**

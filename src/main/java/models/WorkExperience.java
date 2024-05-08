@@ -41,7 +41,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 		this.description = description;
 		links = new Hashtable<String, List<Link>>();
 		links.put("company",
-				Arrays.asList(new Link[] { new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
+				Arrays.asList(new Link[] { new Link(company.fetchPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
 
 		manager.register(this); // registering with the manager
 		this.manager = manager;
@@ -49,9 +49,9 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 		store();
 	}
 
-	public Company whichCompany()
+	public Company fetchCompany()
 	{
-		return Company.retrieve(getLinks().get("company").get(0).getPage().getEntityId());
+		return Company.retrieve(getLinks().get("company").get(0).fetchPage().getEntityId());
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, WorkExperience.class));
 			}
 		} catch (JsonProcessingException e)
@@ -134,7 +134,6 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 	public void setLinks(Map<String, List<Link>> links)
 	{
 		this.links = links;
-		update();
 	}
 
 	/**
@@ -151,7 +150,6 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 	public void setTitle(String title)
 	{
 		this.title = title;
-		update();
 	}
 
 	/**
@@ -168,7 +166,6 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 	public void setDescription(String description)
 	{
 		this.description = description;
-		update();
 	}
 
 	@Override
@@ -194,7 +191,7 @@ public class WorkExperience implements Identifiable, RestReadyInterface, Display
 	@Override
 	public String toString()
 	{
-		return title + " at " + whichCompany();
+		return title + " at " + fetchCompany();
 	}
 
 }

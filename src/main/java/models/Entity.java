@@ -57,21 +57,9 @@ public abstract class Entity implements Identifiable, RestReadyInterface
 	/**
 	 * @return the page
 	 */
-	public Page getPage()
+	public Page fetchPage()
 	{
-		if (page == null) {
-			page = Page.retrieve(pageId);
-		}
-		return page;
-	}
-
-	/**
-	 * @param page the page to set
-	 */
-	public void setPage(Page page)
-	{
-		this.page = page;
-		pageId = page.getId();
+		return Page.retrieve(pageId);
 	}
 
 	/**

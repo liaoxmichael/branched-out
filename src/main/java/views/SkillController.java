@@ -35,7 +35,7 @@ public class SkillController
 		this.viewModel = viewModel;
 		dataModel = newModel;
 
-		if (dataModel.getPage().canEdit(currentUser))
+		if (dataModel.fetchPage().canEdit(currentUser))
 		{
 			editButton.setDisable(false);
 		} else {

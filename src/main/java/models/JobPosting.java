@@ -1,11 +1,8 @@
 package models;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,9 +20,9 @@ import models.rest.RestReadyInterface;
 
 public class JobPosting extends Post implements RestReadyInterface, Displayable
 {
-	LocalDateTime expiration;
-	LocalDate startDate;
-	LocalDate datePosted;
+//	LocalDateTime expiration;
+//	LocalDate startDate;
+//	LocalDate datePosted;
 
 	JobType type;
 	JobSite site;
@@ -48,8 +45,8 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	{
 		super(title, manager);
 		// initializing with a single-item array to match type but fix size
-		links.put("company",
-				Arrays.asList(new Link[] { new Link(company.getPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
+		links.put("company", Arrays
+				.asList(new Link[] { new Link(company.fetchPage(), Link.RelationshipType.FROM_COMPANY, manager) }));
 		company.addJobPosting(this);
 
 		page.addEditor(company); // automatically add company as an editor
@@ -58,13 +55,13 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 
 		requiredSkills = new ArrayList<SkillProficiency>();
 		strategyKind = RecommendationStrategyKind.ALL; // by default -- can be changed later
-		
+
 		store();
 	}
 
-	public Company whichCompany()
+	public Company fetchCompany()
 	{
-		return Company.retrieve(getLinks().get("company").get(0).getPage().getEntityId());
+		return Company.retrieve(getLinks().get("company").get(0).fetchPage().getEntityId());
 	}
 
 	public void recommendJob(List<Person> people)
@@ -75,7 +72,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 			if (p.isOpenToWork() && strategy.check(p, this))
 			{
 				p.addJobPosting(this);
-				p.update();
 			}
 		}
 	}
@@ -84,6 +80,26 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	{
 		List<Person> people = Person.retrieveAll();
 		recommendJob(people);
+	}
+
+	public void addApplicant(Person person)
+	{
+		Link newLink = new Link(person.fetchPage(), Link.RelationshipType.JOB_APPLICANT_PERSON, manager);
+
+		if (links.get("applicants").indexOf(newLink) != -1) // if already contributor, terminate early
+		{
+			return;
+		} // else
+
+		links.get("applicants") // guaranteed because of constructor; else risky and could return null
+				.add(newLink);
+		// it's reciprocal; need to add to person's projects list
+	}
+
+	public boolean removeApplicant(Person person)
+	{
+		Link target = new Link(person.fetchPage(), Link.RelationshipType.JOB_APPLICANT_PERSON, manager);
+		return links.get("applicants").remove(target); // this will return false if it's not there; no big deal.
 	}
 
 	public SkillProficiency addRequiredSkill(Skill skill, SkillProficiency.ProficiencyLevel level)
@@ -96,15 +112,14 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 			return requiredSkills.get(skillIndex);
 		}
 		requiredSkills.add(newProf);
-		update();
 		return newProf;
 	}
 
 	public boolean removeRequiredSkill(Skill skill)
 	{
 		// level doesn't matter
-		boolean result = requiredSkills.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
-		update();
+		boolean result = requiredSkills
+				.remove(new SkillProficiency(skill, SkillProficiency.ProficiencyLevel.BEGINNER, manager));
 		return result;
 	}
 
@@ -141,7 +156,7 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, JobPosting.class));
 			}
 		} catch (JsonProcessingException e)
@@ -161,127 +176,60 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	{
 		return RestUtilities.store(this, JobPosting.class, RESOURCE, RESOURCE_DESC);
 	}
-	
+
 	@Override
 	public boolean update()
 	{
 		return RestUtilities.update(this, JobPosting.class, RESOURCE, RESOURCE_DESC);
 	}
 
-	@Override
-	public void setTitle(String title)
-	{
-		super.setTitle(title);
-		update();
-	}
+//	/**
+//	 * @return the datePosted
+//	 */
+//	public LocalDate getDatePosted()
+//	{
+//		return datePosted;
+//	}
+//
+//	/**
+//	 * @param datePosted the datePosted to set
+//	 */
+//	public void setDatePosted(LocalDate datePosted)
+//	{
+//		this.datePosted = datePosted;
+//	}
 
-	@Override
-	public void setDescription(String description)
-	{
-		super.setDescription(description);
-		update();
-	}
+//	/**
+//	 * @return the expiration
+//	 */
+//	public LocalDateTime getExpiration()
+//	{
+//		return expiration;
+//	}
+//
+//	/**
+//	 * @param expiration the expiration to set
+//	 */
+//	public void setExpiration(LocalDateTime expiration)
+//	{
+//		this.expiration = expiration;
+//	}
+//
+//	/**
+//	 * @return the startDate
+//	 */
+//	public LocalDate getStartDate()
+//	{
+//		return startDate;
+//	}
 
-	@Override
-	public void addExternalWebLink(String link)
-	{
-		super.addExternalWebLink(link);
-		update();
-	}
-
-	@Override
-	public boolean removeExternalWebLink(String link)
-	{
-		boolean result = super.removeExternalWebLink(link);
-		update();
-		return result;
-	}
-
-	@Override
-	public void setPage(Page page)
-	{
-		super.setPage(page);
-		update();
-	}
-
-	@Override
-	public void setPageId(int pageId)
-	{
-		super.setPageId(pageId);
-		update();
-	}
-
-	@Override
-	public void setId(int id)
-	{
-		super.setId(id);
-		update();
-	}
-
-	@Override
-	public void setLinks(Map<String, List<Link>> links)
-	{
-		super.setLinks(links);
-		update();
-	}
-
-	@Override
-	public void setExternalWebLinks(List<String> externalWebLinks)
-	{
-		super.setExternalWebLinks(externalWebLinks);
-		update();
-	}
-
-	/**
-	 * @return the datePosted
-	 */
-	public LocalDate getDatePosted()
-	{
-		return datePosted;
-	}
-
-	/**
-	 * @param datePosted the datePosted to set
-	 */
-	public void setDatePosted(LocalDate datePosted)
-	{
-		this.datePosted = datePosted;
-		update();
-	}
-
-	/**
-	 * @return the expiration
-	 */
-	public LocalDateTime getExpiration()
-	{
-		return expiration;
-	}
-
-	/**
-	 * @param expiration the expiration to set
-	 */
-	public void setExpiration(LocalDateTime expiration)
-	{
-		this.expiration = expiration;
-		update();
-	}
-
-	/**
-	 * @return the startDate
-	 */
-	public LocalDate getStartDate()
-	{
-		return startDate;
-	}
-
-	/**
-	 * @param startDate the startDate to set
-	 */
-	public void setStartDate(LocalDate startDate)
-	{
-		this.startDate = startDate;
-		update();
-	}
+//	/**
+//	 * @param startDate the startDate to set
+//	 */
+//	public void setStartDate(LocalDate startDate)
+//	{
+//		this.startDate = startDate;
+//	}
 
 	/**
 	 * @return the type
@@ -297,7 +245,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	public void setType(JobType type)
 	{
 		this.type = type;
-		update();
 	}
 
 	/**
@@ -314,7 +261,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	public void setSite(JobSite site)
 	{
 		this.site = site;
-		update();
 	}
 
 	/**
@@ -331,7 +277,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	public void setLocation(String location)
 	{
 		this.location = location;
-		update();
 	}
 
 	/**
@@ -348,7 +293,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	public void setRequiredSkills(List<SkillProficiency> requiredSkills)
 	{
 		this.requiredSkills = requiredSkills;
-		update();
 	}
 
 	/**
@@ -365,7 +309,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	public void setStrategyKind(RecommendationStrategyKind strategyKind)
 	{
 		this.strategyKind = strategyKind;
-		update();
 	}
 
 	@Override
@@ -373,8 +316,7 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 	{
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ Objects.hash(datePosted, expiration, location, requiredSkills, site, startDate, strategyKind, type);
+		result = prime * result + Objects.hash(location, requiredSkills, site, strategyKind, type);
 		return result;
 	}
 
@@ -388,16 +330,14 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 		if (getClass() != obj.getClass())
 			return false;
 		JobPosting other = (JobPosting) obj;
-		return Objects.equals(datePosted, other.datePosted) && Objects.equals(expiration, other.expiration)
-				&& Objects.equals(location, other.location) && Objects.equals(requiredSkills, other.requiredSkills)
-				&& site == other.site && Objects.equals(startDate, other.startDate)
-				&& strategyKind == other.strategyKind && type == other.type;
+		return Objects.equals(location, other.location) && Objects.equals(requiredSkills, other.requiredSkills)
+				&& site == other.site && strategyKind == other.strategyKind && type == other.type;
 	}
 
 	@Override
 	public String toString()
 	{
-		return title + " at " + whichCompany();
+		return title + " at " + fetchCompany();
 	}
 
 }

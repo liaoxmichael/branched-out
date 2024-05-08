@@ -111,7 +111,6 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	public void setObjects(List<Identifiable> objects)
 	{
 		this.objects = objects;
-		update();
 	}
 
 	/**
@@ -120,7 +119,6 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	public void setCurrentId(int currentId)
 	{
 		this.currentId = currentId;
-		update();
 	}
 
 	/**
@@ -129,7 +127,6 @@ public class IdentifiableObjectManager implements Identifiable, IdentifiableObje
 	public void setId(int id)
 	{
 		this.id = id;
-		update();
 	}
 
 	@Override

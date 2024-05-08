@@ -28,7 +28,7 @@ public class Company extends User implements Displayable
 
 	public void addProject(Project project)
 	{
-		Link newLink = new Link(project.getPage(), Link.RelationshipType.HAS_PROJECT, manager);
+		Link newLink = new Link(project.fetchPage(), Link.RelationshipType.HAS_PROJECT, manager);
 		int linkIndex = links.get("projects").indexOf(newLink);
 
 		if (linkIndex != -1)
@@ -37,21 +37,19 @@ public class Company extends User implements Displayable
 		} // else
 
 		links.get("projects").add(newLink);
-		update();
 		// TODO: why is project not also getting a link?
 	}
 
 	public boolean removeProject(Project project)
 	{
-		Link target = new Link(project.getPage(), Link.RelationshipType.HAS_PROJECT, manager);
+		Link target = new Link(project.fetchPage(), Link.RelationshipType.HAS_PROJECT, manager);
 		boolean result = links.get("projects").remove(target);
-		update();
 		return result;
 	}
 
 	public void addJobPosting(JobPosting post)
 	{
-		Link newLink = new Link(post.getPage(), Link.RelationshipType.HAS_OPENING, manager);
+		Link newLink = new Link(post.fetchPage(), Link.RelationshipType.HAS_OPENING, manager);
 		int linkIndex = links.get("jobPostings").indexOf(newLink);
 
 		if (linkIndex != -1)
@@ -60,14 +58,12 @@ public class Company extends User implements Displayable
 		} // else
 
 		links.get("jobPostings").add(newLink);
-		update();
 	}
 
 	public boolean removeJobPosting(JobPosting post)
 	{
-		Link target = new Link(post.getPage(), Link.RelationshipType.HAS_OPENING, manager);
+		Link target = new Link(post.fetchPage(), Link.RelationshipType.HAS_OPENING, manager);
 		boolean result = links.get("recommendedJobs").remove(target);
-		update();
 		return result;
 	}
 
@@ -105,7 +101,7 @@ public class Company extends User implements Displayable
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, Company.class));
 			}
 		} catch (JsonProcessingException e)

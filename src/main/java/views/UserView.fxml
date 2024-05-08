@@ -27,7 +27,7 @@
                         <Insets />
                      </StackPane.margin>
                   </ImageView>
-                  <Button id="editProfileButton" fx:id="editProfileButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Edit" StackPane.alignment="TOP_RIGHT">
+                  <Button id="editProfileButton" fx:id="editProfileButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" text="Edit" StackPane.alignment="TOP_RIGHT">
                      <StackPane.margin>
                         <Insets />
                      </StackPane.margin>
@@ -148,7 +148,7 @@
                                     <Font size="36.0" />
                                  </font>
                               </Label>
-                              <Button id="addJobButton" fx:id="addJobButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Add">
+                              <Button id="addJobButton" fx:id="addJobButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" text="Add">
                                  <graphic>
                                     <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -174,7 +174,7 @@
                                     <Font size="36.0" />
                                  </font>
                               </Label>
-                              <Button id="addSkillButton" fx:id="addSkillButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Add">
+                              <Button id="addSkillButton" fx:id="addSkillButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" text="Add">
                                  <graphic>
                                     <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

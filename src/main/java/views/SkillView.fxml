@@ -32,7 +32,7 @@
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                      </GridPane.margin>
                      <children>
-                        <Button id="editButton" fx:id="editButton" contentDisplay="GRAPHIC_ONLY" minWidth="40.0" mnemonicParsing="false" onAction="#onEditClick" style="-fx-background-color: transparent;" text="Edit" wrapText="true" HBox.hgrow="SOMETIMES">
+                        <Button id="editButton" fx:id="editButton" contentDisplay="TEXT_ONLY" minWidth="40.0" mnemonicParsing="false" onAction="#onEditClick" text="Edit" wrapText="true" HBox.hgrow="SOMETIMES">
                            <graphic>
                               <ImageView fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -73,7 +73,7 @@
                               <Font size="36.0" />
                            </font>
                         </Label>
-                        <Button id="addMentorButton" fx:id="addMentorButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#onAddClick" style="-fx-background-color: transparent;" text="Add">
+                        <Button id="addMentorButton" fx:id="addMentorButton" contentDisplay="TEXT_ONLY" mnemonicParsing="false" onAction="#onAddClick" text="Add">
                            <graphic>
                               <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

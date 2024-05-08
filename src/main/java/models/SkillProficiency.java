@@ -2,12 +2,16 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import static java.util.Map.entry;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import models.rest.RestUtilities;
 import models.adapters.Displayable;
 import models.rest.RestReadyInterface;
@@ -22,10 +26,27 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 		BEGINNER("Beginner"), INTERMEDIATE("Intermediate"), ADVANCED("Advanced");
 
 		public final String label;
+		static final Map<String, ProficiencyLevel> labelToEnumMap = Map.ofEntries(entry("Beginner", BEGINNER),
+				entry("Intermediate", INTERMEDIATE), entry("Advanced", ADVANCED));
 
 		ProficiencyLevel(String label)
 		{
 			this.label = label;
+		}
+
+		public static ProficiencyLevel labelToEnum(String label)
+		{
+			return labelToEnumMap.get(label);
+		}
+
+		public static ObservableList<String> getEnumItems()
+		{
+			ObservableList<String> list = FXCollections.observableArrayList();
+			for (ProficiencyLevel level : ProficiencyLevel.values())
+			{
+				list.add(level.label);
+			}
+			return list;
 		}
 	}
 
@@ -43,7 +64,7 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 		this.level = level;
 		manager.register(this); // registering with the manager
 		this.manager = manager;
-		
+
 		store();
 	}
 
@@ -86,7 +107,7 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 		{
 			for (JsonNode n : nodes)
 			{
-				System.out.println(n);
+//				System.out.println(n);
 				list.add(mapper.treeToValue(n, SkillProficiency.class));
 			}
 		} catch (JsonProcessingException e)
@@ -106,7 +127,7 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 	{
 		return RestUtilities.store(this, SkillProficiency.class, RESOURCE, RESOURCE_DESC);
 	}
-	
+
 	@Override
 	public boolean update()
 	{
@@ -127,7 +148,6 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 	public void setLevel(ProficiencyLevel level)
 	{
 		this.level = level;
-		update();
 	}
 
 	/**
@@ -144,7 +164,6 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 	public void setSkill(Skill skill)
 	{
 		this.skill = skill;
-		update();
 	}
 
 	@Override

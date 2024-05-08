@@ -75,7 +75,7 @@ class RestTests
 	void checkData(ArrayList<ResponseData> dataList, String uri) throws JsonMappingException, JsonProcessingException
 	{
 		String r = client.get().uri(uri).retrieve().body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -90,7 +90,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Company.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -105,7 +105,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Link.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -120,7 +120,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Page.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -135,7 +135,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Person.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -150,7 +150,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Project.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -165,7 +165,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, Skill.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -183,7 +183,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, SkillProficiency.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -198,7 +198,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, WorkExperience.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -213,7 +213,7 @@ class RestTests
 	{
 		String r = client.get().uri(RestUtilities.join(RestUtilities.TEAM_URI, JobPosting.RESOURCE)).retrieve()
 				.body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		ResponseListData response = mapper.readValue(r, ResponseListData.class);
 		for (int i = 0; i < response.data().size(); i++)
 		{
@@ -227,7 +227,7 @@ class RestTests
 	boolean existsOnServer(String uri) throws JsonMappingException, JsonProcessingException
 	{
 		String r = client.get().uri(uri).retrieve().body(String.class);
-		System.out.println(r);
+//		System.out.println(r);
 		JsonNode finalResponse = mapper.readTree(r);
 //		System.out.println(finalResponse.message);
 		return finalResponse.get("successful").asBoolean();
@@ -254,28 +254,28 @@ class RestTests
 		testManager = new IdentifiableObjectManager(); // 0
 
 		apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1
-		applePage = apple.getPage(); // 2
+		applePage = apple.fetchPage(); // 2
 
 		google = new Company("Google", "sundar.pichai@google.com", testManager); // 3
-		googlePage = google.getPage(); // 4
+		googlePage = google.fetchPage(); // 4
 
 		alice = new Person("Alice", "ateam@gmail.com", testManager); // 5
-		alicePage = alice.getPage(); // 6
+		alicePage = alice.fetchPage(); // 6
 
 		bob = new Person("Bob", "bobert33@yahoo.com", testManager); // 7
-		bobPage = bob.getPage(); // 8
+		bobPage = bob.fetchPage(); // 8
 
 		java = new Skill("Java", testManager); // 9
-		javaPage = java.getPage(); // 10
+		javaPage = java.fetchPage(); // 10
 
 		python = new Skill("Python", testManager); // 11
-		pythonPage = python.getPage(); // 12
+		pythonPage = python.fetchPage(); // 12
 
 		helloWorld = new Project("Hello World", testManager); // 13
-		helloPage = helloWorld.getPage(); // 14
+		helloPage = helloWorld.fetchPage(); // 14
 
 		myFirstProgram = new Project("My First Program", testManager); // 15
-		firstPage = myFirstProgram.getPage(); // 16
+		firstPage = myFirstProgram.fetchPage(); // 16
 	}
 
 	@Test
