@@ -2,7 +2,6 @@ package views;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import models.JobPosting;
 import models.Skill;
@@ -16,9 +15,6 @@ public class SearchDisplayController
 
 	@FXML
 	private ListView<Displayable> listView;
-
-	@FXML
-	private Label searchTypeLabel;
 
 	public void setModels(ObservableList<Displayable> entities, ViewTransitionHandler viewModel)
 	{

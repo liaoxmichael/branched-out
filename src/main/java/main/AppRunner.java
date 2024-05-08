@@ -30,7 +30,7 @@ public class AppRunner
 
 		client.delete().uri(RestUtilities.TEAM_URI).retrieve();
 
-		System.out.println(client.post().uri(RestUtilities.TEAM_URI).body(team).retrieve().body(String.class));
+		client.post().uri(RestUtilities.TEAM_URI).body(team).retrieve().body(String.class);
 		IdentifiableObjectManager testManager = new IdentifiableObjectManager(); // 0
 
 		Company apple = new Company("Apple", "tim.cook@apple.com", testManager); // 1

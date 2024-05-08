@@ -1,15 +1,27 @@
 package views;
 
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import models.Company;
+import models.Person;
+import models.Skill;
 import models.SkillProficiency;
 import models.User;
 import models.ViewTransitionHandler;
 import models.WorkExperience;
+import models.adapters.FXUtils;
 
 public class UserController
 {
@@ -20,16 +32,43 @@ public class UserController
 	private Button addJobButton;
 
 	@FXML
+	private VBox addJobContainer;
+
+	@FXML
 	private Button addSkillButton;
+
+	@FXML
+	private HBox addSkillContainer;
 
 	@FXML
 	private ImageView bannerImage;
 
 	@FXML
-	private Label bioLabel; // hide & reveal textfield underneath?
+	private Label bioLabel;
+
+	@FXML
+	private TextArea biographyTextArea;
+
+	@FXML
+	private Button cancelJobButton;
+
+	@FXML
+	private Button cancelSkillButton;
+
+	@FXML
+	private ChoiceBox<Company> companySelector;
 
 	@FXML
 	private Button editProfileButton;
+
+	@FXML
+	private TextArea jobDescriptionTextArea;
+
+	@FXML
+	private VBox jobsContainer;
+
+	@FXML
+	private TextField jobTitleTextField;
 
 	@FXML
 	private ListView<WorkExperience> jobsList;
@@ -38,10 +77,16 @@ public class UserController
 	private Label nameLabel;
 
 	@FXML
+	private TextField nameTextField;
+
+	@FXML
 	private Label numFollowersLabel;
 
 	@FXML
 	private Label numFollowingLabel;
+
+	@FXML
+	private ChoiceBox<String> proficiencyLevelSelector;
 
 	@FXML
 	private ImageView profileImage;
@@ -50,9 +95,27 @@ public class UserController
 	private Label pronounsLabel;
 
 	@FXML
+	private TextField pronounsTextField;
+
+	@FXML
+	private ChoiceBox<Skill> skillSelector;
+
+	@FXML
+	private VBox skillsContainer;
+
+	@FXML
 	private ListView<SkillProficiency> skillsList;
 
+	@FXML
+	private Button submitJobButton;
+
+	@FXML
+	private Button submitSkillButton;
+
 	boolean isCompany;
+	boolean currentlyEditing;
+	Person personModel;
+	Company companyModel;
 
 	public void setModels(User newModel, User currentUser, ViewTransitionHandler viewModel)
 	{
@@ -79,22 +142,97 @@ public class UserController
 			isCompany = dataModel instanceof Company;
 			if (isCompany)
 			{
-				loadCompanyData();
+				companyModel = (Company) dataModel;
 			} else
 			{
-				loadPersonData();
+				personModel = (Person) dataModel;
 			}
+
+			currentlyEditing = false;
+			FXUtils.hideElement(biographyTextArea);
+			FXUtils.hideElement(nameTextField);
+			FXUtils.hideElement(pronounsTextField);
+			
+			FXUtils.hideElement(addSkillContainer);
+			FXUtils.hideElement(addJobContainer);
+			loadData();
 		}
-
 	}
 
-	private void loadCompanyData()
+	private void exitEditingMode()
+	{
+		updateDataModel();
+	}
+
+	private void enterEditingMode()
 	{
 
 	}
 
-	private void loadPersonData()
+	private void updateDataModel()
 	{
 
+		dataModel.update();
+	}
+
+	private void loadData()
+	{
+		loadCommonData();
+		if (!isCompany)
+		{
+			pronounsLabel.setText(personModel.getPronouns());
+			skillsList.setItems(FXCollections.observableArrayList(personModel.getSkills()));
+			jobsList.setItems(FXCollections.observableArrayList(personModel.getJobs()));
+		} else
+		{
+			pronounsLabel.setText("company");
+			FXUtils.hideElement(skillsContainer);
+			FXUtils.hideElement(jobsContainer);
+		}
+	}
+
+	private void loadCommonData()
+	{
+		nameLabel.setText(dataModel.getName());
+		bioLabel.setText(dataModel.getBio());
+		bannerImage.setImage(new Image(dataModel.getBannerURL()));
+		profileImage.setImage(new Image(dataModel.getAvatarURL()));
+
+		numFollowersLabel.textProperty().bind(
+				Bindings.size(FXCollections.observableArrayList(dataModel.getLinks().get("followers"))).asString());
+		numFollowingLabel.textProperty().bind(
+				Bindings.size(FXCollections.observableArrayList(dataModel.getLinks().get("following"))).asString());
+	}
+
+	@FXML
+	void onClickEdit(ActionEvent event)
+	{
+
+	}
+
+	@FXML
+	void onClickCancelJob(ActionEvent event)
+	{
+		FXUtils.hideElement(addJobContainer);
+	}
+
+	@FXML
+	void onClickCancelSkill(ActionEvent event)
+	{
+		FXUtils.hideElement(addSkillContainer);
+	}
+
+	@FXML
+	void onClickSubmitJob(ActionEvent event)
+	{
+		// TODO
+		FXUtils.hideElement(addJobContainer);
+	}
+
+	@FXML
+	void onClickSubmitSkill(ActionEvent event)
+	{
+		// TODO
+		FXUtils.hideElement(addSkillContainer);
 	}
 }

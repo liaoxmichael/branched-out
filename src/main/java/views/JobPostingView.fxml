@@ -191,7 +191,7 @@
                         <StackPane alignment="TOP_LEFT">
                            <children>
                               <TextArea id="descriptionTextArea" fx:id="descriptionTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Description" />
-                              <Label id="descriptionLabel" fx:id="descriptionLabel" text="Description">
+                              <Label id="descriptionLabel" fx:id="descriptionLabel" text="Description" wrapText="true">
                                  <font>
                                     <Font size="24.0" />
                                  </font>

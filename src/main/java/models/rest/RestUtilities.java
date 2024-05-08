@@ -129,7 +129,7 @@ public final class RestUtilities
 		result = client.put().uri(RestUtilities.join(RestUtilities.TEAM_URI, resourceName, String.valueOf(obj.getId())))
 				.body(targetClass.cast(obj)).retrieve().body(ResponseObject.class);
 
-		System.out.println(result.message());
+//		System.out.println(result.message());
 		return result.successful();
 	}
 }
