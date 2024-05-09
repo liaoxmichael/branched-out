@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import models.ViewTransitionHandler;
+import models.ViewTransitionHandlerInterface;
 import views.LoginController;
 
 public class Main extends Application
@@ -19,7 +20,7 @@ public class Main extends Application
 		BorderPane view = loader.load();
 
 		LoginController controller = loader.getController();
-		ViewTransitionHandler model = new ViewTransitionHandler(view);
+		ViewTransitionHandlerInterface model = new ViewTransitionHandler(view);
 		controller.setModels(model);
 
 		Scene s = new Scene(view);

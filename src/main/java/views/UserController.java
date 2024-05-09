@@ -22,15 +22,15 @@ import models.Person;
 import models.Skill;
 import models.SkillProficiency;
 import models.User;
-import models.ViewTransitionHandler;
+import models.ViewTransitionHandlerInterface;
 import models.WorkExperience;
 import models.SkillProficiency.ProficiencyLevel;
 import models.adapters.Displayable;
-import models.adapters.FXUtils;
+import static models.adapters.FXUtils.*;
 
 public class UserController
 {
-	ViewTransitionHandler viewModel; // if time: add follow button to diff users
+	ViewTransitionHandlerInterface viewModel; // if time: add follow button to diff users
 	User dataModel;
 
 	@FXML
@@ -128,7 +128,7 @@ public class UserController
 	Person personModel;
 	Company companyModel;
 
-	public void setModels(User newModel, User currentUser, ViewTransitionHandler viewModel)
+	public void setModels(User newModel, User currentUser, ViewTransitionHandlerInterface viewModel)
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;
@@ -162,12 +162,12 @@ public class UserController
 			}
 
 			currentlyEditing = false;
-			FXUtils.hideElement(biographyTextArea);
-			FXUtils.hideElement(nameTextField);
-			FXUtils.hideElement(pronounsTextField);
+			hideElement(biographyTextArea);
+			hideElement(nameTextField);
+			hideElement(pronounsTextField);
 
-			FXUtils.hideElement(addSkillContainer);
-			FXUtils.hideElement(addJobContainer);
+			hideElement(addSkillContainer);
+			hideElement(addJobContainer);
 
 			bannerImage.setImage(new Image(dataModel.getBannerURL(), true)); // background load images
 			profileImage.setImage(new Image(dataModel.getAvatarURL(), true));
@@ -177,40 +177,40 @@ public class UserController
 
 	private void exitEditingMode()
 	{
-		FXUtils.hideElement(biographyTextArea);
-		FXUtils.hideElement(nameTextField);
+		hideElement(biographyTextArea);
+		hideElement(nameTextField);
 		if (!isCompany)
 		{
-			FXUtils.hideElement(pronounsTextField);
+			hideElement(pronounsTextField);
 		}
 		updateDataModel();
 		loadData();
-		FXUtils.showElement(bioLabel);
-		FXUtils.showElement(nameLabel);
+		showElement(bioLabel);
+		showElement(nameLabel);
 		if (!isCompany)
 		{
-			FXUtils.showElement(pronounsLabel);
+			showElement(pronounsLabel);
 		}
 	}
 
 	private void enterEditingMode()
 	{
-		FXUtils.hideElement(bioLabel);
-		FXUtils.hideElement(nameLabel);
+		hideElement(bioLabel);
+		hideElement(nameLabel);
 		if (!isCompany)
 		{
-			FXUtils.hideElement(pronounsLabel);
+			hideElement(pronounsLabel);
 		}
 
 		biographyTextArea.setText(dataModel.getBio());
-		FXUtils.showElement(biographyTextArea);
+		showElement(biographyTextArea);
 
 		nameTextField.setText(dataModel.getName());
-		FXUtils.showElement(nameTextField);
+		showElement(nameTextField);
 		if (!isCompany)
 		{
 			pronounsTextField.setText(personModel.getPronouns());
-			FXUtils.showElement(pronounsTextField);
+			showElement(pronounsTextField);
 		}
 	}
 
@@ -236,8 +236,8 @@ public class UserController
 		} else
 		{
 			pronounsLabel.setText("company");
-			FXUtils.hideElement(skillsContainer);
-			FXUtils.hideElement(jobsContainer);
+			hideElement(skillsContainer);
+			hideElement(jobsContainer);
 		}
 	}
 
@@ -270,25 +270,25 @@ public class UserController
 	@FXML
 	public void onClickAddJob(ActionEvent event)
 	{
-		FXUtils.showElement(addJobContainer);
+		showElement(addJobContainer);
 	}
 
 	@FXML
 	public void onClickAddSkill(ActionEvent event)
 	{
-		FXUtils.showElement(addSkillContainer);
+		showElement(addSkillContainer);
 	}
 
 	@FXML
 	void onClickCancelJob(ActionEvent event)
 	{
-		FXUtils.hideElement(addJobContainer);
+		hideElement(addJobContainer);
 	}
 
 	@FXML
 	void onClickCancelSkill(ActionEvent event)
 	{
-		FXUtils.hideElement(addSkillContainer);
+		hideElement(addSkillContainer);
 	}
 
 	@FXML
@@ -301,7 +301,7 @@ public class UserController
 			personModel.update();
 			jobsList.setItems(FXCollections.observableArrayList(personModel.getJobs()));
 		}
-		FXUtils.hideElement(addJobContainer);
+		hideElement(addJobContainer);
 	}
 
 	@FXML
@@ -316,7 +316,7 @@ public class UserController
 			personModel.update();
 			skillsList.setItems(FXCollections.observableArrayList(personModel.getSkills()));
 		}
-		FXUtils.hideElement(addSkillContainer);
+		hideElement(addSkillContainer);
 	}
 
 	@FXML

@@ -30,7 +30,7 @@
                   <PasswordField id="passwordField" fx:id="passwordField" promptText="Enter password..." />
                </children>
             </VBox>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onClickLogin" text="Login" />
+            <Button id="loginButton" fx:id="loginButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onClickLogin" text="Login" />
             <Label id="errorMessageLabel" fx:id="errorMessageLabel" textAlignment="CENTER" textFill="RED" />
          </children>
          <padding>

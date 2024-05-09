@@ -1,10 +1,19 @@
+package views;
+import static org.junit.jupiter.api.Assertions.*;
+import static views.TestUtils.enterText;
+
 import java.io.IOException;
 
 import org.springframework.web.client.RestClient;
 import org.testfx.api.FxRobot;
+import org.testfx.assertions.api.Assertions;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import main.Main;
@@ -13,39 +22,18 @@ import models.IdentifiableObjectManager;
 import models.JobPosting;
 import models.Person;
 import models.Skill;
-import models.ViewTransitionHandler;
+import models.ViewTransitionHandlerInterface;
 import models.SkillProficiency.ProficiencyLevel;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.rest.ResponseData;
 import models.rest.RestUtilities;
-import views.LoginController;
 
 public class TestUtils
 {
 
-	public static void start(Stage stage)
+	private TestUtils() // do not instantiate
 	{
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("../views/LoginView.fxml"));
-
-		BorderPane view;
-		try
-		{
-			view = loader.load();
-
-			LoginController controller = loader.getController();
-			ViewTransitionHandler model = new ViewTransitionHandler(view);
-			controller.setModels(model);
-
-			Scene s = new Scene(view);
-			stage.setScene(s);
-			stage.show();
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public static void initDatabase()
@@ -115,9 +103,40 @@ public class TestUtils
 
 		googleDev.fetchPage().addEditor(alice);
 	}
-
-	private TestUtils() // do not instantiate
+	
+	public static void attemptLogin(FxRobot robot, String username, String password)
 	{
+		enterText(robot, username, "#userIdField");
+		enterText(robot, password, "#passwordField");
+		robot.clickOn("#loginButton");
+	}
+
+	public static void enterText(FxRobot robot, String input, String target)
+	{
+		robot.clickOn(target);
+		robot.write(input);
+	}
+
+	public static void checkLabel(FxRobot robot, String expected, String target)
+	{
+		Assertions.assertThat(robot.lookup(target).queryAs(Label.class)).hasText(expected);
+	}
+
+	public static void checkVisibility(FxRobot robot, boolean checkIsVisible, String target)
+	{
+		Node n = robot.lookup(target).queryAs(Node.class);
+		if (checkIsVisible)
+		{
+			Assertions.assertThat(n).isVisible();
+		} else
+		{
+			Assertions.assertThat(n).isInvisible();
+		}
+	}
+
+	public static void checkListView(FxRobot robot, ObservableList<?> expected, String target)
+	{
+		assertIterableEquals(expected, robot.lookup(target).queryAs(ListView.class).getItems());
 	}
 
 }

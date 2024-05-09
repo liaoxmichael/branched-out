@@ -6,13 +6,13 @@ import javafx.scene.control.ListView;
 import models.JobPosting;
 import models.Skill;
 import models.User;
-import models.ViewTransitionHandler;
+import models.ViewTransitionHandlerInterface;
 import models.adapters.Displayable;
 import javafx.scene.control.Label;
 
 public class SearchDisplayController
 {
-	ViewTransitionHandler viewModel;
+	ViewTransitionHandlerInterface viewModel;
 
 	@FXML
 	private ListView<Displayable> listView;
@@ -20,7 +20,7 @@ public class SearchDisplayController
 	@FXML
 	private Label infoLabel;
 
-	public void setModels(ObservableList<Displayable> entities, String newLabel, ViewTransitionHandler viewModel)
+	public void setModels(ObservableList<Displayable> entities, String newLabel, ViewTransitionHandlerInterface viewModel)
 	{
 		this.viewModel = viewModel;
 

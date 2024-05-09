@@ -11,13 +11,13 @@ import models.JobPosting;
 import models.Person;
 import models.Skill;
 import models.User;
-import models.ViewTransitionHandler;
+import models.ViewTransitionHandlerInterface;
 import models.adapters.Displayable;
 import models.adapters.EntityType;
 
 public class NavBarController
 {
-	ViewTransitionHandler viewModel;
+	ViewTransitionHandlerInterface viewModel;
 	User dataModel;
 
 	@FXML
@@ -32,7 +32,7 @@ public class NavBarController
 	@FXML
 	private Button searchButton;
 
-	public void setModels(User newModel, ViewTransitionHandler viewModel)
+	public void setModels(User newModel, ViewTransitionHandlerInterface viewModel)
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;

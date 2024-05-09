@@ -11,11 +11,12 @@ import javafx.scene.control.TextField;
 import models.Company;
 import models.Person;
 import models.User;
-import models.ViewTransitionHandler;
+import models.ViewTransitionHandlerInterface;
+import javafx.scene.control.Button;
 
 public class LoginController
 {
-	ViewTransitionHandler viewModel;
+	ViewTransitionHandlerInterface viewModel;
 
 	@FXML
 	private PasswordField passwordField;
@@ -26,7 +27,10 @@ public class LoginController
 	@FXML
 	private Label errorMessageLabel;
 
-	public void setModels(ViewTransitionHandler viewModel)
+	@FXML
+	private Button loginButton;
+
+	public void setModels(ViewTransitionHandlerInterface viewModel)
 	{
 		this.viewModel = viewModel;
 	}
@@ -39,8 +43,11 @@ public class LoginController
 		{
 			passwordField.setText(null);
 			errorMessageLabel.setText("Wrong username or password. Try again.");
-		} else {
+		} else
+		{
 			errorMessageLabel.setText(null);
+			userIdField.setText(null);
+			passwordField.setText(null);
 			viewModel.showMain(user);
 		}
 	}

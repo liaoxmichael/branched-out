@@ -20,15 +20,15 @@ import models.Skill;
 import models.SkillProficiency;
 import models.SkillProficiency.ProficiencyLevel;
 import models.User;
-import models.ViewTransitionHandler;
-import models.adapters.FXUtils;
+import models.ViewTransitionHandlerInterface;
+import static models.adapters.FXUtils.*;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 
 public class JobPostingController
 {
 
-	ViewTransitionHandler viewModel;
+	ViewTransitionHandlerInterface viewModel;
 	JobPosting dataModel;
 
 	@FXML
@@ -100,7 +100,7 @@ public class JobPostingController
 	boolean currentlyEditing;
 	Company company;
 
-	public void setModels(JobPosting newModel, User currentUser, ViewTransitionHandler viewModel)
+	public void setModels(JobPosting newModel, User currentUser, ViewTransitionHandlerInterface viewModel)
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;
@@ -126,13 +126,13 @@ public class JobPostingController
 
 			// handle hidden editing fields
 			currentlyEditing = false;
-			FXUtils.hideElement(titleTextField);
-			FXUtils.hideElement(descriptionTextArea);
-			FXUtils.hideElement(typeSelector);
-			FXUtils.hideElement(siteSelector);
-			FXUtils.hideElement(locationTextField);
+			hideElement(titleTextField);
+			hideElement(descriptionTextArea);
+			hideElement(typeSelector);
+			hideElement(siteSelector);
+			hideElement(locationTextField);
 
-			FXUtils.hideElement(addSkillContainer);
+			hideElement(addSkillContainer);
 			company = dataModel.fetchCompany();
 			logoImage.setImage(new Image(company.getAvatarURL(), true));
 			loadData();
@@ -141,42 +141,42 @@ public class JobPostingController
 
 	private void exitEditingMode()
 	{
-		FXUtils.hideElement(titleTextField);
-		FXUtils.hideElement(descriptionTextArea);
-		FXUtils.hideElement(typeSelector);
-		FXUtils.hideElement(siteSelector);
-		FXUtils.hideElement(locationTextField);
+		hideElement(titleTextField);
+		hideElement(descriptionTextArea);
+		hideElement(typeSelector);
+		hideElement(siteSelector);
+		hideElement(locationTextField);
 		updateDataModel();
 		loadData();
-		FXUtils.showElement(titleLabel);
-		FXUtils.showElement(descriptionLabel);
-		FXUtils.showElement(typeLabel);
-		FXUtils.showElement(siteLabel);
-		FXUtils.showElement(locationLabel);
+		showElement(titleLabel);
+		showElement(descriptionLabel);
+		showElement(typeLabel);
+		showElement(siteLabel);
+		showElement(locationLabel);
 	}
 
 	private void enterEditingMode()
 	{
-		FXUtils.hideElement(titleLabel);
-		FXUtils.hideElement(descriptionLabel);
-		FXUtils.hideElement(typeLabel);
-		FXUtils.hideElement(siteLabel);
-		FXUtils.hideElement(locationLabel);
+		hideElement(titleLabel);
+		hideElement(descriptionLabel);
+		hideElement(typeLabel);
+		hideElement(siteLabel);
+		hideElement(locationLabel);
 
 		titleTextField.setText(dataModel.getTitle());
-		FXUtils.showElement(titleTextField);
+		showElement(titleTextField);
 
 		descriptionTextArea.setText(dataModel.getDescription());
-		FXUtils.showElement(descriptionTextArea);
+		showElement(descriptionTextArea);
 
 		typeSelector.setValue(dataModel.getType().label);
-		FXUtils.showElement(typeSelector);
+		showElement(typeSelector);
 
 		siteSelector.setValue(dataModel.getSite().label);
-		FXUtils.showElement(siteSelector);
+		showElement(siteSelector);
 
 		locationTextField.setText(dataModel.getLocation());
-		FXUtils.showElement(locationTextField);
+		showElement(locationTextField);
 	}
 
 	private void updateDataModel()
@@ -222,13 +222,13 @@ public class JobPostingController
 	@FXML
 	void onClickAdd(ActionEvent event)
 	{
-		FXUtils.showElement(addSkillContainer);
+		showElement(addSkillContainer);
 	}
 
 	@FXML
 	void onClickCancel(ActionEvent event)
 	{
-		FXUtils.hideElement(addSkillContainer);
+		hideElement(addSkillContainer);
 	}
 
 	@FXML
@@ -244,7 +244,7 @@ public class JobPostingController
 			skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
 		}
 
-		FXUtils.hideElement(addSkillContainer);
+		hideElement(addSkillContainer);
 	}
 
 	private void loadData()

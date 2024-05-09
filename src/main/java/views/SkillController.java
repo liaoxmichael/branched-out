@@ -11,8 +11,8 @@ import models.Link;
 import models.Person;
 import models.Skill;
 import models.User;
-import models.ViewTransitionHandler;
-import models.adapters.FXUtils;
+import models.ViewTransitionHandlerInterface;
+import static models.adapters.FXUtils.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
@@ -20,7 +20,7 @@ import javafx.scene.control.ChoiceBox;
 
 public class SkillController
 {
-	ViewTransitionHandler viewModel;
+	ViewTransitionHandlerInterface viewModel;
 	Skill dataModel;
 
 	@FXML
@@ -58,7 +58,7 @@ public class SkillController
 
 	boolean currentlyEditing;
 
-	public void setModels(Skill newModel, User currentUser, ViewTransitionHandler viewModel)
+	public void setModels(Skill newModel, User currentUser, ViewTransitionHandlerInterface viewModel)
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;
@@ -81,43 +81,43 @@ public class SkillController
 		}
 
 		currentlyEditing = false;
-		FXUtils.hideElement(nameTextField);
-		FXUtils.hideElement(descriptionTextArea);
+		hideElement(nameTextField);
+		hideElement(descriptionTextArea);
 
-		FXUtils.hideElement(addMentorContainer);
+		hideElement(addMentorContainer);
 		loadData();
 	}
 
 	@FXML
 	void onAddClick(ActionEvent event)
 	{
-		FXUtils.showElement(addMentorContainer);
+		showElement(addMentorContainer);
 	}
 
 	private void exitEditingMode()
 	{
-		FXUtils.hideElement(nameTextField);
-		FXUtils.hideElement(descriptionTextArea);
+		hideElement(nameTextField);
+		hideElement(descriptionTextArea);
 
 		dataModel.setTitle(nameTextField.getText());
 		dataModel.setDescription(descriptionTextArea.getText());
 		dataModel.update();
 		loadData();
 
-		FXUtils.showElement(nameLabel);
-		FXUtils.showElement(descriptionLabel);
+		showElement(nameLabel);
+		showElement(descriptionLabel);
 	}
 
 	private void enterEditingMode()
 	{
-		FXUtils.hideElement(nameLabel);
-		FXUtils.hideElement(descriptionLabel);
+		hideElement(nameLabel);
+		hideElement(descriptionLabel);
 
 		nameTextField.setText(dataModel.getTitle());
-		FXUtils.showElement(nameTextField);
+		showElement(nameTextField);
 
 		descriptionTextArea.setText(dataModel.getDescription());
-		FXUtils.showElement(descriptionTextArea);
+		showElement(descriptionTextArea);
 	}
 
 	@FXML
@@ -165,13 +165,13 @@ public class SkillController
 			dataModel.update();
 			updateMentorList();
 		}
-		FXUtils.hideElement(addMentorContainer);
+		hideElement(addMentorContainer);
 	}
 
 	@FXML
 	public void onCancelClick(ActionEvent event)
 	{
-		FXUtils.hideElement(addMentorContainer);
+		hideElement(addMentorContainer);
 	}
 
 }

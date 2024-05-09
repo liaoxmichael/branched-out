@@ -15,7 +15,7 @@ import views.SearchDisplayController;
 import views.SkillController;
 import views.UserController;
 
-public class ViewTransitionHandler
+public class ViewTransitionHandler implements ViewTransitionHandlerInterface
 {
 	BorderPane mainview;
 	User currentUser;
@@ -25,6 +25,7 @@ public class ViewTransitionHandler
 		mainview = view;
 	}
 
+	@Override
 	public void showMain(User user)
 	{
 		// set mainview to dashboard
@@ -48,6 +49,7 @@ public class ViewTransitionHandler
 		}
 	}
 
+	@Override
 	public void showSearchDisplay(ObservableList<Displayable> entities, String newLabel) // possible enum for classes?
 	{
 		// set center to display list of job postings
@@ -70,6 +72,7 @@ public class ViewTransitionHandler
 
 	}
 
+	@Override
 	public void showProfile(User user)
 	{
 		// set center to user profile
@@ -91,6 +94,7 @@ public class ViewTransitionHandler
 		}
 	}
 
+	@Override
 	public void showSkill(Skill skill)
 	{
 		// show skill page from user profile
@@ -112,6 +116,7 @@ public class ViewTransitionHandler
 		}
 	}
 
+	@Override
 	public void showJobPosting(JobPosting job)
 	{
 		FXMLLoader loader = new FXMLLoader();
@@ -133,6 +138,7 @@ public class ViewTransitionHandler
 
 	}
 
+	@Override
 	public void showBlockError()
 	{
 		FXMLLoader loader = new FXMLLoader();
@@ -151,6 +157,7 @@ public class ViewTransitionHandler
 		}
 	}
 
+	@Override
 	public void showLogin()
 	{
 		// set mainview to dashboard
