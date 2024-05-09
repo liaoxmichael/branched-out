@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClient;
 
 import models.Company;
 import models.Identifiable;
@@ -17,6 +18,8 @@ import models.Skill;
 import models.SkillProficiency;
 import models.User;
 import models.WorkExperience;
+import models.rest.ResponseData;
+import models.rest.RestUtilities;
 
 class DataTests
 {
@@ -51,6 +54,15 @@ class DataTests
 	@BeforeEach
 	void setUp() throws Exception
 	{
+		// clear the server just in case
+		RestClient client = RestClient.create();
+
+		ResponseData team = new ResponseData(RestUtilities.TEAM_NAME, RestUtilities.TEAM_DESC, RestUtilities.TEAM_URI);
+
+		client.delete().uri(RestUtilities.TEAM_URI).retrieve();
+
+		client.post().uri(RestUtilities.TEAM_URI).body(team).retrieve().body(String.class);
+		
 		testManager = new IdentifiableObjectManager(); // 0
 		ArrayList<Identifiable> objects = new ArrayList<Identifiable>();
 		objects.add((Identifiable) testManager);

@@ -36,6 +36,9 @@ public class SkillProficiency implements Identifiable, RestReadyInterface, Displ
 
 		public static ProficiencyLevel labelToEnum(String label)
 		{
+			if (label == null) {
+				return null;
+			}
 			return labelToEnumMap.get(label);
 		}
 

@@ -1,28 +1,54 @@
-package main;
+import java.io.IOException;
 
 import org.springframework.web.client.RestClient;
+import org.testfx.api.FxRobot;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import main.Main;
 import models.Company;
 import models.IdentifiableObjectManager;
 import models.JobPosting;
 import models.Person;
 import models.Skill;
+import models.ViewTransitionHandler;
 import models.SkillProficiency.ProficiencyLevel;
 import models.recommender.JobSite;
 import models.recommender.JobType;
 import models.rest.ResponseData;
 import models.rest.RestUtilities;
+import views.LoginController;
 
-public class AppRunner
+public class TestUtils
 {
-	public static void main(String[] args)
-	{
-		populateData();
-		Main.main(args);
 
+	public static void start(Stage stage)
+	{
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("../views/LoginView.fxml"));
+
+		BorderPane view;
+		try
+		{
+			view = loader.load();
+
+			LoginController controller = loader.getController();
+			ViewTransitionHandler model = new ViewTransitionHandler(view);
+			controller.setModels(model);
+
+			Scene s = new Scene(view);
+			stage.setScene(s);
+			stage.show();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public static void populateData()
+	public static void initDatabase()
 	{
 		RestClient client = RestClient.create();
 
@@ -88,6 +114,10 @@ public class AppRunner
 		apple.fetchPage().addEditor(alice);
 
 		googleDev.fetchPage().addEditor(alice);
+	}
+
+	private TestUtils() // do not instantiate
+	{
 	}
 
 }

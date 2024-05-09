@@ -49,7 +49,7 @@
                                     <Insets top="10.0" />
                                  </VBox.margin>
                                  <children>
-                                    <TextField id="titleTextField" fx:id="titleTextField" prefHeight="92.0" prefWidth="300.0" promptText="Job Title">
+                                    <TextField id="titleTextField" fx:id="titleTextField" prefHeight="92.0" prefWidth="669.0" promptText="Job Title">
                                        <font>
                                           <Font size="48.0" />
                                        </font></TextField>
@@ -193,7 +193,7 @@
                         </Label>
                         <StackPane alignment="TOP_LEFT">
                            <children>
-                              <TextArea id="descriptionTextArea" fx:id="descriptionTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Description" />
+                              <TextArea id="descriptionTextArea" fx:id="descriptionTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Description" wrapText="true" />
                               <Label id="descriptionLabel" fx:id="descriptionLabel" text="Description" wrapText="true">
                                  <font>
                                     <Font size="24.0" />
@@ -225,7 +225,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <HBox id="addSkillContainer" fx:id="addSkillContainer" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                        <HBox id="addSkillContainer" fx:id="addSkillContainer" prefWidth="200.0" spacing="10.0">
                            <children>
                               <ChoiceBox id="skillSelector" fx:id="skillSelector" layoutX="180.0" layoutY="10.0" prefWidth="150.0" />
                               <ChoiceBox id="proficiencyLevelSelector" fx:id="proficiencyLevelSelector" prefWidth="150.0" />
@@ -233,7 +233,7 @@
                               <Button id="cancelSkillButton" fx:id="cancelSkillButton" cancelButton="true" mnemonicParsing="false" onAction="#onClickCancel" text="Cancel" />
                            </children>
                         </HBox>
-                        <ListView id="skillsList" fx:id="skillsList" prefHeight="200.0" prefWidth="200.0" />
+                        <ListView id="skillsList" fx:id="skillsList" prefHeight="100.0" prefWidth="200.0" />
                      </children>
                      <VBox.margin>
                         <Insets top="20.0" />

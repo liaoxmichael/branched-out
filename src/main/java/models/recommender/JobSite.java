@@ -21,6 +21,9 @@ public enum JobSite {
 
 	public static JobSite labelToEnum(String label)
 	{
+		if (label == null) {
+			return null;
+		}
 		return labelToEnumMap.get(label);
 	}
 

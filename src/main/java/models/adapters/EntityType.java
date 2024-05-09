@@ -21,6 +21,9 @@ public enum EntityType {
 
 	public static EntityType labelToEnum(String label)
 	{
+		if (label == null) {
+			return null;
+		}
 		return labelToEnumMap.get(label);
 	}
 

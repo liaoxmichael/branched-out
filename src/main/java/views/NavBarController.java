@@ -50,24 +50,27 @@ public class NavBarController
 	void onClickSearch(ActionEvent event)
 	{
 		String type = entityTypeSelector.getSelectionModel().getSelectedItem();
-		ObservableList<Displayable> entities = FXCollections.observableArrayList();
-		switch (type) // bad to convert and reconvert after passing but so be it
+		if (type != null)
 		{
-		case "Companies":
-			entities.addAll(Company.retrieveAll());
-			break;
-		case "Job Postings":
-			entities.addAll(JobPosting.retrieveAll());
-			break;
-		case "People":
-			entities.addAll(Person.retrieveAll());
-			break;
-		case "Skills":
-			entities.addAll(Skill.retrieveAll());
-			break;
-		}
+			ObservableList<Displayable> entities = FXCollections.observableArrayList();
+			switch (type) // bad to convert and reconvert after passing but so be it
+			{
+			case "Companies":
+				entities.addAll(Company.retrieveAll());
+				break;
+			case "Job Postings":
+				entities.addAll(JobPosting.retrieveAll());
+				break;
+			case "People":
+				entities.addAll(Person.retrieveAll());
+				break;
+			case "Skills":
+				entities.addAll(Skill.retrieveAll());
+				break;
+			}
 
-		viewModel.showSearchDisplay(entities, type);
+			viewModel.showSearchDisplay(entities, type);
+		}
 	}
 
 	@FXML

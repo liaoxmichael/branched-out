@@ -295,9 +295,12 @@ public class UserController
 	void onClickSubmitJob(ActionEvent event)
 	{
 		Company company = companySelector.getSelectionModel().getSelectedItem();
-		personModel.addJob(jobTitleTextField.getText(), jobDescriptionTextArea.getText(), company);
-		personModel.update();
-		jobsList.setItems(FXCollections.observableArrayList(personModel.getJobs()));
+		if (company != null && !jobTitleTextField.getText().isEmpty())
+		{
+			personModel.addJob(jobTitleTextField.getText(), jobDescriptionTextArea.getText(), company);
+			personModel.update();
+			jobsList.setItems(FXCollections.observableArrayList(personModel.getJobs()));
+		}
 		FXUtils.hideElement(addJobContainer);
 	}
 
@@ -307,9 +310,12 @@ public class UserController
 		Skill skill = skillSelector.getSelectionModel().getSelectedItem();
 		ProficiencyLevel level = ProficiencyLevel
 				.labelToEnum(proficiencyLevelSelector.getSelectionModel().getSelectedItem());
-		personModel.addSkill(skill, level);
-		personModel.update();
-		skillsList.setItems(FXCollections.observableArrayList(personModel.getSkills()));
+		if (skill != null && level != null)
+		{
+			personModel.addSkill(skill, level);
+			personModel.update();
+			skillsList.setItems(FXCollections.observableArrayList(personModel.getSkills()));
+		}
 		FXUtils.hideElement(addSkillContainer);
 	}
 

@@ -23,6 +23,9 @@ public enum JobType {
 
 	public static JobType labelToEnum(String label)
 	{
+		if (label == null) {
+			return null;
+		}
 		return labelToEnumMap.get(label);
 	}
 

@@ -237,9 +237,12 @@ public class JobPostingController
 		Skill skill = skillSelector.getSelectionModel().getSelectedItem();
 		ProficiencyLevel level = ProficiencyLevel
 				.labelToEnum(proficiencyLevelSelector.getSelectionModel().getSelectedItem());
-		dataModel.addRequiredSkill(skill, level);
-		dataModel.update();
-		skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
+		if (skill != null && level != null)
+		{
+			dataModel.addRequiredSkill(skill, level);
+			dataModel.update();
+			skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
+		}
 
 		FXUtils.hideElement(addSkillContainer);
 	}
