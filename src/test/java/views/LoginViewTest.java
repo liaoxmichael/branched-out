@@ -128,13 +128,20 @@ class LoginViewTest implements ViewTransitionHandlerInterface
 	{
 		showLoginCalled++;
 	}
+	
+	public void attemptLogin(FxRobot robot, String username, String password)
+	{
+		enterText(robot, username, "#userIdField");
+		enterText(robot, password, "#passwordField");
+		robot.clickOn("#loginButton");
+	}
 
 	@Test
 	void testLogin(FxRobot robot)
 	{
 		// attempt a faulty login
 		attemptLogin(robot, "fakeuser", "");
-		checkVisibility(robot, true, "#errorMessageLabel");
+		checkVisible(robot, "#errorMessageLabel");
 		checkLabel(robot, "Wrong username or password. Try again.", "#errorMessageLabel");
 		assertThat(showLoginCalled).isEqualTo(0);
 

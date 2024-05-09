@@ -246,6 +246,12 @@ public class JobPostingController
 
 		hideElement(addSkillContainer);
 	}
+	
+	private void onClickSkill()
+	{
+		SkillProficiency prof = skillsList.getSelectionModel().getSelectedItem();
+		viewModel.showSkill(prof.getSkill());
+	}
 
 	private void loadData()
 	{
@@ -259,6 +265,10 @@ public class JobPostingController
 		typeLabel.setText(dataModel.getType().label);
 
 		skillsList.setItems(FXCollections.observableArrayList(dataModel.getRequiredSkills()));
+		skillsList.getSelectionModel().selectedItemProperty().addListener((e) ->
+		{
+			onClickSkill();
+		});
 	}
 
 }

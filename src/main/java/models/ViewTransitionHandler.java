@@ -41,7 +41,6 @@ public class ViewTransitionHandler implements ViewTransitionHandlerInterface
 			mainview.setTop(view);
 			currentUser = user;
 			controller.setModels(user, this);
-			showProfile(user);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

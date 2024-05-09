@@ -225,6 +225,18 @@ public class UserController
 		dataModel.update();
 	}
 
+	private void onClickSkill()
+	{
+		SkillProficiency prof = skillsList.getSelectionModel().getSelectedItem();
+		viewModel.showSkill(prof.getSkill());
+	}
+
+	private void onClickJob()
+	{
+		WorkExperience job = jobsList.getSelectionModel().getSelectedItem();
+		viewModel.showProfile(job.fetchCompany());
+	}
+
 	private void loadData()
 	{
 		loadCommonData();
@@ -232,7 +244,16 @@ public class UserController
 		{
 			pronounsLabel.setText(personModel.getPronouns());
 			skillsList.setItems(FXCollections.observableArrayList(personModel.getSkills()));
+			skillsList.getSelectionModel().selectedItemProperty().addListener((e) ->
+			{
+				onClickSkill();
+			});
+
 			jobsList.setItems(FXCollections.observableArrayList(personModel.getJobs()));
+			jobsList.getSelectionModel().selectedItemProperty().addListener((e) ->
+			{
+				onClickJob();
+			});
 		} else
 		{
 			pronounsLabel.setText("company");

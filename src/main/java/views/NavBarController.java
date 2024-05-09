@@ -36,6 +36,8 @@ public class NavBarController
 	{
 		this.viewModel = viewModel;
 		dataModel = newModel;
+		
+		viewModel.showProfile(dataModel); // immediately display the current user profile
 
 		entityTypeSelector.setItems(EntityType.getEnumItems());
 	}
@@ -76,6 +78,6 @@ public class NavBarController
 	@FXML
 	void onClickHome(ActionEvent event)
 	{
-		viewModel.showMain(dataModel);
+		viewModel.showProfile(dataModel);
 	}
 }

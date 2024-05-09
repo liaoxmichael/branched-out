@@ -41,7 +41,11 @@ public class AppRunner
 		Skill python = new Skill("Python", testManager); // 11
 		JobPosting googleDev = new JobPosting("Senior Software Developer", google, testManager); // 13
 		JobPosting appleTech = new JobPosting("Apple Genius Technician", apple, testManager); // 17
-
+		
+		python.setDescription("Sorry about our flexible typing!");
+		python.update();
+		
+		java.setDescription("Like the coffee.");
 		java.addMentor(alice);
 		java.fetchPage().addEditor(alice);
 		java.update();

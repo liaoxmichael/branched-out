@@ -14,9 +14,10 @@ import org.testfx.framework.junit5.Start;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import main.Main;
+import models.Company;
 import models.JobPosting;
 import models.Person;
 import models.Skill;
@@ -62,7 +63,7 @@ public class NavBarViewTest implements ViewTransitionHandlerInterface
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("../views/NavBarView.fxml"));
 
-		BorderPane view;
+		Pane view;
 		try
 		{
 			view = loader.load();
@@ -135,19 +136,61 @@ public class NavBarViewTest implements ViewTransitionHandlerInterface
 	@Test
 	void testProfileShowing(FxRobot robot)
 	{
+		assertThat(showProfileCalled).isEqualTo(1); // should display a profile (our profile) right away
+		assertThat(lastShownUser).isEqualTo(currentUser); // make sure it's our own user!
 
+		robot.clickOn("#homeButton");
+		assertThat(showProfileCalled).isEqualTo(2);
+		assertThat(lastShownUser).isEqualTo(currentUser);
 	}
 
 	@Test
 	void testLogout(FxRobot robot)
 	{
+		robot.clickOn("#logoutButton");
+		assertThat(showLoginCalled).isEqualTo(1);
+	}
 
+	private void searchForType(FxRobot robot, int index)
+	{
+		selectFromChoiceBox(robot, index, "#entityTypeSelector");
+		robot.clickOn("#searchButton");
 	}
 
 	@Test
-	void testSearch()
+	void testSearch(FxRobot robot)
 	{
+		robot.clickOn("#searchButton"); // make sure that clicking this without a value in the search bar does not cause
+										// any fatal errors/search for nothing
+		assertThat(showSearchDisplayCalled).isEqualTo(0);
+		assertThat(lastShownLabel).isNull();
+		assertThat(lastShownEntities).isNull();
 
+		// reminder that the list of items goes:
+		// 0: Companies
+		// 1: Job Postings
+		// 2: People
+		// 3: Skills
+
+		searchForType(robot, 0);
+		assertThat(showSearchDisplayCalled).isEqualTo(1);
+		assertThat(lastShownLabel).isEqualTo("Companies");
+		assertThat(lastShownEntities).isEqualTo(Company.retrieveAll());
+
+		searchForType(robot, 1);
+		assertThat(showSearchDisplayCalled).isEqualTo(2);
+		assertThat(lastShownLabel).isEqualTo("Job Postings");
+		assertThat(lastShownEntities).isEqualTo(JobPosting.retrieveAll());
+
+		searchForType(robot, 2);
+		assertThat(showSearchDisplayCalled).isEqualTo(3);
+		assertThat(lastShownLabel).isEqualTo("People");
+		assertThat(lastShownEntities).isEqualTo(Person.retrieveAll());
+
+		searchForType(robot, 3);
+		assertThat(showSearchDisplayCalled).isEqualTo(4);
+		assertThat(lastShownLabel).isEqualTo("Skills");
+		assertThat(lastShownEntities).isEqualTo(Skill.retrieveAll());
 	}
 
 }

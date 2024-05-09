@@ -134,11 +134,21 @@ public class SkillController
 			exitEditingMode();
 		}
 	}
+	
+	private void onClickMentor() {
+		Person mentor = mentorList.getSelectionModel().getSelectedItem();
+		viewModel.showProfile(mentor);
+	}
 
 	private void loadData()
 	{
 		nameLabel.setText(dataModel.getTitle());
 		descriptionLabel.setText(dataModel.getDescription());
+		updateMentorList();
+		mentorList.getSelectionModel().selectedItemProperty().addListener((e) ->
+		{
+			onClickMentor();
+		});
 	}
 
 	private void updateMentorList()

@@ -1,28 +1,22 @@
 package views;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static views.TestUtils.enterText;
-
-import java.io.IOException;
-
 import org.springframework.web.client.RestClient;
 import org.testfx.api.FxRobot;
 import org.testfx.assertions.api.Assertions;
 
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import main.Main;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import models.Company;
 import models.IdentifiableObjectManager;
 import models.JobPosting;
 import models.Person;
 import models.Skill;
-import models.ViewTransitionHandlerInterface;
 import models.SkillProficiency.ProficiencyLevel;
 import models.recommender.JobSite;
 import models.recommender.JobType;
@@ -103,13 +97,6 @@ public class TestUtils
 
 		googleDev.fetchPage().addEditor(alice);
 	}
-	
-	public static void attemptLogin(FxRobot robot, String username, String password)
-	{
-		enterText(robot, username, "#userIdField");
-		enterText(robot, password, "#passwordField");
-		robot.clickOn("#loginButton");
-	}
 
 	public static void enterText(FxRobot robot, String input, String target)
 	{
@@ -117,12 +104,22 @@ public class TestUtils
 		robot.write(input);
 	}
 
+	public static void clearTextField(FxRobot robot, String target)
+	{
+		robot.lookup(target).queryAs(TextField.class).clear();
+	}
+	
+	public static void clearTextArea(FxRobot robot, String target)
+	{
+		robot.lookup(target).queryAs(TextArea.class).clear();
+	}
+
 	public static void checkLabel(FxRobot robot, String expected, String target)
 	{
 		Assertions.assertThat(robot.lookup(target).queryAs(Label.class)).hasText(expected);
 	}
 
-	public static void checkVisibility(FxRobot robot, boolean checkIsVisible, String target)
+	private static void checkVisibility(FxRobot robot, boolean checkIsVisible, String target)
 	{
 		Node n = robot.lookup(target).queryAs(Node.class);
 		if (checkIsVisible)
@@ -132,6 +129,34 @@ public class TestUtils
 		{
 			Assertions.assertThat(n).isInvisible();
 		}
+	}
+
+	public static void checkVisible(FxRobot robot, String target)
+	{
+		checkVisibility(robot, true, target);
+	}
+
+	public static void checkInvisible(FxRobot robot, String target)
+	{
+		checkVisibility(robot, false, target);
+	}
+
+	// how do you select something from a choicebox?
+	// source: https://github.com/TestFX/TestFX/issues/216#issuecomment-785450678
+	public static void selectFromChoiceBox(FxRobot robot, int index, String target)
+	{
+		robot.interact(() ->
+		{
+			robot.lookup(target).queryAs(ChoiceBox.class).getSelectionModel().select(index);
+		});
+	}
+
+	public static void selectFromListView(FxRobot robot, int index, String target)
+	{
+		robot.interact(() ->
+		{
+			robot.lookup(target).queryAs(ListView.class).getSelectionModel().select(index);
+		});
 	}
 
 	public static void checkListView(FxRobot robot, ObservableList<?> expected, String target)
