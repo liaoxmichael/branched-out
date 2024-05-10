@@ -7,6 +7,7 @@ import org.testfx.assertions.api.Assertions;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -171,6 +172,11 @@ public class TestUtils
 	public static void checkListView(FxRobot robot, ObservableList<?> expected, String target)
 	{
 		assertIterableEquals(expected, robot.lookup(target).queryAs(ListView.class).getItems());
+	}
+	
+	public static void checkButtonDisabled(FxRobot robot, String target)
+	{
+		assertTrue(robot.lookup(target).queryAs(Button.class).isDisabled());
 	}
 
 }

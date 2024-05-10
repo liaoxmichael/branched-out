@@ -42,6 +42,9 @@ public class Link implements Identifiable, RestReadyInterface
 
 	public Link(Page page, RelationshipType type, IdentifiableObjectManagerInterface manager)
 	{
+		if (manager == null) {
+			manager = IdentifiableObjectManager.retrieve(0);
+		}
 		id = manager.nextId();
 //		this.page = page;
 		pageId = page.getId();

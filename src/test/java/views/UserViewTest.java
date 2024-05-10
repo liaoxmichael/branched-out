@@ -1,7 +1,6 @@
 package views;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static views.TestUtils.*;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -151,11 +149,6 @@ class UserViewTest implements ViewTransitionHandlerInterface
 		});
 		WaitForAsyncUtils.waitForFxEvents();
 		assertThat(showBlockErrorCalled).isEqualTo(1);
-	}
-
-	private void checkButtonDisabled(FxRobot robot, String target)
-	{
-		assertTrue(robot.lookup(target).queryAs(Button.class).isDisabled());
 	}
 
 	@Test
@@ -337,7 +330,8 @@ class UserViewTest implements ViewTransitionHandlerInterface
 		{
 			controller.setModels(alice, alice, this);
 		});
-
+		WaitForAsyncUtils.waitForFxEvents();
+		
 		// Followers/Following
 		robot.clickOn("#followersContainer");
 		ObservableList<Displayable> followersList = FXCollections.observableArrayList();
