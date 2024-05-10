@@ -93,7 +93,6 @@ public class JobPosting extends Post implements RestReadyInterface, Displayable
 
 		links.get("applicants") // guaranteed because of constructor; else risky and could return null
 				.add(newLink);
-		// it's reciprocal; need to add to person's projects list
 	}
 
 	public boolean removeApplicant(Person person)

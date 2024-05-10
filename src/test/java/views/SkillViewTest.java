@@ -29,7 +29,7 @@ import models.ViewTransitionHandlerInterface;
 import models.adapters.Displayable;
 
 @ExtendWith(ApplicationExtension.class)
-class SkillViewTest implements ViewTransitionHandlerInterface
+public class SkillViewTest implements ViewTransitionHandlerInterface
 {
 	int showMainCalled;
 

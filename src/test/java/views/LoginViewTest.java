@@ -25,7 +25,7 @@ import models.ViewTransitionHandlerInterface;
 import models.adapters.Displayable;
 
 @ExtendWith(ApplicationExtension.class)
-class LoginViewTest implements ViewTransitionHandlerInterface
+public class LoginViewTest implements ViewTransitionHandlerInterface
 {
 	int showMainCalled;
 

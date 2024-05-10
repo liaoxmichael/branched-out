@@ -101,16 +101,15 @@ public class TestUtils
 
 		apple.fetchPage().addEditor(alice);
 
+		googleDev.addApplicant(bob);
 		googleDev.fetchPage().addEditor(alice);
+		googleDev.update();
 	}
 
 	public static void enterText(FxRobot robot, String input, String target)
 	{
 		robot.clickOn(target);
-		for (int i = 0; i < 10; i++) // this a jank way to make sure we're at end of the field but so be it
-		{
-			robot.push(KeyCode.RIGHT);
-		}
+		robot.push(KeyCode.SHORTCUT, KeyCode.RIGHT);
 		robot.write(input);
 	}
 
@@ -173,7 +172,7 @@ public class TestUtils
 	{
 		assertIterableEquals(expected, robot.lookup(target).queryAs(ListView.class).getItems());
 	}
-	
+
 	public static void checkButtonDisabled(FxRobot robot, String target)
 	{
 		assertTrue(robot.lookup(target).queryAs(Button.class).isDisabled());

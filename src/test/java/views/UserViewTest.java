@@ -33,7 +33,7 @@ import models.ViewTransitionHandlerInterface;
 import models.adapters.Displayable;
 
 @ExtendWith(ApplicationExtension.class)
-class UserViewTest implements ViewTransitionHandlerInterface
+public class UserViewTest implements ViewTransitionHandlerInterface
 {
 	int showMainCalled;
 
@@ -166,7 +166,7 @@ class UserViewTest implements ViewTransitionHandlerInterface
 	}
 
 	@Test
-	void testDataLoaded(FxRobot robot)
+	void testDataExistsAndEditing(FxRobot robot)
 	{
 		// Alice can edit her own page
 		Person alice = Person.retrieve(5);

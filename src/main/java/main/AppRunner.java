@@ -44,7 +44,7 @@ public class AppRunner
 		
 		python.setDescription("Sorry about our flexible typing!");
 		python.update();
-		
+
 		java.setDescription("Like the coffee.");
 		java.addMentor(alice);
 		java.fetchPage().addEditor(alice);
@@ -91,7 +91,9 @@ public class AppRunner
 
 		apple.fetchPage().addEditor(alice);
 
+		googleDev.addApplicant(bob);
 		googleDev.fetchPage().addEditor(alice);
+		googleDev.update();
 	}
 
 }
