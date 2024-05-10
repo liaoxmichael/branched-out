@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import main.Main;
 import models.Company;
 import models.JobPosting;
+import models.Link;
 import models.Person;
 import models.Skill;
 import models.User;
@@ -281,10 +282,11 @@ class UserViewTest implements ViewTransitionHandlerInterface
 	@Test
 	void testCompanyDifferent(FxRobot robot)
 	{
-		// Alice is admin of Google so can edit it!
+		// Alice is admin of Apple so can edit it!
+		Company apple = Company.retrieve(1);
 		Platform.runLater(() ->
 		{
-			controller.setModels(Company.retrieve(3), Person.retrieve(5), this);
+			controller.setModels(apple, Person.retrieve(5), this);
 		});
 		WaitForAsyncUtils.waitForFxEvents();
 		// because a Company doesn't have extra fields (work experiences, skills),
@@ -294,7 +296,32 @@ class UserViewTest implements ViewTransitionHandlerInterface
 
 		// test editing (mainly that you shouldn't be able to change a company's
 		// pronouns)
-		
+		checkLabel(robot, "company", "#pronounsLabel");
+
+		robot.clickOn("#editProfileButton");
+		checkInvisible(robot, "#nameLabel");
+		checkInvisible(robot, "#bioLabel");
+		checkVisible(robot, "#pronounsLabel");
+
+		checkVisible(robot, "#nameTextField");
+		checkVisible(robot, "#biographyTextArea");
+		checkInvisible(robot, "#pronounsTextField");
+
+		// might as well test other editing capabilities while we're here
+		enterText(robot, " 2.0", "#nameTextField");
+
+		enterText(robot, " Like the old one but better!", "#biographyTextArea");
+
+		robot.clickOn("#editProfileButton"); // save changes
+
+		// double check that local model is updated
+		checkLabel(robot, apple.getName(), "#nameLabel");
+		checkLabel(robot, apple.getBio(), "#bioLabel");
+
+		// check the model is also updated on server
+		Company appleAfterUpdate = Company.retrieve(1);
+		assertThat(appleAfterUpdate.getName()).isEqualTo(apple.getName());
+		assertThat(appleAfterUpdate.getBio()).isEqualTo(apple.getBio());
 	}
 
 	@Test
@@ -302,7 +329,59 @@ class UserViewTest implements ViewTransitionHandlerInterface
 	{
 		// we can transition to:
 		// a Company from our work experiences
-		// search display of all our Followers
+		// search display of all our Followers/Following
 		// a Skill from our skills
+
+		Person alice = Person.retrieve(5);
+		Platform.runLater(() ->
+		{
+			controller.setModels(alice, alice, this);
+		});
+
+		// Followers/Following
+		robot.clickOn("#followersContainer");
+		ObservableList<Displayable> followersList = FXCollections.observableArrayList();
+		for (Link l : alice.getLinks().get("followers"))
+		{
+			int i = l.fetchPage().getEntityId();
+			if (Person.retrieve(i) != null)
+			{
+				followersList.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				followersList.add(Company.retrieve(i));
+			}
+		}
+		assertThat(showSearchDisplayCalled).isEqualTo(1);
+		assertThat(lastShownEntities).isEqualTo(followersList);
+		assertThat(lastShownLabel).isEqualTo("Followers of " + alice.getName());
+
+		robot.clickOn("#followingContainer");
+		ObservableList<Displayable> followingList = FXCollections.observableArrayList();
+		for (Link l : alice.getLinks().get("following"))
+		{
+			int i = l.fetchPage().getEntityId();
+			if (Person.retrieve(i) != null)
+			{
+				followingList.add(Person.retrieve(i));
+			} else if (Company.retrieve(i) != null)
+			{
+				followingList.add(Company.retrieve(i));
+			}
+		}
+		assertThat(lastShownLabel).isEqualTo("Users " + alice.getName() + " is following");
+		assertThat(showSearchDisplayCalled).isEqualTo(2);
+
+		assertThat(lastShownEntities).isEqualTo(followingList);
+
+		// Company
+		selectFromListView(robot, 0, "#jobsList");
+		assertThat(showProfileCalled).isEqualTo(1);
+		assertThat(lastShownUser).isEqualTo(Company.retrieve(3)); // google
+
+		// Skill
+		selectFromListView(robot, 1, "#skillsList");
+		assertThat(showSkillCalled).isEqualTo(1);
+		assertThat(lastShownSkill).isEqualTo(Skill.retrieve(9)); // java
 	}
 }

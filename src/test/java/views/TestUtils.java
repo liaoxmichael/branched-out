@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import models.Company;
 import models.IdentifiableObjectManager;
 import models.JobPosting;
@@ -50,6 +51,10 @@ public class TestUtils
 		JobPosting googleDev = new JobPosting("Senior Software Developer", google, testManager); // 13
 		JobPosting appleTech = new JobPosting("Apple Genius Technician", apple, testManager); // 17
 
+		python.setDescription("Sorry about our flexible typing!");
+		python.update();
+
+		java.setDescription("Like the coffee.");
 		java.addMentor(alice);
 		java.fetchPage().addEditor(alice);
 		java.update();
@@ -101,6 +106,10 @@ public class TestUtils
 	public static void enterText(FxRobot robot, String input, String target)
 	{
 		robot.clickOn(target);
+		for (int i = 0; i < 10; i++) // this a jank way to make sure we're at end of the field but so be it
+		{
+			robot.push(KeyCode.RIGHT);
+		}
 		robot.write(input);
 	}
 
@@ -108,7 +117,7 @@ public class TestUtils
 	{
 		robot.lookup(target).queryAs(TextField.class).clear();
 	}
-	
+
 	public static void clearTextArea(FxRobot robot, String target)
 	{
 		robot.lookup(target).queryAs(TextArea.class).clear();
